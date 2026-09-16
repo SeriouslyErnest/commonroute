@@ -6,9 +6,8 @@ import { joinTripByCode, setState, useKintrip, useTripSetupStatus } from "@/lib/
 import type { AgeGroup } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/join")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    code: typeof search["code"] === "string" ? search["code"] : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { code?: string } =>
+    typeof search["code"] === "string" && search["code"] ? { code: search["code"] } : {},
   head: () => ({
     meta: [
       { title: "Join a family trip — Kintrip" },
