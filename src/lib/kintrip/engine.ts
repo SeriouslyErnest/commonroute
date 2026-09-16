@@ -222,13 +222,12 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
     return out;
   };
 
-  const tokyoPlan = distribute(areaGroups(pick("Tokyo")), tokyoDays);
-  const kyotoPlan = distribute(areaGroups(pick("Kyoto")), kyotoDays);
-  const plan = [...tokyoPlan, ...kyotoPlan];
+  const plan = cities.flatMap((city, i) => distribute(areaGroups(pick(city)), dayCounts[i]!));
+  const cityOfDay = cities.flatMap((city, i) => Array<string>(dayCounts[i]!).fill(city));
 
   const shortened: string[] = [];
   const dayPlans: ItineraryDay[] = plan.map((attractions, index) => {
-    const city: "Tokyo" | "Kyoto" = index < tokyoDays ? "Tokyo" : "Kyoto";
+    const city: string = cityOfDay[index] ?? cities[0]!;
     const items: ItineraryItem[] = [];
     let clock = toMin(index === 0 ? "10:00" : "09:00");
     let lastArea: string | null = null;
