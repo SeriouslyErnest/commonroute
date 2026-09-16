@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Field, inputClass } from "@/components/kintrip/ui";
-import { setState, useKintrip } from "@/lib/kintrip/store";
+import { createNewTrip } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/create")({
   head: () => ({

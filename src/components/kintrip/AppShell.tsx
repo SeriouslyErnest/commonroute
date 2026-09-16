@@ -55,6 +55,12 @@ export function AppShell({
           <p className="hidden text-sm text-muted-foreground sm:block">
             Many generations. One journey. Shared memories.
           </p>
+          <Link
+            to="/trips"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border px-4 text-sm font-semibold text-secondary"
+          >
+            <Layers className="size-4" aria-hidden /> My trips
+          </Link>
         </div>
       </header>
 
