@@ -32,7 +32,7 @@ const VOTE_ORDER: VoteValue[] = ["MUST_GO", "WOULD_LIKE", "DONT_MIND", "SKIP"];
 function DiscoverTab() {
   const state = useKintrip();
   const [query, setQuery] = useState("");
-  const [city, setCity] = useState<"All" | "Tokyo" | "Kyoto">("All");
+  const [city, setCity] = useState<string>("All");
   const [visibleCount, setVisibleCount] = useState(6);
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -59,11 +59,17 @@ function DiscoverTab() {
 
   const addPlace = (p: PlaceResult) => {
     const id = `gp-${p.placeId}`;
+    const tripCity = state.trip.destination.split(",")[0]!.trim();
+    const addressParts = p.address.split(",").map((s) => s.trim());
+    const city =
+      addressParts.length >= 2
+        ? (addressParts[addressParts.length - 2] ?? tripCity)
+        : tripCity;
     const attraction: Attraction = {
       id,
       name: p.name,
-      city: /kyoto/i.test(p.address) ? "Kyoto" : "Tokyo",
-      area: p.address.split(",")[1]?.trim() || p.address,
+      city,
+      area: addressParts[1] || city,
       category: "From Google Maps",
       description: p.address,
       durationMin: 120,
