@@ -13,7 +13,7 @@ import {
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
-import { restoreTripsAfterSetupTest, setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { exitDemoTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({

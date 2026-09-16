@@ -244,6 +244,7 @@ export function useTripList(): TripSummary[] {
     joined: s.travellers.filter((t) => t.joined).length,
     hasItinerary: s.itinerary !== null,
     active: s.trip.id === m.activeTripId,
+    isDemo: s.trip.id === m.demoTripId,
   }));
 }
 
