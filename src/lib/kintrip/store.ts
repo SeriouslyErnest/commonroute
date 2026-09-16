@@ -269,7 +269,12 @@ export interface NewTripInput {
 
 /** Create a brand-new trip and make it active. Returns the new trip id. */
 export function createNewTrip(input: NewTripInput): string {
-  const state = createEmptyTripState(input);
+  const base = createEmptyTripState(input);
+  const state: KintripState = {
+    ...base,
+    trip: { ...base.trip, shareCode: makeShareCode() },
+    cachedAt: new Date().toISOString(),
+  };
   multi = {
     ...multi,
     activeTripId: state.trip.id,
@@ -278,6 +283,7 @@ export function createNewTrip(input: NewTripInput): string {
   touchActive();
   persist();
   emit();
+  void pushNow(state.trip.id);
   return state.trip.id;
 }
 
