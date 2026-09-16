@@ -128,7 +128,8 @@ export function formatDate(iso: string) {
 }
 
 function shortenedFor(a: Attraction, limit: string) {
-  return WALK_RANK[a.walking]! > WALK_RANK[limit]!;
+  // Only trim the genuinely demanding routes; a moderate stroll stays as planned.
+  return WALK_RANK[a.walking]! >= 2 && WALK_RANK[limit]! <= 1;
 }
 
 function travelFor(fromArea: string | null, toArea: string) {
