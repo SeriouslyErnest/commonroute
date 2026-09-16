@@ -95,8 +95,9 @@ function ActiveTrip() {
           <div className="absolute inset-0 bg-linear-to-t from-foreground/90 via-transparent to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 text-card sm:p-8">
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <Chip tone="sunny">Demo journey</Chip>
+              {demoActive ? <Chip tone="sunny">Demo journey</Chip> : null}
                <span className="text-sm font-bold text-card">{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span>
+
             </div>
             <h1 className="text-3xl leading-tight sm:text-4xl">{trip.title}</h1>
              <p className="mt-1 text-base font-bold text-card">{trip.destination} · {joined} travellers</p>
