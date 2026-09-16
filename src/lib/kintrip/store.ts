@@ -16,9 +16,27 @@ function initialMulti(): MultiTripState {
   return { activeTripId: "", trips: {} };
 }
 
+const EMPTY_MULTI: MultiTripState = { activeTripId: "", trips: {} };
+
+/**
+ * Neutral state rendered on the server and on the very first client render, so
+ * the two always match. Real saved trips arrive after hydrate() runs on mount.
+ */
+const placeholderTrip: KintripState = (() => {
+  const base = createEmptyTripState({
+    title: "Your trip",
+    destination: "",
+    startDate: "",
+    endDate: "",
+    travellerCount: 0,
+  });
+  return { ...base, trip: { ...base.trip, id: "placeholder" }, travellers: [] };
+})();
+
 let multi: MultiTripState = initialMulti();
-const fallbackTrip = createSeedState();
+let ready = false;
 let hydrated = false;
+
 const listeners = new Set<() => void>();
 
 function emit() {
