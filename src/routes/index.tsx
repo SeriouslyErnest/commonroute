@@ -136,6 +136,12 @@ function ActiveTrip() {
           ))}
         </div>
 
+        <div className="flex justify-center">
+          <LinkButton to="/create" variant="outline">
+            <Plus className="size-5" aria-hidden /> Plan another trip
+          </LinkButton>
+        </div>
+
         <Notes />
       </AppShell>
     );
