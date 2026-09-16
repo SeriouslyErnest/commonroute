@@ -116,6 +116,7 @@ function ActiveTrip() {
     ];
     return (
       <AppShell title={trip.title} subtitle={`${trip.destination} · ${formatDate(trip.startDate)} – ${formatDate(trip.endDate)}`}>
+        <DemoBanner />
         <Card className="bg-primary-soft">
           <h2 className="text-lg">Your family is nearly ready to plan</h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -161,6 +162,7 @@ function ActiveTrip() {
       title={`Day ${day.day} — ${day.areaLabel}`}
       subtitle={`${formatDate(day.date)} · today's plan`}
     >
+      <DemoBanner />
       <Card className="border-primary/40 bg-primary-soft">
         <div className="flex items-center justify-between">
           <Chip tone="primary">Next activity</Chip>
