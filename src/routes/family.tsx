@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Footprints, Gauge, Heart, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Footprints, Gauge, Heart, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { familyWalkingLimit } from "@/lib/kintrip/engine";
@@ -57,9 +57,13 @@ function FamilyTab() {
                   {t.relationship} · {t.ageGroup}
                 </p>
               </div>
-              <Chip tone={t.prefStatus === "complete" ? "lime" : "sunny"}>
-                {t.prefStatus === "complete" ? "Preferences complete" : "Preferences not started"}
-              </Chip>
+               {t.prefStatus === "complete" ? (
+                 <span className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-muted-foreground" aria-label="Preferences complete">
+                   <CheckCircle2 className="size-4 text-primary" aria-hidden /> Complete
+                 </span>
+               ) : (
+                 <Chip tone="sunny">Preferences not started</Chip>
+               )}
             </div>
             <p className="flex flex-wrap gap-2 text-sm">
               {t.preferences.interests.map((i) => (

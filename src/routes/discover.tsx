@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Clock, Footprints, MapPin, Search, Wallet } from "lucide-react";
+import { Check, ChevronDown, Clock, Footprints, MapPin, Search, Wallet } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
@@ -32,7 +32,9 @@ function DiscoverTab() {
   const state = useKintrip();
   const [query, setQuery] = useState("");
   const [city, setCity] = useState<"All" | "Tokyo" | "Kyoto">("All");
-  const me = state.travellers.find((t) => t.id === state.activeTravellerId)!;
+  const [visibleCount, setVisibleCount] = useState(6);
+  const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
+  if (!me) return null;
 
   const list = state.attractions.filter(
     (a) =>
@@ -43,7 +45,7 @@ function DiscoverTab() {
 
   return (
     <AppShell title="Discover & vote" subtitle={`Voting as ${me.name}`}>
-      <Card className="space-y-3">
+      <Card className="space-y-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-3 sm:space-y-0">
         <div className="relative">
           <Search className="absolute left-3 top-3.5 size-5 text-muted-foreground" aria-hidden />
           <input
@@ -54,21 +56,23 @@ function DiscoverTab() {
             aria-label="Search places"
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:flex">
+          <div className="flex gap-1 rounded-xl bg-muted p-1">
           {(["All", "Tokyo", "Kyoto"] as const).map((c) => (
             <button
               key={c}
               onClick={() => setCity(c)}
               className={cn(
-                "min-h-10 rounded-full px-4 text-sm font-semibold",
-                city === c ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground",
+                "min-h-10 flex-1 rounded-lg px-3 text-sm font-semibold sm:flex-none",
+                city === c ? "bg-card text-secondary shadow-sm" : "text-foreground",
               )}
             >
               {c}
             </button>
           ))}
+          </div>
           <select
-            className="min-h-10 rounded-full bg-muted px-4 text-sm font-semibold"
+            className="min-h-10 max-w-36 rounded-xl bg-muted px-3 text-sm font-semibold"
             value={state.activeTravellerId}
             onChange={(e) =>
               setState((prev) => ({ ...prev, activeTravellerId: e.target.value }))
@@ -85,7 +89,7 @@ function DiscoverTab() {
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {list.map((a) => {
+        {list.slice(0, visibleCount).map((a) => {
           const myVote = state.votes[me.id]?.[a.id];
           return (
             <Card key={a.id} className="space-y-3">
@@ -96,7 +100,7 @@ function DiscoverTab() {
                     {a.area}, {a.city} · {a.category}
                   </p>
                 </div>
-                <Chip tone="lime">{fitNoteFor(state, a)}</Chip>
+                <Chip tone="primary">{fitNoteFor(state, a)}</Chip>
               </div>
               <p className="text-sm">{a.description}</p>
               <a
@@ -135,11 +139,12 @@ function DiscoverTab() {
                     className={cn(
                       "min-h-12 rounded-xl border text-sm font-semibold",
                       myVote === v
-                        ? "border-primary bg-primary text-primary-foreground"
+                         ? "border-primary bg-primary text-primary-foreground shadow-sm ring-2 ring-primary/20"
                         : "border-border bg-card text-foreground",
                     )}
                     aria-pressed={myVote === v}
                   >
+                    {myVote === v ? <Check className="size-4" aria-hidden /> : null}
                     {VOTE_LABEL[v]}
                   </button>
                 ))}
@@ -149,12 +154,18 @@ function DiscoverTab() {
         })}
       </div>
 
-      <div className="flex justify-center pb-4">
-        <LinkButton to="/consensus">See where the family stands</LinkButton>
-      </div>
-      <div className="flex justify-center">
+      {visibleCount < list.length ? (
+        <div className="flex justify-center">
+          <Button variant="outline" onClick={() => setVisibleCount((count) => count + 6)}>
+            Show more places <ChevronDown className="size-5" aria-hidden />
+          </Button>
+        </div>
+      ) : null}
+
+      <div className="grid gap-2 pb-4 sm:flex sm:justify-center">
+        <LinkButton to="/consensus">See family summary</LinkButton>
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={() =>
             setState((prev) => ({
               ...prev,
@@ -164,7 +175,7 @@ function DiscoverTab() {
             }))
           }
         >
-          Mark my voting as done
+          Finish voting
         </Button>
       </div>
     </AppShell>

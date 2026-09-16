@@ -52,7 +52,7 @@ export function AppShell({
   const { hasTrips } = useTripSetupStatus();
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background pb-40 sm:pb-32">
       <header className="sticky top-0 z-20 border-b border-border/70 bg-card/90 backdrop-blur-xl">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <Link to="/" className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export function AppShell({
       </main>
 
       {hasTrips ? (
-        <nav className="fixed inset-x-3 bottom-3 z-30 mx-auto max-w-md rounded-3xl border border-card/10 bg-foreground/95 px-2 shadow-lift backdrop-blur-xl sm:bottom-5">
+        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-3xl border border-card/10 bg-foreground/95 px-2 shadow-lift backdrop-blur-xl sm:bottom-5">
           <ul className="mx-auto flex">
             {tabs.map(({ to, label, icon: Icon }) => {
               const active = to === "/" ? pathname === "/" : pathname.startsWith(to);

@@ -90,7 +90,13 @@ export function consensusFor(state: KintripState): AttractionConsensus[] {
       } else if (group === "alignment") {
         note = `${counts.MUST_GO} travellers really want this, ${counts.SKIP} would rather skip. Worth planning as an optional split or a shorter stop.`;
       } else {
-        note = `Mixed preferences — good fit for ${counts.MUST_GO + counts.WOULD_LIKE} of ${state.travellers.length} travellers.`;
+        const interested = counts.MUST_GO + counts.WOULD_LIKE;
+        note =
+          interested >= Math.ceil(state.travellers.length * 0.7)
+            ? "Works well for most of the family."
+            : interested >= Math.ceil(state.travellers.length * 0.4)
+              ? "A good option for part of the family, with room for flexibility."
+              : "Best kept as an optional stop for those who are interested.";
       }
       return { attraction, counts, score, votesCast, group, note };
     })
@@ -113,7 +119,9 @@ export function fitNoteFor(state: KintripState, attraction: Attraction) {
     if (v === "MUST_GO" || v === "WOULD_LIKE") fit += 1;
     else if (!v && t.preferences.interests.includes(attraction.category)) fit += 1;
   }
-  return `Good fit for ${fit} of ${state.travellers.length} travellers.`;
+  if (fit >= Math.ceil(state.travellers.length * 0.7)) return "Works well for most";
+  if (fit >= Math.ceil(state.travellers.length * 0.4)) return "Some family interest";
+  return "Optional for some";
 }
 
 function addDays(iso: string, n: number) {
