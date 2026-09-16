@@ -1,26 +1,22 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
-  CalendarDays,
   CheckCircle2,
-  ChevronDown,
   Clock,
   MapPin,
   Navigation,
-  PlaneTakeoff,
+  Plus,
   RefreshCw,
   Sparkles,
   StickyNote,
   Train,
-  Users,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
-import santoriniStart from "@/assets/kintrip-santorini-start.jpg";
-import logo from "@/assets/kintrip-logo.png.asset.json";
+import { StartTripCard } from "@/components/kintrip/StartTripForm";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
-import { createNewTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
