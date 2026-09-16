@@ -27,6 +27,35 @@ export const Route = createFileRoute("/join")({
 
 function JoinTrip() {
   const { hasTrips } = useTripSetupStatus();
+  const { code } = Route.useSearch();
+  const state = useKintrip();
+  const [status, setStatus] = useState<"idle" | "loading" | "notfound">("idle");
+
+  const alreadyHere = !!code && state.trip.shareCode === code;
+  useEffect(() => {
+    if (!code || alreadyHere) return;
+    setStatus("loading");
+    void joinTripByCode(code).then((id) => setStatus(id ? "idle" : "notfound"));
+  }, [code, alreadyHere]);
+
+  if (code && status === "loading") {
+    return (
+      <AppShell title="Opening your family's trip…">
+        <Card className="py-7 text-center text-muted-foreground">One moment while we load the latest plan.</Card>
+      </AppShell>
+    );
+  }
+  if (code && status === "notfound") {
+    return (
+      <AppShell title="We couldn't find that trip" back={{ to: "/", label: "Back" }}>
+        <Card className="py-7 text-center">
+          <p className="text-muted-foreground">
+            This invite link may have expired or been typed incorrectly. Ask the organiser to send it again.
+          </p>
+        </Card>
+      </AppShell>
+    );
+  }
   if (!hasTrips) return <JoinWithoutInvite />;
   return <JoinKnownTrip />;
 }
