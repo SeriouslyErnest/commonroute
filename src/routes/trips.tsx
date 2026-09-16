@@ -33,7 +33,7 @@ export const Route = createFileRoute("/trips")({
 
 function MyTrips() {
   const trips = useTripList();
-  const { setupTestActive } = useTripSetupStatus();
+  const { hasDemo } = useTripSetupStatus();
   const navigate = useNavigate();
 
   return (
