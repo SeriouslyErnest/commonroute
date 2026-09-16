@@ -94,7 +94,7 @@ function MyTrips() {
                   )}
                 </span>
               </button>
-              {!t.active && trips.length > 1 ? (
+              {!t.active || trips.length === 1 ? (
                 <Button
                   variant="ghost"
                   aria-label={`Delete ${t.title}`}
