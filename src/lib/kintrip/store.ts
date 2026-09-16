@@ -222,7 +222,8 @@ export function useTripSetupStatus() {
   const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
   return {
     hasTrips: Object.keys(m.trips).length > 0,
-    setupTestActive: m.setupTestActive === true,
+    demoActive: !!m.demoTripId && m.demoTripId === m.activeTripId,
+    hasDemo: !!m.demoTripId && !!m.trips[m.demoTripId],
   };
 }
 
