@@ -33,6 +33,10 @@ export function fromMin(v: number) {
   return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 }
 
+export function mapsUrl(a: { name: string; city: string }) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.name}, ${a.city}, Japan`)}`;
+}
+
 export function pretty(t: string) {
   const m = toMin(t);
   const h = Math.floor(m / 60);
