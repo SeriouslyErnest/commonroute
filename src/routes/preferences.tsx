@@ -42,10 +42,26 @@ const INTERESTS = [
 
 function PreferencesPage() {
   const state = useKintrip();
+  const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
+  if (!me) {
+    return (
+      <AppShell
+        title="Help us plan for your family"
+        subtitle="Loading your details…"
+        back={{ to: "/family", label: "Back to family" }}
+      >
+        <Card>Loading your trip…</Card>
+      </AppShell>
+    );
+  }
+  return <PreferencesForm key={me.id} me={me} />;
+}
+
+function PreferencesForm({ me }: { me: Traveller }) {
   const navigate = useNavigate();
-  const me = state.travellers.find((t) => t.id === state.activeTravellerId)!;
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState(me.preferences);
+
 
   const save = () => {
     setState((prev) => ({
