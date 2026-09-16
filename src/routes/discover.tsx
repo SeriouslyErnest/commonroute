@@ -5,7 +5,7 @@ import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
 import { searchPlaces, type PlaceResult } from "@/lib/kintrip/places.functions";
-import { setState, useKintrip } from "@/lib/kintrip/store";
+import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import type { Attraction, VoteValue } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
 
