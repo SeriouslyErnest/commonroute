@@ -7,13 +7,14 @@ import {
   Navigation,
   PlaneTakeoff,
   RefreshCw,
+  Sparkles,
   StickyNote,
   Train,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
-import { restoreTripsAfterSetupTest, setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { exitDemoTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,22 +37,14 @@ export const Route = createFileRoute("/")({
 });
 
 function TripTab() {
-  const { hasTrips, setupTestActive } = useTripSetupStatus();
-  if (!hasTrips) return <NoTrips setupTestActive={setupTestActive} />;
+  const { hasTrips } = useTripSetupStatus();
+  if (!hasTrips) return <NoTrips />;
   return <ActiveTrip />;
 }
 
-function NoTrips({ setupTestActive }: { setupTestActive: boolean }) {
+function NoTrips() {
   return (
     <AppShell>
-      {setupTestActive ? (
-        <div className="flex items-center justify-between gap-3 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
-          <span>Your saved trips are safely set aside while you test setup.</span>
-          <Button type="button" variant="ghost" className="shrink-0 px-3" onClick={restoreTripsAfterSetupTest}>
-            Restore
-          </Button>
-        </div>
-      ) : null}
       <section className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center py-10 text-center sm:py-16">
         <span className="mb-5 inline-flex size-16 items-center justify-center rounded-full bg-primary-soft text-primary">
           <PlaneTakeoff className="size-8" aria-hidden />
@@ -68,8 +61,37 @@ function NoTrips({ setupTestActive }: { setupTestActive: boolean }) {
           <LinkButton to="/join" variant="outline">Join a trip</LinkButton>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">No account needed to get started.</p>
+        <div className="mt-8 w-full max-w-xl">
+          <Card className="text-left">
+            <h2 className="text-lg">Just exploring?</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Open the demo trip — a family of seven in Japan — to step through voting, the suggested plan,
+              re-planning a day and offline viewing. You can remove it anytime.
+            </p>
+            <div className="mt-4">
+              <Button type="button" variant="secondary" onClick={() => startDemoTrip()}>
+                <Sparkles className="size-5" aria-hidden /> Try the demo trip
+              </Button>
+            </div>
+          </Card>
+        </div>
       </section>
     </AppShell>
+  );
+}
+
+function DemoBanner() {
+  const { demoActive } = useTripSetupStatus();
+  if (!demoActive) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
+      <span className="inline-flex items-center gap-2 font-semibold">
+        <Sparkles className="size-4" aria-hidden /> Demo trip — sample family and sample places
+      </span>
+      <Button type="button" variant="ghost" className="shrink-0 px-3" onClick={exitDemoTrip}>
+        Exit demo
+      </Button>
+    </div>
   );
 }
 
@@ -94,6 +116,7 @@ function ActiveTrip() {
     ];
     return (
       <AppShell title={trip.title} subtitle={`${trip.destination} · ${formatDate(trip.startDate)} – ${formatDate(trip.endDate)}`}>
+        <DemoBanner />
         <Card className="bg-primary-soft">
           <h2 className="text-lg">Your family is nearly ready to plan</h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -139,6 +162,7 @@ function ActiveTrip() {
       title={`Day ${day.day} — ${day.areaLabel}`}
       subtitle={`${formatDate(day.date)} · today's plan`}
     >
+      <DemoBanner />
       <Card className="border-primary/40 bg-primary-soft">
         <div className="flex items-center justify-between">
           <Chip tone="primary">Next activity</Chip>

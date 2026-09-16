@@ -4,17 +4,15 @@ import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
 const KEY = "kintrip.state.v2";
-const SETUP_BACKUP_KEY = "kintrip.setup-test.backup.v1";
 
 interface MultiTripState {
   activeTripId: string;
   trips: Record<string, KintripState>;
-  setupTestActive?: boolean;
+  demoTripId?: string | undefined;
 }
 
 function initialMulti(): MultiTripState {
-  const seed = createSeedState();
-  return { activeTripId: seed.trip.id, trips: { [seed.trip.id]: seed } };
+  return { activeTripId: "", trips: {} };
 }
 
 let multi: MultiTripState = initialMulti();
@@ -50,7 +48,7 @@ export function hydrate() {
       const parsed = JSON.parse(raw) as MultiTripState;
       const activeTrip = parsed?.trips?.[parsed.activeTripId];
       if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
-        multi = { ...parsed, setupTestActive: parsed.setupTestActive ?? false };
+        multi = { ...parsed, demoTripId: parsed.demoTripId };
         emit();
         return;
       }
@@ -100,23 +98,10 @@ export interface NewTripInput {
 /** Create a brand-new trip and make it active. Returns the new trip id. */
 export function createNewTrip(input: NewTripInput): string {
   const state = createEmptyTripState(input);
-  let existingTrips = multi.trips;
-  if (multi.setupTestActive && typeof window !== "undefined") {
-    try {
-      const raw = window.localStorage.getItem(SETUP_BACKUP_KEY);
-      if (raw) {
-        const saved = JSON.parse(raw) as MultiTripState;
-        existingTrips = saved.trips ?? existingTrips;
-        window.localStorage.removeItem(SETUP_BACKUP_KEY);
-      }
-    } catch {
-      /* keep the new trip when a test backup cannot be read */
-    }
-  }
   multi = {
+    ...multi,
     activeTripId: state.trip.id,
-    trips: { ...existingTrips, [state.trip.id]: state },
-    setupTestActive: false,
+    trips: { ...multi.trips, [state.trip.id]: state },
   };
   touchActive();
   persist();
@@ -124,35 +109,52 @@ export function createNewTrip(input: NewTripInput): string {
   return state.trip.id;
 }
 
-/** Temporarily put saved trips aside so the first-time setup can be tested safely. */
-export function startFirstTimeSetupTest() {
-  if (typeof window === "undefined" || Object.keys(multi.trips).length === 0) return;
-  try {
-    window.localStorage.setItem(SETUP_BACKUP_KEY, JSON.stringify(multi));
-  } catch {
-    return;
+/** Load the guided demo trip (Tan Family Japan) and make it active. */
+export function startDemoTrip(): string {
+  const existingId = multi.demoTripId;
+  if (existingId && multi.trips[existingId]) {
+    multi = { ...multi, activeTripId: existingId };
+    persist();
+    emit();
+    return existingId;
   }
-  multi = { activeTripId: "", trips: {}, setupTestActive: true };
+  const seed = createSeedState();
+  multi = {
+    activeTripId: seed.trip.id,
+    trips: { ...multi.trips, [seed.trip.id]: seed },
+    demoTripId: seed.trip.id,
+  };
+  persist();
+  emit();
+  return seed.trip.id;
+}
+
+/** Remove the demo trip and return to the user's own trips. */
+export function exitDemoTrip() {
+  const demoId = multi.demoTripId;
+  if (!demoId) return;
+  const trips = { ...multi.trips };
+  delete trips[demoId];
+  const activeTripId = multi.activeTripId === demoId ? (Object.keys(trips)[0] ?? "") : multi.activeTripId;
+  multi = { activeTripId, trips, demoTripId: undefined };
   persist();
   emit();
 }
 
-export function restoreTripsAfterSetupTest(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    const raw = window.localStorage.getItem(SETUP_BACKUP_KEY);
-    if (!raw) return false;
-    const saved = JSON.parse(raw) as MultiTripState;
-    const active = saved.trips?.[saved.activeTripId];
-    if (!active?.trip?.id) return false;
-    multi = { ...saved, setupTestActive: false };
-    window.localStorage.removeItem(SETUP_BACKUP_KEY);
-    persist();
-    emit();
-    return true;
-  } catch {
-    return false;
-  }
+/** Reset the demo trip back to its original sample data. */
+export function resetDemoTrip() {
+  const demoId = multi.demoTripId;
+  if (!demoId) return;
+  const seed = createSeedState();
+  const trips = { ...multi.trips };
+  delete trips[demoId];
+  multi = {
+    activeTripId: seed.trip.id,
+    trips: { ...trips, [seed.trip.id]: seed },
+    demoTripId: seed.trip.id,
+  };
+  persist();
+  emit();
 }
 
 export function switchTrip(tripId: string) {
@@ -167,21 +169,18 @@ export function deleteTrip(tripId: string) {
   const trips = { ...multi.trips };
   delete trips[tripId];
   let activeTripId = multi.activeTripId;
-  if (activeTripId === tripId) {
-    activeTripId = Object.keys(trips)[0] ?? "";
-    if (!activeTripId) {
-      // never leave the app empty — fall back to the sample trip
-      return;
-    }
-  }
-  multi = { activeTripId, trips };
+  if (activeTripId === tripId) activeTripId = Object.keys(trips)[0] ?? "";
+  multi = {
+    activeTripId,
+    trips,
+    demoTripId: multi.demoTripId === tripId ? undefined : multi.demoTripId,
+  };
   persist();
   emit();
 }
 
 export function resetState() {
-  const seed = createSeedState();
-  multi = { activeTripId: seed.trip.id, trips: { [seed.trip.id]: seed } };
+  multi = { activeTripId: "", trips: {} };
   persist();
   emit();
 }
@@ -213,6 +212,7 @@ export interface TripSummary {
   joined: number;
   hasItinerary: boolean;
   active: boolean;
+  isDemo: boolean;
 }
 
 export function useTripSetupStatus() {
@@ -222,7 +222,8 @@ export function useTripSetupStatus() {
   const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
   return {
     hasTrips: Object.keys(m.trips).length > 0,
-    setupTestActive: m.setupTestActive === true,
+    demoActive: !!m.demoTripId && m.demoTripId === m.activeTripId,
+    hasDemo: !!m.demoTripId && !!m.trips[m.demoTripId],
   };
 }
 
@@ -243,6 +244,7 @@ export function useTripList(): TripSummary[] {
     joined: s.travellers.filter((t) => t.joined).length,
     hasItinerary: s.itinerary !== null,
     active: s.trip.id === m.activeTripId,
+    isDemo: s.trip.id === m.demoTripId,
   }));
 }
 
