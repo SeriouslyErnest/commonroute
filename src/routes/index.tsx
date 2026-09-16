@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
+import familyCoast from "@/assets/kintrip-family-coast.jpg";
+import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
 import { exitDemoTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
@@ -45,35 +47,32 @@ function TripTab() {
 function NoTrips() {
   return (
     <AppShell>
-      <section className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center py-10 text-center sm:py-16">
-        <span className="mb-5 inline-flex size-16 items-center justify-center rounded-full bg-primary-soft text-primary">
-          <PlaneTakeoff className="size-8" aria-hidden />
-        </span>
-        <p className="text-sm font-bold text-primary">Many generations. One journey. Shared memories.</p>
-        <h1 className="mt-3 text-3xl sm:text-4xl">Let’s plan your first family trip</h1>
-        <p className="mt-3 max-w-xl text-muted-foreground">
-          Bring everyone’s preferences and practical needs together, then turn them into one plan the family can enjoy.
-        </p>
-        <div className="mt-7 flex w-full max-w-sm flex-col gap-3 sm:flex-row sm:max-w-none sm:justify-center">
-          <LinkButton to="/create">
-            Create your first trip <ArrowRight className="size-5" aria-hidden />
-          </LinkButton>
-          <LinkButton to="/join" variant="outline">Join a trip</LinkButton>
+      <section className="kin-rise mx-auto max-w-5xl overflow-hidden rounded-3xl bg-card shadow-lift sm:grid sm:grid-cols-[1.05fr_.95fr]">
+        <div className="relative min-h-[310px] sm:min-h-[560px]">
+          <img src={familyCoast} alt="A multigenerational family overlooking the coast" width={1200} height={900} className="absolute inset-0 size-full object-cover" />
+          <div className="absolute inset-0 bg-linear-to-t from-foreground/85 via-foreground/10 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-6 text-card sm:p-8">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-card/30 bg-card/15 px-3 py-1.5 text-xs font-bold backdrop-blur-md">
+              <PlaneTakeoff className="size-4" aria-hidden /> Plan together
+            </span>
+            <p className="text-sm font-bold text-card/85">Many generations. One journey. Shared memories.</p>
+            <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h1>
+          </div>
         </div>
-        <p className="mt-6 text-sm text-muted-foreground">No account needed to get started.</p>
-        <div className="mt-8 w-full max-w-xl">
-          <Card className="text-left">
-            <h2 className="text-lg">Just exploring?</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Open the demo trip — a family of seven in Japan — to step through voting, the suggested plan,
-              re-planning a day and offline viewing. You can remove it anytime.
-            </p>
-            <div className="mt-4">
-              <Button type="button" variant="secondary" onClick={() => startDemoTrip()}>
-                <Sparkles className="size-5" aria-hidden /> Try the demo trip
-              </Button>
-            </div>
-          </Card>
+        <div className="flex flex-col justify-center p-6 sm:p-10">
+          <p className="text-base leading-7 text-muted-foreground">Bring everyone’s needs and favourite experiences into one practical plan.</p>
+          <div className="mt-6 grid gap-3">
+            <LinkButton to="/create" className="w-full">Create your first trip <ArrowRight className="size-5" aria-hidden /></LinkButton>
+            <LinkButton to="/join" variant="outline" className="w-full">Join a family trip</LinkButton>
+          </div>
+          <p className="mt-4 text-center text-xs font-semibold text-muted-foreground">No account needed</p>
+          <div className="mt-7 border-t border-border pt-6">
+            <h2 className="text-lg">Explore with a ready-made trip</h2>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">Meet a family of seven in Japan and try voting, planning, and re-planning.</p>
+            <Button type="button" variant="secondary" className="mt-4 w-full" onClick={() => startDemoTrip()}>
+              <Sparkles className="size-5" aria-hidden /> Try the Japan demo
+            </Button>
+          </div>
         </div>
       </section>
     </AppShell>
@@ -115,19 +114,34 @@ function ActiveTrip() {
       { label: "Review together", done: false, to: "/consensus", hint: "Consensus & considerations" },
     ];
     return (
-      <AppShell title={trip.title} subtitle={`${trip.destination} · ${formatDate(trip.startDate)} – ${formatDate(trip.endDate)}`}>
-        <DemoBanner />
-        <Card className="bg-primary-soft">
-          <h2 className="text-lg">Your family is nearly ready to plan</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {withPrefs} of {trip.travellerCount} travellers have shared what matters to them.
-          </p>
-          <div className="mt-4">
-            <LinkButton to="/consensus">
-              See where everyone stands <ArrowRight className="size-5" />
-            </LinkButton>
+      <AppShell>
+        <section className="kin-rise relative -mx-4 -mt-5 min-h-[280px] overflow-hidden sm:mx-0 sm:mt-0 sm:min-h-[340px] sm:rounded-3xl">
+          <img src={tokyoHero} alt="Tokyo skyline at dusk" width={1200} height={900} className="absolute inset-0 size-full object-cover" />
+          <div className="absolute inset-0 bg-linear-to-t from-foreground/90 via-foreground/25 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-5 text-card sm:p-8">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <Chip tone="sunny">Demo journey</Chip>
+              <span className="text-xs font-semibold text-card/85">{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span>
+            </div>
+            <h1 className="text-3xl leading-tight sm:text-4xl">{trip.title}</h1>
+            <p className="mt-1 text-sm font-semibold text-card/80">{trip.destination} · {joined} travellers</p>
           </div>
-        </Card>
+        </section>
+        <DemoBanner />
+        <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+          <Card className="bg-primary-soft p-5 sm:p-6">
+            <Chip tone="primary">Next step</Chip>
+            <h2 className="mt-3 text-2xl">Turn everyone’s choices into one plan</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Everyone has shared their preferences and votes. See the family picture before building the itinerary.</p>
+            <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review family choices <ArrowRight className="size-5" /></LinkButton>
+          </Card>
+          <Card className="p-5">
+            <p className="text-sm font-bold text-secondary">Planning progress</p>
+            <p className="mt-1 text-3xl font-extrabold">3 of 4</p>
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full w-3/4 rounded-full bg-primary" /></div>
+            <p className="mt-3 text-sm text-muted-foreground">One quick review, then your family itinerary is ready.</p>
+          </Card>
+        </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           {steps.map((s) => (
@@ -136,7 +150,7 @@ function ActiveTrip() {
                 className={s.done ? "size-6 text-primary" : "size-6 text-muted-foreground"}
                 aria-hidden
               />
-              <span className="flex-1">
+              <span className="min-w-0 flex-1">
                 <span className="block font-semibold">{s.label}</span>
                 <span className="block text-sm text-muted-foreground">{s.hint}</span>
               </span>

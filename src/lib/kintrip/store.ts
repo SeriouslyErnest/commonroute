@@ -16,6 +16,7 @@ function initialMulti(): MultiTripState {
 }
 
 let multi: MultiTripState = initialMulti();
+const fallbackTrip = createSeedState();
 let hydrated = false;
 const listeners = new Set<() => void>();
 
@@ -190,7 +191,10 @@ function subscribe(cb: () => void) {
   return () => listeners.delete(cb);
 }
 
-const getActiveSnapshot = () => multi.trips[multi.activeTripId]!;
+const getActiveSnapshot = (): KintripState => {
+  hydrate();
+  return multi.trips[multi.activeTripId] ?? fallbackTrip;
+};
 const getMultiSnapshot = () => multi;
 
 /** The active trip's full state. */
@@ -198,7 +202,7 @@ export function useKintrip() {
   useEffect(() => {
     hydrate();
   }, []);
-  return useSyncExternalStore(subscribe, getActiveSnapshot, getActiveSnapshot);
+  return useSyncExternalStore(subscribe, getActiveSnapshot, () => fallbackTrip);
 }
 
 export interface TripSummary {
