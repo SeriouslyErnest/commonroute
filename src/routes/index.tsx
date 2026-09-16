@@ -68,10 +68,12 @@ function DemoBanner() {
 
 function ActiveTrip() {
   const state = useKintrip();
+  const { demoActive } = useTripSetupStatus();
   const { trip, itinerary } = state;
   const joined = state.travellers.filter((t) => t.joined).length;
   const withPrefs = state.travellers.filter((t) => t.prefStatus === "complete").length;
   const voted = Object.values(state.votes).filter((v) => Object.keys(v).length > 0).length;
+
 
   if (!itinerary) {
     const steps = [
