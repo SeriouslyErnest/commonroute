@@ -23,14 +23,13 @@ export const Route = createFileRoute("/create")({
 });
 
 function CreateTrip() {
-  const state = useKintrip();
   const navigate = useNavigate();
 
   return (
     <AppShell
       title="Where's your next family adventure?"
       subtitle="Turn travel plans into shared memories."
-      back={{ to: "/", label: "Back to trip" }}
+      back={{ to: "/trips", label: "My trips" }}
     >
       <Card>
         <form
@@ -38,30 +37,25 @@ function CreateTrip() {
           onSubmit={(e) => {
             e.preventDefault();
             const f = new FormData(e.currentTarget);
-            setState((prev) => ({
-              ...prev,
-              trip: {
-                ...prev.trip,
-                title: String(f.get("title") || "Our family trip"),
-                destination: String(f.get("destination")),
-                startDate: String(f.get("start")),
-                endDate: String(f.get("end")),
-                travellerCount: Number(f.get("count")),
-              },
-              itinerary: null,
-            }));
+            createNewTrip({
+              title: String(f.get("title") || ""),
+              destination: String(f.get("destination")),
+              startDate: String(f.get("start")),
+              endDate: String(f.get("end")),
+              travellerCount: Number(f.get("count")),
+            });
             void navigate({ to: "/invite" });
           }}
         >
           <Field label="Destination">
-            <input name="destination" defaultValue={state.trip.destination} className={inputClass} required />
+            <input name="destination" placeholder="e.g. Tokyo + Kyoto, Japan" className={inputClass} required />
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Start date">
-              <input type="date" name="start" defaultValue={state.trip.startDate} className={inputClass} required />
+              <input type="date" name="start" className={inputClass} required />
             </Field>
             <Field label="End date">
-              <input type="date" name="end" defaultValue={state.trip.endDate} className={inputClass} required />
+              <input type="date" name="end" className={inputClass} required />
             </Field>
           </div>
           <Field label="Number of travellers">
@@ -70,13 +64,13 @@ function CreateTrip() {
               min={1}
               max={20}
               name="count"
-              defaultValue={state.trip.travellerCount}
+              placeholder="e.g. 7"
               className={inputClass}
               required
             />
           </Field>
           <Field label="Trip name (optional)">
-            <input name="title" defaultValue={state.trip.title} className={inputClass} />
+            <input name="title" placeholder="e.g. Tan Family Japan 2027" className={inputClass} />
           </Field>
           <Button type="submit" className="w-full">
             Create trip <ArrowRight className="size-5" aria-hidden />

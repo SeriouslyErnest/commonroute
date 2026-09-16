@@ -37,7 +37,7 @@ function MyTrips() {
         {trips.map((t) => (
           <Card
             key={t.id}
-            className={t.active ? "border-primary/50" : undefined}
+            className={t.active ? "border-primary/50" : ""}
           >
             <div className="flex items-start justify-between gap-3">
               <button

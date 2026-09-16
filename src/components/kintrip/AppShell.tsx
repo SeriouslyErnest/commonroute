@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { CalendarRange, Compass, Map, Users, WifiOff } from "lucide-react";
+import { CalendarRange, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/kintrip-logo.png.asset.json";
 import { useKintrip, useOnline } from "@/lib/kintrip/store";
