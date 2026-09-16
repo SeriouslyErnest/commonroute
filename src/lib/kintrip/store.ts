@@ -100,9 +100,23 @@ export interface NewTripInput {
 /** Create a brand-new trip and make it active. Returns the new trip id. */
 export function createNewTrip(input: NewTripInput): string {
   const state = createEmptyTripState(input);
+  let existingTrips = multi.trips;
+  if (multi.setupTestActive && typeof window !== "undefined") {
+    try {
+      const raw = window.localStorage.getItem(SETUP_BACKUP_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as MultiTripState;
+        existingTrips = saved.trips ?? existingTrips;
+        window.localStorage.removeItem(SETUP_BACKUP_KEY);
+      }
+    } catch {
+      /* keep the new trip when a test backup cannot be read */
+    }
+  }
   multi = {
     activeTripId: state.trip.id,
-    trips: { ...multi.trips, [state.trip.id]: state },
+    trips: { ...existingTrips, [state.trip.id]: state },
+    setupTestActive: false,
   };
   touchActive();
   persist();

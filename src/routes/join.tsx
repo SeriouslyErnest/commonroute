@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/kintrip/AppShell";
-import { Button, Card, Field, inputClass } from "@/components/kintrip/ui";
-import { setState, useKintrip } from "@/lib/kintrip/store";
+import { Button, Card, Field, LinkButton, inputClass } from "@/components/kintrip/ui";
+import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import type { AgeGroup } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/join")({
@@ -23,6 +23,32 @@ export const Route = createFileRoute("/join")({
 });
 
 function JoinTrip() {
+  const { hasTrips } = useTripSetupStatus();
+  if (!hasTrips) return <JoinWithoutInvite />;
+  return <JoinKnownTrip />;
+}
+
+function JoinWithoutInvite() {
+  return (
+    <AppShell
+      title="Join a family trip"
+      subtitle="Your organiser’s invite link connects you to the right trip."
+      back={{ to: "/", label: "Back" }}
+    >
+      <Card className="py-7 text-center">
+        <h2 className="text-xl">Open your Kintrip invite</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Ask the trip organiser to send you their shareable link, then open it on this device. You won’t need an account.
+        </p>
+      </Card>
+      <div className="text-center">
+        <LinkButton to="/create" variant="outline">Create your own trip instead</LinkButton>
+      </div>
+    </AppShell>
+  );
+}
+
+function JoinKnownTrip() {
   const state = useKintrip();
   const navigate = useNavigate();
 
