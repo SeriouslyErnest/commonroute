@@ -14,7 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      kintrip_trips: {
+        Row: {
+          share_code: string
+          state: Json
+          trip_id: string
+          updated_at: string
+        }
+        Insert: {
+          share_code: string
+          state: Json
+          trip_id: string
+          updated_at?: string
+        }
+        Update: {
+          share_code?: string
+          state?: Json
+          trip_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
