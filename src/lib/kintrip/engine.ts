@@ -155,7 +155,7 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
       .filter((c) => c.attraction.city === city)
       .map((c) => c.attraction);
 
-  const orderByArea = (list: Attraction[]) => {
+  const areaGroups = (list: Attraction[]) => {
     const areas = new Map<string, Attraction[]>();
     for (const a of list) {
       if (!areas.has(a.area)) areas.set(a.area, []);
@@ -163,31 +163,30 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
     }
     const groups = [...areas.values()];
     if (variant % 2 === 1) groups.reverse();
-    return groups.flat();
+    return groups;
   };
 
-  const tokyo = orderByArea(pick("Tokyo"));
-  const kyoto = orderByArea(pick("Kyoto"));
-
-  const chunk = (list: Attraction[], count: number) => {
+  // Keep each day inside one area, so travel between stops stays short.
+  const distribute = (groups: Attraction[][], count: number) => {
     const out: Attraction[][] = Array.from({ length: count }, () => []);
-    let i = 0;
-    for (const a of list) {
-      const perDay = out[i % count]!;
-      const heavy = perDay.some((x) => WALK_RANK[x.walking]! >= 2);
-      const cap = heavy ? 2 : 3;
-      if (perDay.length >= cap) {
-        i += 1;
-        if (i >= count * 2) break;
+    const total = groups.reduce((n, g) => n + g.length, 0);
+    const target = Math.max(2, Math.ceil(total / Math.max(1, count)));
+    let d = 0;
+    groups.forEach((group, gi) => {
+      for (const a of group) {
+        const today = out[d]!;
+        const heavy = today.some((x) => WALK_RANK[x.walking]! >= 2);
+        const cap = heavy ? 2 : Math.min(3, target);
+        if (today.length >= cap && d < count - 1) d += 1;
+        out[d]!.push(a);
       }
-      out[i % count]!.push(a);
-      i += 1;
-    }
+      if (gi < groups.length - 1 && out[d]!.length > 0 && d < count - 1) d += 1;
+    });
     return out;
   };
 
-  const tokyoPlan = chunk(tokyo, tokyoDays);
-  const kyotoPlan = chunk(kyoto, kyotoDays);
+  const tokyoPlan = distribute(areaGroups(pick("Tokyo")), tokyoDays);
+  const kyotoPlan = distribute(areaGroups(pick("Kyoto")), kyotoDays);
   const plan = [...tokyoPlan, ...kyotoPlan];
 
   const shortened: string[] = [];
