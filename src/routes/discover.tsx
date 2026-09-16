@@ -106,20 +106,24 @@ function DiscoverTab() {
             aria-label="Search places"
           />
         </div>
-        <select
-          className="min-h-10 rounded-xl bg-muted px-3 text-sm font-semibold"
-          value={state.activeTravellerId}
-          onChange={(e) =>
-            setState((prev) => ({ ...prev, activeTravellerId: e.target.value }))
-          }
-          aria-label="Vote as"
-        >
-          {state.travellers.map((t) => (
-            <option key={t.id} value={t.id}>
-              Vote as {t.name}
-            </option>
-          ))}
-        </select>
+        {demoActive ? (
+          <select
+            className="min-h-10 rounded-xl bg-muted px-3 text-sm font-semibold"
+            value={state.activeTravellerId}
+            onChange={(e) =>
+              setState((prev) => ({ ...prev, activeTravellerId: e.target.value }))
+            }
+            aria-label="Demo: view as"
+          >
+            {state.travellers.map((t) => (
+              <option key={t.id} value={t.id}>
+                Demo: view as {t.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <Chip tone="primary">Your votes only · {me.name}</Chip>
+        )}
       </Card>
 
       {query.trim().length >= 2 ? (
