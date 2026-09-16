@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { CalendarRange, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/kintrip-logo.png.asset.json";
-import { useKintrip, useOnline } from "@/lib/kintrip/store";
+import { useKintrip, useOnline, useTripSetupStatus } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -14,8 +14,13 @@ const tabs = [
 
 export function OfflineBar() {
   const online = useOnline();
+  const { hasTrips } = useTripSetupStatus();
+  if (online || !hasTrips) return null;
+  return <ActiveTripOfflineBar />;
+}
+
+function ActiveTripOfflineBar() {
   const state = useKintrip();
-  if (online) return null;
   return (
     <div className="flex items-start gap-2 rounded-xl bg-sunny-soft px-4 py-3 text-sm text-foreground">
       <WifiOff className="mt-0.5 size-4 shrink-0" aria-hidden />
@@ -44,6 +49,7 @@ export function AppShell({
   back?: { to: string; label: string };
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { hasTrips } = useTripSetupStatus();
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -82,27 +88,29 @@ export function AppShell({
         </div>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card">
-        <ul className="mx-auto flex max-w-5xl">
-          {tabs.map(({ to, label, icon: Icon }) => {
-            const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
-            return (
-              <li key={to} className="flex-1">
-                <Link
-                  to={to}
-                  className={cn(
-                    "flex min-h-16 flex-col items-center justify-center gap-1 py-2 text-xs font-semibold",
-                    active ? "text-primary" : "text-muted-foreground",
-                  )}
-                >
-                  <Icon className="size-6" aria-hidden />
-                  {label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      {hasTrips ? (
+        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card">
+          <ul className="mx-auto flex max-w-5xl">
+            {tabs.map(({ to, label, icon: Icon }) => {
+              const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
+              return (
+                <li key={to} className="flex-1">
+                  <Link
+                    to={to}
+                    className={cn(
+                      "flex min-h-16 flex-col items-center justify-center gap-1 py-2 text-xs font-semibold",
+                      active ? "text-primary" : "text-muted-foreground",
+                    )}
+                  >
+                    <Icon className="size-6" aria-hidden />
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      ) : null}
     </div>
   );
 }
