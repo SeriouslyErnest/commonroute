@@ -169,21 +169,18 @@ export function deleteTrip(tripId: string) {
   const trips = { ...multi.trips };
   delete trips[tripId];
   let activeTripId = multi.activeTripId;
-  if (activeTripId === tripId) {
-    activeTripId = Object.keys(trips)[0] ?? "";
-    if (!activeTripId) {
-      // never leave the app empty — fall back to the sample trip
-      return;
-    }
-  }
-  multi = { activeTripId, trips };
+  if (activeTripId === tripId) activeTripId = Object.keys(trips)[0] ?? "";
+  multi = {
+    activeTripId,
+    trips,
+    demoTripId: multi.demoTripId === tripId ? undefined : multi.demoTripId,
+  };
   persist();
   emit();
 }
 
 export function resetState() {
-  const seed = createSeedState();
-  multi = { activeTripId: seed.trip.id, trips: { [seed.trip.id]: seed } };
+  multi = { activeTripId: "", trips: {} };
   persist();
   emit();
 }
@@ -215,6 +212,7 @@ export interface TripSummary {
   joined: number;
   hasItinerary: boolean;
   active: boolean;
+  isDemo: boolean;
 }
 
 export function useTripSetupStatus() {
