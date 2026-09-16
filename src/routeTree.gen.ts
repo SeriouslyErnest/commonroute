@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConsensusRouteImport } from './routes/consensus'
+import { Route as CreateRouteImport } from './routes/create'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as FamilyRouteImport } from './routes/family'
+import { Route as InviteRouteImport } from './routes/invite'
+import { Route as ItineraryRouteImport } from './routes/itinerary'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as PreferencesRouteImport } from './routes/preferences'
+import { Route as ReplanRouteImport } from './routes/replan'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsensusRoute = ConsensusRouteImport.update({
+  id: '/consensus',
+  path: '/consensus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyRoute = FamilyRouteImport.update({
+  id: '/family',
+  path: '/family',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ItineraryRoute = ItineraryRouteImport.update({
+  id: '/itinerary',
+  path: '/itinerary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreferencesRoute = PreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReplanRoute = ReplanRouteImport.update({
+  id: '/replan',
+  path: '/replan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/consensus': typeof ConsensusRoute
+  '/create': typeof CreateRoute
+  '/discover': typeof DiscoverRoute
+  '/family': typeof FamilyRoute
+  '/invite': typeof InviteRoute
+  '/itinerary': typeof ItineraryRoute
+  '/join': typeof JoinRoute
+  '/preferences': typeof PreferencesRoute
+  '/replan': typeof ReplanRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/consensus': typeof ConsensusRoute
+  '/create': typeof CreateRoute
+  '/discover': typeof DiscoverRoute
+  '/family': typeof FamilyRoute
+  '/invite': typeof InviteRoute
+  '/itinerary': typeof ItineraryRoute
+  '/join': typeof JoinRoute
+  '/preferences': typeof PreferencesRoute
+  '/replan': typeof ReplanRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/consensus': typeof ConsensusRoute
+  '/create': typeof CreateRoute
+  '/discover': typeof DiscoverRoute
+  '/family': typeof FamilyRoute
+  '/invite': typeof InviteRoute
+  '/itinerary': typeof ItineraryRoute
+  '/join': typeof JoinRoute
+  '/preferences': typeof PreferencesRoute
+  '/replan': typeof ReplanRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/consensus'
+    | '/create'
+    | '/discover'
+    | '/family'
+    | '/invite'
+    | '/itinerary'
+    | '/join'
+    | '/preferences'
+    | '/replan'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/consensus'
+    | '/create'
+    | '/discover'
+    | '/family'
+    | '/invite'
+    | '/itinerary'
+    | '/join'
+    | '/preferences'
+    | '/replan'
+  id:
+    | '__root__'
+    | '/'
+    | '/consensus'
+    | '/create'
+    | '/discover'
+    | '/family'
+    | '/invite'
+    | '/itinerary'
+    | '/join'
+    | '/preferences'
+    | '/replan'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConsensusRoute: typeof ConsensusRoute
+  CreateRoute: typeof CreateRoute
+  DiscoverRoute: typeof DiscoverRoute
+  FamilyRoute: typeof FamilyRoute
+  InviteRoute: typeof InviteRoute
+  ItineraryRoute: typeof ItineraryRoute
+  JoinRoute: typeof JoinRoute
+  PreferencesRoute: typeof PreferencesRoute
+  ReplanRoute: typeof ReplanRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consensus': {
+      id: '/consensus'
+      path: '/consensus'
+      fullPath: '/consensus'
+      preLoaderRoute: typeof ConsensusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/family': {
+      id: '/family'
+      path: '/family'
+      fullPath: '/family'
+      preLoaderRoute: typeof FamilyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/itinerary': {
+      id: '/itinerary'
+      path: '/itinerary'
+      fullPath: '/itinerary'
+      preLoaderRoute: typeof ItineraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preferences': {
+      id: '/preferences'
+      path: '/preferences'
+      fullPath: '/preferences'
+      preLoaderRoute: typeof PreferencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/replan': {
+      id: '/replan'
+      path: '/replan'
+      fullPath: '/replan'
+      preLoaderRoute: typeof ReplanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConsensusRoute: ConsensusRoute,
+  CreateRoute: CreateRoute,
+  DiscoverRoute: DiscoverRoute,
+  FamilyRoute: FamilyRoute,
+  InviteRoute: InviteRoute,
+  ItineraryRoute: ItineraryRoute,
+  JoinRoute: JoinRoute,
+  PreferencesRoute: PreferencesRoute,
+  ReplanRoute: ReplanRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
