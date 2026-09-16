@@ -1,8 +1,9 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { CalendarRange, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { ArrowLeft, CalendarRange, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/kintrip-logo.png.asset.json";
-import { useKintrip, useOnline, useTripSetupStatus } from "@/lib/kintrip/store";
+import { Button } from "@/components/kintrip/ui";
+import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -49,11 +50,12 @@ export function AppShell({
   back?: { to: string; label: string };
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { hasTrips } = useTripSetupStatus();
+  const navigate = useNavigate();
+  const { hasTrips, demoActive } = useTripSetupStatus();
 
   return (
     <div className="min-h-screen bg-background pb-40 sm:pb-32">
-      <header className="sticky top-0 z-20 border-b border-border/70 bg-card/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 border-b border-border/70 bg-card">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo.url} alt="Kintrip" className="h-10 w-auto" />
@@ -61,12 +63,26 @@ export function AppShell({
           <p className="hidden text-sm text-muted-foreground sm:block">
             Many generations. One journey. Shared memories.
           </p>
-          <Link
-            to="/trips"
-            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm sm:justify-self-end"
-          >
-            <Layers className="size-4" aria-hidden /> My trips
-          </Link>
+          {demoActive ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11 shrink-0 px-3 text-sm sm:justify-self-end"
+              onClick={() => {
+                exitDemoTrip();
+                void navigate({ to: "/" });
+              }}
+            >
+              <ArrowLeft className="size-4" aria-hidden /> Back to start
+            </Button>
+          ) : (
+            <Link
+              to="/trips"
+              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm sm:justify-self-end"
+            >
+              <Layers className="size-4" aria-hidden /> My trips
+            </Link>
+          )}
         </div>
       </header>
 
@@ -89,7 +105,7 @@ export function AppShell({
       </main>
 
       {hasTrips ? (
-        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-3xl border border-card/10 bg-foreground/95 px-2 shadow-lift backdrop-blur-xl sm:bottom-5">
+        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-3xl border border-card/10 bg-foreground px-2 shadow-lift sm:bottom-5">
           <ul className="mx-auto flex">
             {tabs.map(({ to, label, icon: Icon }) => {
               const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
