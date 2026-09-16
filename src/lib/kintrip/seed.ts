@@ -428,8 +428,8 @@ export function createEmptyTripState(input: {
         },
       },
     ],
-    // sample attraction pool — replaced by live travel data when APIs connect
-    attractions: seedAttractions,
+    // New trips start empty — the family builds the shortlist from Google Maps search.
+    attractions: [],
     votes: {},
     itinerary: null,
     notes: [],
