@@ -91,7 +91,7 @@ function ItineraryTab() {
                     Day {day.day} — {day.areaLabel}
                   </span>
                   <span className="block text-sm text-muted-foreground">
-                    {formatDate(day.date)} · {stops} stops · {heavy ? "higher" : "moderate"} walking
+                    {formatDate(day.date)} · {stops} {stops === 1 ? "stop" : "stops"} · {heavy ? "higher" : "moderate"} walking
                   </span>
                 </span>
                 <span className="text-sm font-semibold text-secondary">{open ? "Hide" : "View"}</span>
