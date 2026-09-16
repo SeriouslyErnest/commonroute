@@ -149,13 +149,10 @@ function DemoBanner() {
   const { demoActive } = useTripSetupStatus();
   if (!demoActive) return null;
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
+    <div className="flex items-center gap-2 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
       <span className="inline-flex items-center gap-2 font-semibold">
         <Sparkles className="size-4" aria-hidden /> Demo trip — sample family and sample places
       </span>
-      <Button type="button" variant="outline" className="shrink-0 px-3" onClick={exitDemoTrip}>
-        ← Back to start
-      </Button>
     </div>
   );
 }
