@@ -229,19 +229,20 @@ function subscribe(cb: () => void) {
   return () => listeners.delete(cb);
 }
 
-const getActiveSnapshot = (): KintripState => {
-  hydrate();
-  return multi.trips[multi.activeTripId] ?? fallbackTrip;
-};
-const getMultiSnapshot = () => multi;
+const getActiveSnapshot = (): KintripState =>
+  ready ? (multi.trips[multi.activeTripId] ?? placeholderTrip) : placeholderTrip;
+const getServerActiveSnapshot = (): KintripState => placeholderTrip;
+const getMultiSnapshot = (): MultiTripState => (ready ? multi : EMPTY_MULTI);
+const getServerMultiSnapshot = (): MultiTripState => EMPTY_MULTI;
 
 /** The active trip's full state. */
 export function useKintrip() {
   useEffect(() => {
     hydrate();
   }, []);
-  return useSyncExternalStore(subscribe, getActiveSnapshot, () => fallbackTrip);
+  return useSyncExternalStore(subscribe, getActiveSnapshot, getServerActiveSnapshot);
 }
+
 
 export interface TripSummary {
   id: string;
