@@ -59,58 +59,57 @@ function touchActive() {
   }
 }
 
+function loadFromStorage() {
+  const raw = window.localStorage.getItem(KEY);
+  if (raw) {
+    const parsed = JSON.parse(raw) as MultiTripState;
+    const activeTrip = parsed?.trips?.[parsed.activeTripId];
+    if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
+      const isLegacyJapanSample =
+        !parsed.demoTripId &&
+        Object.keys(parsed.trips).length === 1 &&
+        activeTrip?.trip?.id === DEMO_TRIP_ID;
+      if (isLegacyJapanSample) {
+        multi = initialMulti();
+        window.localStorage.removeItem(KEY_V1);
+        return;
+      }
+      multi = { ...parsed, demoTripId: parsed.demoTripId };
+      return;
+    }
+  }
+  // migrate the original single-trip cache
+  const rawV1 = window.localStorage.getItem(KEY_V1);
+  if (rawV1) {
+    const parsed = JSON.parse(rawV1) as KintripState;
+    if (parsed?.trip?.id === DEMO_TRIP_ID) {
+      window.localStorage.removeItem(KEY_V1);
+      multi = initialMulti();
+      return;
+    }
+    if (parsed?.trip?.id) {
+      multi = {
+        activeTripId: parsed.trip.id,
+        trips: { [parsed.trip.id]: { ...createSeedState(), ...parsed } },
+      };
+    }
+  }
+}
+
 export function hydrate() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as MultiTripState;
-      const activeTrip = parsed?.trips?.[parsed.activeTripId];
-      if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
-        const isLegacyJapanSample =
-          !parsed.demoTripId &&
-          Object.keys(parsed.trips).length === 1 &&
-          activeTrip?.trip?.id === DEMO_TRIP_ID;
-        if (isLegacyJapanSample) {
-          multi = initialMulti();
-          window.localStorage.removeItem(KEY_V1);
-          persist();
-          emit();
-          return;
-        }
-        multi = { ...parsed, demoTripId: parsed.demoTripId };
-        emit();
-        return;
-      }
-    }
-    // migrate the original single-trip cache
-    const rawV1 = window.localStorage.getItem(KEY_V1);
-    if (rawV1) {
-      const parsed = JSON.parse(rawV1) as KintripState;
-      if (parsed?.trip?.id === DEMO_TRIP_ID) {
-        window.localStorage.removeItem(KEY_V1);
-        multi = initialMulti();
-        persist();
-        emit();
-        return;
-      }
-      if (parsed?.trip?.id) {
-        multi = {
-          activeTripId: parsed.trip.id,
-          trips: { [parsed.trip.id]: { ...createSeedState(), ...parsed } },
-        };
-        persist();
-        emit();
-        return;
-      }
-    }
+    loadFromStorage();
   } catch {
     /* ignore corrupt cache and show the start screen */
+    multi = initialMulti();
   }
+  ready = true;
   persist();
   emit();
 }
+
 
 /** Update the currently active trip. */
 export function setState(updater: (prev: KintripState) => KintripState) {
