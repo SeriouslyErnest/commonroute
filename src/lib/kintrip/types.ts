@@ -27,7 +27,7 @@ export interface Traveller {
 export interface Attraction {
   id: string;
   name: string;
-  city: "Tokyo" | "Kyoto";
+  city: string;
   area: string;
   category: string;
   description: string;
@@ -58,7 +58,7 @@ export interface ItineraryItem {
 export interface ItineraryDay {
   day: number;
   date: string;
-  city: "Tokyo" | "Kyoto";
+  city: string;
   areaLabel: string;
   items: ItineraryItem[];
   note?: undefined | string;
