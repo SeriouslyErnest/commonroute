@@ -249,6 +249,9 @@ function ActiveTrip() {
         <LinkButton to="/replan" variant="secondary">
           Re-plan my day
         </LinkButton>
+        <LinkButton to="/create" variant="ghost">
+          <Plus className="size-5" aria-hidden /> Plan another trip
+        </LinkButton>
       </div>
 
       <Notes />
