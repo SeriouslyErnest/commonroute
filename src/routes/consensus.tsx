@@ -113,8 +113,9 @@ function Section({
       <h2 className="flex items-center gap-2 text-xl">
         {icon} {title}
       </h2>
-      {rows.map((r) => (
-        <Card key={r.attraction.id} className="space-y-2">
+      <div className="grid gap-3 lg:grid-cols-2">
+        {rows.map((r) => (
+        <Card key={r.attraction.id} className="space-y-2 lg:flex lg:flex-col">
           <div className="flex items-start justify-between gap-2">
             <div>
               <h3 className="text-lg font-bold">{r.attraction.name}</h3>
@@ -127,7 +128,7 @@ function Section({
           <p className="text-sm">{r.note}</p>
            <button
              type="button"
-             className="text-sm font-bold text-secondary"
+             className="w-fit text-sm font-bold text-secondary"
              aria-expanded={expanded[r.attraction.id] ?? false}
              onClick={() => setExpanded((current) => ({ ...current, [r.attraction.id]: !current[r.attraction.id] }))}
            >
@@ -140,7 +141,7 @@ function Section({
                  if (!v) return null;
                  return (
                    <span key={t.id} className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
-                     {t.name.split(" (")[0]}: {VOTE_LABEL[v]}
+                     {t.name.split(",")[0]}: {VOTE_LABEL[v]}
                    </span>
                  );
                })}
@@ -154,7 +155,8 @@ function Section({
             </div>
           ) : null}
         </Card>
-      ))}
+        ))}
+      </div>
     </section>
   );
 }

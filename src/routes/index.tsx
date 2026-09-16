@@ -117,7 +117,8 @@ function ActiveTrip() {
       <AppShell>
         <section className="kin-rise relative -mx-4 -mt-5 min-h-[280px] overflow-hidden sm:mx-0 sm:mt-0 sm:min-h-[340px] sm:rounded-3xl">
           <img src={tokyoHero} alt="Tokyo skyline at dusk" width={1200} height={900} className="absolute inset-0 size-full object-cover" />
-          <div className="absolute inset-0 bg-linear-to-t from-foreground via-foreground/50 to-foreground/10" />
+          <div className="absolute inset-0 bg-foreground/45" />
+          <div className="absolute inset-0 bg-linear-to-t from-foreground/90 via-transparent to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 text-card sm:p-8">
             <div className="mb-3 flex flex-wrap items-center gap-2">
               <Chip tone="sunny">Demo journey</Chip>
