@@ -107,6 +107,7 @@ export function AppShell({
       <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
         <div className="space-y-4">
           <OfflineBar />
+          <SyncBadge />
           {back ? (
             <Link to={back.to} className="inline-flex text-sm font-semibold text-secondary">
               ← {back.label}
