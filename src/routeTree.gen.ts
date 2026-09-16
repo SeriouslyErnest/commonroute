@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConsensusRouteImport } from './routes/consensus'
+import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as FamilyRouteImport } from './routes/family'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
+import { Route as JoinRouteImport } from './routes/join'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const ConsensusRoute = ConsensusRouteImport.update({
   id: '/consensus',
   path: '/consensus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -35,48 +43,95 @@ const FamilyRoute = FamilyRouteImport.update({
   path: '/family',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ItineraryRoute = ItineraryRouteImport.update({
   id: '/itinerary',
   path: '/itinerary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/consensus': typeof ConsensusRoute
+  '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
   '/family': typeof FamilyRoute
+  '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
+  '/join': typeof JoinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/consensus': typeof ConsensusRoute
+  '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
   '/family': typeof FamilyRoute
+  '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
+  '/join': typeof JoinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/consensus': typeof ConsensusRoute
+  '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
   '/family': typeof FamilyRoute
+  '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
+  '/join': typeof JoinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/consensus' | '/discover' | '/family' | '/itinerary'
+  fullPaths:
+    | '/'
+    | '/consensus'
+    | '/create'
+    | '/discover'
+    | '/family'
+    | '/invite'
+    | '/itinerary'
+    | '/join'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/consensus' | '/discover' | '/family' | '/itinerary'
-  id: '__root__' | '/' | '/consensus' | '/discover' | '/family' | '/itinerary'
+  to:
+    | '/'
+    | '/consensus'
+    | '/create'
+    | '/discover'
+    | '/family'
+    | '/invite'
+    | '/itinerary'
+    | '/join'
+  id:
+    | '__root__'
+    | '/'
+    | '/consensus'
+    | '/create'
+    | '/discover'
+    | '/family'
+    | '/invite'
+    | '/itinerary'
+    | '/join'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConsensusRoute: typeof ConsensusRoute
+  CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
   FamilyRoute: typeof FamilyRoute
+  InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
+  JoinRoute: typeof JoinRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,6 +150,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsensusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -109,11 +171,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FamilyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/itinerary': {
       id: '/itinerary'
       path: '/itinerary'
       fullPath: '/itinerary'
       preLoaderRoute: typeof ItineraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -122,9 +198,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConsensusRoute: ConsensusRoute,
+  CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,
   FamilyRoute: FamilyRoute,
+  InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
+  JoinRoute: JoinRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
