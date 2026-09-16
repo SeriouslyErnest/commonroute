@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
-import familyCoast from "@/assets/kintrip-family-coast.jpg";
+import santoriniStart from "@/assets/kintrip-santorini-start.jpg";
 import logo from "@/assets/kintrip-logo.png.asset.json";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
@@ -54,20 +54,20 @@ function NoTrips() {
   const navigate = useNavigate();
 
   return (
-    <main className="min-h-screen bg-background px-4 py-5 sm:px-6 sm:py-8">
-      <section className="kin-rise mx-auto max-w-md overflow-hidden rounded-3xl bg-card shadow-lift">
-        <div className="px-5 pt-7 text-center sm:px-8 sm:pt-9">
-          <img src={logo.url} alt="Kintrip" className="mx-auto h-14 w-auto sm:h-16" />
+    <main className="min-h-screen bg-background sm:px-6 sm:py-8">
+      <section className="kin-rise mx-auto min-h-screen max-w-md overflow-hidden bg-card sm:min-h-0 sm:rounded-3xl sm:shadow-lift">
+        <div className="px-6 pt-8 text-center sm:px-9 sm:pt-9">
+          <img src={logo.url} alt="Kintrip" className="mx-auto h-16 w-auto" />
           <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h1>
-          <p className="mt-2 text-sm font-semibold text-muted-foreground sm:text-base">Turn travel dreams into shared memories.</p>
+          <p className="mt-2 text-base font-semibold text-muted-foreground">Turn travel dreams into shared memories.</p>
         </div>
 
-        <div className="relative mt-5 h-44 overflow-hidden sm:h-52">
-          <img src={familyCoast} alt="A multigenerational family enjoying a coastal destination" width={1200} height={900} className="size-full object-cover object-center" />
-          <div className="absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-card to-transparent" />
+        <div className="relative mt-5 h-48 overflow-hidden sm:h-52">
+          <img src={santoriniStart} alt="Whitewashed Santorini overlooking the Aegean Sea" width={1536} height={768} className="size-full object-cover object-center" />
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-card to-transparent" />
         </div>
 
-        <div className="-mt-2 px-5 pb-7 sm:px-8 sm:pb-9">
+        <div className="-mt-1 px-6 pb-8 sm:px-9 sm:pb-9">
           <form
             className="space-y-4"
             onSubmit={(event) => {
@@ -122,7 +122,7 @@ function NoTrips() {
             </label>
 
             <Button type="submit" className="w-full rounded-full text-lg">
-              Create my trip <ArrowRight className="size-6" aria-hidden />
+              Create My Trip <ArrowRight className="size-6" aria-hidden />
             </Button>
           </form>
 
@@ -130,9 +130,9 @@ function NoTrips() {
             Have an invite? <Link to="/join" className="font-bold text-secondary">Join a trip</Link>
           </p>
 
-          <div className="mt-5 border-t border-border pt-5 text-center">
+          <div className="mt-5 border-t border-border pt-4 text-center">
             <Button type="button" variant="ghost" className="mx-auto min-h-11 text-sm" onClick={() => startDemoTrip()}>
-              <Sparkles className="size-4" aria-hidden /> Explore the Japan demo
+              <Sparkles className="size-4" aria-hidden /> Explore Japan in Demo mode
             </Button>
           </div>
 

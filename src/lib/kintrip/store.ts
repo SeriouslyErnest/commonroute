@@ -4,6 +4,7 @@ import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
 const KEY = "kintrip.state.v2";
+const START_SCREEN_MIGRATION = "kintrip.start-screen.v1";
 
 interface MultiTripState {
   activeTripId: string;
@@ -49,6 +50,18 @@ export function hydrate() {
       const parsed = JSON.parse(raw) as MultiTripState;
       const activeTrip = parsed?.trips?.[parsed.activeTripId];
       if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
+        const isLegacyJapanSample =
+          !parsed.demoTripId &&
+          Object.keys(parsed.trips).length === 1 &&
+          activeTrip?.trip?.id === "tan-japan-2027" &&
+          !window.localStorage.getItem(START_SCREEN_MIGRATION);
+        if (isLegacyJapanSample) {
+          multi = initialMulti();
+          window.localStorage.setItem(START_SCREEN_MIGRATION, "done");
+          persist();
+          emit();
+          return;
+        }
         multi = { ...parsed, demoTripId: parsed.demoTripId };
         emit();
         return;
@@ -112,6 +125,7 @@ export function createNewTrip(input: NewTripInput): string {
 
 /** Load the guided demo trip (Tan Family Japan) and make it active. */
 export function startDemoTrip(): string {
+  if (typeof window !== "undefined") window.localStorage.setItem(START_SCREEN_MIGRATION, "done");
   const existingId = multi.demoTripId;
   if (existingId && multi.trips[existingId]) {
     multi = { ...multi, activeTripId: existingId };
