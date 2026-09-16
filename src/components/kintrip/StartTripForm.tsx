@@ -127,7 +127,12 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
           <Link to="/join" className="font-bold text-secondary">
             Join a trip
           </Link>
+          {" · "}
+          <Link to="/welcome" className="font-bold text-secondary">
+            Why Kintrip?
+          </Link>
         </p>
+
 
         {!hasDemo ? (
           <div className="mt-5 border-t border-border pt-4 text-center">
