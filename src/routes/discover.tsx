@@ -34,8 +34,52 @@ function DiscoverTab() {
   const [query, setQuery] = useState("");
   const [city, setCity] = useState<"All" | "Tokyo" | "Kyoto">("All");
   const [visibleCount, setVisibleCount] = useState(6);
+  const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
+  const [searching, setSearching] = useState(false);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
+
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) {
+      setGoogleResults([]);
+      setSearching(false);
+      return;
+    }
+    setSearching(true);
+    const timer = setTimeout(() => {
+      searchPlaces({ data: { query: q, destination: state.trip.destination } })
+        .then((results) => setGoogleResults(results))
+        .catch(() => setGoogleResults([]))
+        .finally(() => setSearching(false));
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [query, state.trip.destination]);
+
   if (!me) return null;
+
+  const addPlace = (p: PlaceResult) => {
+    const id = `gp-${p.placeId}`;
+    const attraction: Attraction = {
+      id,
+      name: p.name,
+      city: /kyoto/i.test(p.address) ? "Kyoto" : "Tokyo",
+      area: p.address.split(",")[1]?.trim() || p.address,
+      category: "From Google Maps",
+      description: p.address,
+      durationMin: 120,
+      walking: "moderate",
+      cost: "$",
+      indoor: false,
+      opens: "09:00",
+      closes: "18:00",
+      sourceUrl: p.mapsUrl,
+    };
+    setState((prev) =>
+      prev.attractions.some((a) => a.id === id)
+        ? prev
+        : { ...prev, attractions: [...prev.attractions, attraction] },
+    );
+  };
 
   const list = state.attractions.filter(
     (a) =>
@@ -88,6 +132,67 @@ function DiscoverTab() {
           </select>
         </div>
       </Card>
+
+      {query.trim().length >= 2 ? (
+        <Card className="space-y-2">
+          <h2 className="flex items-center gap-2 text-lg">
+            {searching ? (
+              <Loader2 className="size-5 animate-spin text-secondary" aria-hidden />
+            ) : (
+              <MapPin className="size-5 text-secondary" aria-hidden />
+            )}
+            Found on Google Maps
+          </h2>
+          {!searching && googleResults.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No places found for “{query.trim()}” in {state.trip.destination}. Try a different name.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {googleResults.map((p) => {
+                const added = state.attractions.some((a) => a.id === `gp-${p.placeId}`);
+                return (
+                  <li
+                    key={p.placeId}
+                    className="flex flex-wrap items-center gap-2 rounded-xl bg-muted px-3 py-2"
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-semibold">{p.name}</span>
+                      <span className="block truncate text-sm text-muted-foreground">
+                        {p.address}
+                      </span>
+                    </span>
+                    <a
+                      href={p.mapsUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex min-h-10 items-center gap-1 rounded-full bg-card px-3 text-sm font-semibold text-secondary"
+                    >
+                      <MapPin className="size-4" aria-hidden /> View
+                    </a>
+                    <Button
+                      variant={added ? "outline" : "primary"}
+                      disabled={added}
+                      onClick={() => addPlace(p)}
+                      className="min-h-10 px-3 text-sm"
+                    >
+                      {added ? (
+                        <>
+                          <Check className="size-4" aria-hidden /> Added
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="size-4" aria-hidden /> Add to shortlist
+                        </>
+                      )}
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Card>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2">
         {list.slice(0, visibleCount).map((a) => {
