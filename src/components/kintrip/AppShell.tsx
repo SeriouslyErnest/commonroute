@@ -15,7 +15,7 @@ const tabs = [
 
 export function OfflineBar() {
   const online = useOnline();
-  const { hasTrips, demoActive } = useTripSetupStatus();
+  const { hasTrips } = useTripSetupStatus();
   if (online || !hasTrips) return null;
   return <ActiveTripOfflineBar />;
 }
@@ -50,7 +50,7 @@ export function AppShell({
   back?: { to: string; label: string };
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { hasTrips } = useTripSetupStatus();
+  const { hasTrips, demoActive } = useTripSetupStatus();
 
   return (
     <div className="min-h-screen bg-background pb-40 sm:pb-32">
