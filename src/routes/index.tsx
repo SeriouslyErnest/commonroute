@@ -153,8 +153,8 @@ function DemoBanner() {
       <span className="inline-flex items-center gap-2 font-semibold">
         <Sparkles className="size-4" aria-hidden /> Demo trip — sample family and sample places
       </span>
-      <Button type="button" variant="ghost" className="shrink-0 px-3" onClick={exitDemoTrip}>
-        Exit demo
+      <Button type="button" variant="outline" className="shrink-0 px-3" onClick={exitDemoTrip}>
+        ← Back to start
       </Button>
     </div>
   );
