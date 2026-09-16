@@ -186,7 +186,7 @@ function WelcomePage() {
 
       <section id="how" className="mx-auto max-w-5xl px-4 pt-16">
         <h2 className="text-2xl sm:text-3xl">From scattered wishes to one workable plan</h2>
-        <div className="mt-8 space-y-10">
+        <div className="mt-8 space-y-4 sm:space-y-2">
           {STEPS.map((s, i) => (
             <div
               key={s.title}
@@ -206,7 +206,7 @@ function WelcomePage() {
                   loading="lazy"
                   width={747}
                   height={1600}
-                  className="h-[420px] w-auto rounded-3xl border border-border object-cover object-top shadow-lg"
+                  className="h-[340px] w-auto rounded-3xl border border-border object-cover object-top shadow-lg"
                 />
               </figure>
             </div>
