@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Field, inputClass } from "@/components/kintrip/ui";
 import { setState, useKintrip } from "@/lib/kintrip/store";
-import type { Pace, Walking } from "@/lib/kintrip/types";
+import type { Pace, Traveller, Walking } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/preferences")({
@@ -58,6 +58,7 @@ function PreferencesPage() {
 }
 
 function PreferencesForm({ me }: { me: Traveller }) {
+  const state = useKintrip();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState(me.preferences);
