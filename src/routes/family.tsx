@@ -28,7 +28,7 @@ function FamilyTab() {
   const limit = familyWalkingLimit(state);
 
   return (
-    <AppShell title="Your family" subtitle={`${state.travellers.length} travellers on this trip`}>
+    <AppShell title="Your family" subtitle={`${state.travellers.length} ${state.travellers.length === 1 ? "traveller" : "travellers"} on this trip`}>
       <Card className="bg-secondary-soft">
         <h2 className="flex items-center gap-2 text-lg">
           <ShieldCheck className="size-5 text-secondary" aria-hidden /> What the plan respects

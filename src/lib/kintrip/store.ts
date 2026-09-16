@@ -261,7 +261,7 @@ export function useTripSetupStatus() {
   useEffect(() => {
     hydrate();
   }, []);
-  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
+  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getServerMultiSnapshot);
   return {
     hasTrips: Object.keys(m.trips).length > 0,
     demoActive: !!m.demoTripId && m.demoTripId === m.activeTripId,
@@ -274,7 +274,7 @@ export function useTripList(): TripSummary[] {
   useEffect(() => {
     hydrate();
   }, []);
-  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
+  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getServerMultiSnapshot);
   return Object.values(m.trips).map((s) => ({
     id: s.trip.id,
     title: s.trip.title,
