@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { createEmptyTripState, createSeedState } from "./seed";
+import { pullTrip, pushTrip } from "./sync.functions";
 import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
