@@ -7,6 +7,7 @@ import {
   Navigation,
   PlaneTakeoff,
   RefreshCw,
+  Sparkles,
   StickyNote,
   Train,
 } from "lucide-react";
