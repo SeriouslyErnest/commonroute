@@ -109,7 +109,7 @@ function DiscoverTab() {
         </div>
         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:flex">
           <div className="flex gap-1 rounded-xl bg-muted p-1">
-          {(["All", "Tokyo", "Kyoto"] as const).map((c) => (
+          {["All", ...new Set(state.attractions.map((a) => a.city))].map((c) => (
             <button
               key={c}
               onClick={() => setCity(c)}
