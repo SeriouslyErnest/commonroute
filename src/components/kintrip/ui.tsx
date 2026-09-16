@@ -3,12 +3,12 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const base =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 text-base font-semibold transition-colors disabled:opacity-60";
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 text-base font-bold shadow-sm transition-[transform,background-color,box-shadow] active:scale-[0.98] disabled:opacity-60";
 
 const variants = {
-  primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-  outline: "border border-border bg-card text-foreground hover:bg-muted",
+  primary: "bg-primary text-primary-foreground shadow-primary/20 hover:bg-primary/90 hover:shadow-md",
+  secondary: "bg-secondary text-secondary-foreground shadow-secondary/20 hover:bg-secondary/90 hover:shadow-md",
+  outline: "border border-border bg-card text-foreground hover:border-primary/40 hover:bg-muted",
   ghost: "text-secondary hover:bg-secondary-soft",
 } as const;
 

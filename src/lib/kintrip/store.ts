@@ -190,7 +190,10 @@ function subscribe(cb: () => void) {
   return () => listeners.delete(cb);
 }
 
-const getActiveSnapshot = () => multi.trips[multi.activeTripId]!;
+const getActiveSnapshot = () => {
+  hydrate();
+  return multi.trips[multi.activeTripId];
+};
 const getMultiSnapshot = () => multi;
 
 /** The active trip's full state. */
@@ -198,7 +201,7 @@ export function useKintrip() {
   useEffect(() => {
     hydrate();
   }, []);
-  return useSyncExternalStore(subscribe, getActiveSnapshot, getActiveSnapshot);
+  return useSyncExternalStore(subscribe, getActiveSnapshot, () => multi.trips[multi.activeTripId]);
 }
 
 export interface TripSummary {

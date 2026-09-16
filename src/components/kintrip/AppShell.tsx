@@ -52,25 +52,25 @@ export function AppShell({
   const { hasTrips } = useTripSetupStatus();
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <header className="sticky top-0 z-20 border-b border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+    <div className="min-h-screen bg-background pb-28">
+      <header className="sticky top-0 z-20 border-b border-border/70 bg-card/90 backdrop-blur-xl">
+        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo.url} alt="Kintrip" className="h-9 w-auto" />
+            <img src={logo.url} alt="Kintrip" className="h-10 w-auto" />
           </Link>
           <p className="hidden text-sm text-muted-foreground sm:block">
             Many generations. One journey. Shared memories.
           </p>
           <Link
             to="/trips"
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border px-4 text-sm font-semibold text-secondary"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm"
           >
             <Layers className="size-4" aria-hidden /> My trips
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-4 py-5">
+      <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
         <div className="space-y-4">
           <OfflineBar />
           {back ? (
@@ -89,8 +89,8 @@ export function AppShell({
       </main>
 
       {hasTrips ? (
-        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card">
-          <ul className="mx-auto flex max-w-5xl">
+        <nav className="fixed inset-x-3 bottom-3 z-30 mx-auto max-w-md rounded-3xl border border-card/10 bg-foreground/95 px-2 shadow-lift backdrop-blur-xl sm:bottom-5">
+          <ul className="mx-auto flex">
             {tabs.map(({ to, label, icon: Icon }) => {
               const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
               return (
@@ -98,8 +98,8 @@ export function AppShell({
                   <Link
                     to={to}
                     className={cn(
-                      "flex min-h-16 flex-col items-center justify-center gap-1 py-2 text-xs font-semibold",
-                      active ? "text-primary" : "text-muted-foreground",
+                      "flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[11px] font-bold transition-colors",
+                      active ? "bg-card/10 text-primary" : "text-card/65 hover:text-card",
                     )}
                   >
                     <Icon className="size-6" aria-hidden />
