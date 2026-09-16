@@ -449,6 +449,9 @@ export function replanDay(
     clock += item.durationMin;
   });
 
+  if (rain && dropped.length === 0) {
+    changes.push("Your remaining stops today are already indoors, so the plan stays as it is");
+  }
   if (priority) changes.push(`Kept ${priority.title}, your family's highest-priority stop today`);
   changes.push("Fewer moves this afternoon to keep the day comfortable");
 

@@ -39,7 +39,7 @@ function ReplanPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [text, setText] = useState("");
   const [result, setResult] = useState<ReplanResult | null>(null);
-  const day = state.currentDay;
+  const [day, setDay] = useState(state.currentDay);
 
   if (!state.itinerary) {
     return (
@@ -134,6 +134,21 @@ function ReplanPage() {
       back={{ to: "/", label: "Back to today" }}
     >
       <Card className="space-y-4">
+        <label className="block space-y-1.5">
+          <span className="text-sm font-semibold">Which day are we adjusting?</span>
+          <select
+            className={cn(inputClass)}
+            value={day}
+            onChange={(e) => setDay(Number(e.target.value))}
+          >
+            {state.itinerary!.days.map((d) => (
+              <option key={d.day} value={d.day}>
+                Day {d.day} — {d.areaLabel}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <h2 className="text-lg">What changed?</h2>
         <div className="grid grid-cols-2 gap-2">
           {REASONS.map(({ label, hint, icon: Icon }) => {
