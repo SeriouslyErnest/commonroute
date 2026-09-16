@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Clock, Footprints, Search, Wallet } from "lucide-react";
+import { Clock, Footprints, MapPin, Search, Wallet } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
-import { fitNoteFor, VOTE_LABEL } from "@/lib/kintrip/engine";
+import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
 import { setState, useKintrip } from "@/lib/kintrip/store";
 import type { VoteValue } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
@@ -99,6 +99,14 @@ function DiscoverTab() {
                 <Chip tone="lime">{fitNoteFor(state, a)}</Chip>
               </div>
               <p className="text-sm">{a.description}</p>
+              <a
+                href={mapsUrl(a)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-muted px-4 text-sm font-semibold text-secondary"
+              >
+                <MapPin className="size-4" aria-hidden /> View on Google Maps
+              </a>
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <Clock className="size-4" aria-hidden /> {Math.round(a.durationMin / 30) / 2}–
