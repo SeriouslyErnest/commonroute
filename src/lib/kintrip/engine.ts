@@ -34,7 +34,7 @@ export function fromMin(v: number) {
 }
 
 export function mapsUrl(a: { name: string; city: string }) {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.name}, ${a.city}, Japan`)}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.name}, ${a.city}`)}`;
 }
 
 export function pretty(t: string) {
@@ -159,10 +159,24 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
       (Date.parse(state.trip.endDate) - Date.parse(state.trip.startDate)) / 86400000,
     ) + 1,
   );
-  const tokyoDays = Math.max(1, Math.round(days * 0.6));
-  const kyotoDays = days - tokyoDays;
+  const cityList = [...new Set(ranked.map((c) => c.attraction.city))];
+  const cities = cityList.length > 0 ? cityList : [state.trip.destination.split(",")[0]!.trim()];
+  const counts = cities.map(
+    (city) => ranked.filter((c) => c.attraction.city === city).length,
+  );
+  const totalCount = counts.reduce((sum, n) => sum + n, 0) || 1;
+  let remaining = days;
+  const dayCounts = cities.map((_, i) => {
+    if (i === cities.length - 1) return remaining;
+    const d = Math.min(
+      remaining - (cities.length - i - 1),
+      Math.max(1, Math.round((days * counts[i]!) / totalCount)),
+    );
+    remaining -= d;
+    return d;
+  });
 
-  const pick = (city: "Tokyo" | "Kyoto") =>
+  const pick = (city: string) =>
     ranked
       .filter((c) => c.attraction.city === city)
       .map((c) => c.attraction);
