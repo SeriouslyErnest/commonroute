@@ -61,10 +61,11 @@ function DiscoverTab() {
     const id = `gp-${p.placeId}`;
     const tripCity = state.trip.destination.split(",")[0]!.trim();
     const addressParts = p.address.split(",").map((s) => s.trim());
-    const city =
+    const rawCity =
       addressParts.length >= 2
-        ? (addressParts[addressParts.length - 2] ?? tripCity)
-        : tripCity;
+        ? addressParts[addressParts.length - 2]!.replace(/[\d-]/g, "").trim()
+        : "";
+    const city = rawCity || tripCity;
     const attraction: Attraction = {
       id,
       name: p.name,
