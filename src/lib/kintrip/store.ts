@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { createEmptyTripState, createSeedState } from "./seed";
+import { pullTrip, pushTrip } from "./sync.functions";
 import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
@@ -122,6 +123,140 @@ export function setState(updater: (prev: KintripState) => KintripState) {
   touchActive();
   persist();
   emit();
+  schedulePush(multi.activeTripId);
+}
+
+/* ---------------- shared backend sync ---------------- */
+
+export type SyncStatus = "off" | "synced" | "saving" | "offline" | "error";
+
+let syncStatus: SyncStatus = "off";
+let pushTimer: ReturnType<typeof setTimeout> | null = null;
+
+function setSyncStatus(next: SyncStatus) {
+  if (syncStatus === next) return;
+  syncStatus = next;
+  emit();
+}
+
+function makeShareCode(): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for (let i = 0; i < 8; i += 1) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+  return out;
+}
+
+/** Trips synced to the shared backend: everything except the local demo trip. */
+function syncableTrip(tripId: string): KintripState | null {
+  if (!tripId || tripId === multi.demoTripId) return null;
+  const state = multi.trips[tripId];
+  if (!state?.trip?.shareCode) return null;
+  return state;
+}
+
+function schedulePush(tripId: string) {
+  if (typeof window === "undefined") return;
+  if (!syncableTrip(tripId)) return;
+  if (pushTimer) clearTimeout(pushTimer);
+  setSyncStatus("saving");
+  pushTimer = setTimeout(() => {
+    void pushNow(tripId);
+  }, 900);
+}
+
+async function pushNow(tripId: string) {
+  const state = syncableTrip(tripId);
+  if (!state) return;
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    setSyncStatus("offline");
+    return;
+  }
+  try {
+    await pushTrip({
+      data: { tripId, shareCode: state.trip.shareCode!, state },
+    });
+    setSyncStatus("synced");
+  } catch {
+    setSyncStatus("error");
+  }
+}
+
+/** Pull the latest version of a trip saved by another family member. */
+export async function pullActiveTrip() {
+  const tripId = multi.activeTripId;
+  const state = syncableTrip(tripId);
+  if (!state) return;
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    setSyncStatus("offline");
+    return;
+  }
+  try {
+    const remote = await pullTrip({ data: { shareCode: state.trip.shareCode! } });
+    if (!remote) {
+      await pushNow(tripId);
+      return;
+    }
+    const local = multi.trips[tripId];
+    const remoteAt = remote.state?.cachedAt ?? "";
+    const localAt = local?.cachedAt ?? "";
+    if (local && remoteAt && remoteAt > localAt) {
+      multi = { ...multi, trips: { ...multi.trips, [tripId]: remote.state } };
+      persist();
+      emit();
+    } else if (local && localAt > remoteAt) {
+      await pushNow(tripId);
+    }
+    setSyncStatus("synced");
+  } catch {
+    setSyncStatus("error");
+  }
+}
+
+/** Open a trip shared by an organiser's invite link. */
+export async function joinTripByCode(code: string): Promise<string | null> {
+  hydrate();
+  const remote = await pullTrip({ data: { shareCode: code.trim().toUpperCase() } });
+  if (!remote) return null;
+  multi = {
+    ...multi,
+    activeTripId: remote.tripId,
+    trips: { ...multi.trips, [remote.tripId]: remote.state },
+  };
+  persist();
+  emit();
+  setSyncStatus("synced");
+  return remote.tripId;
+}
+
+/** Live sync for the active trip: pushes local edits, polls for family updates. */
+export function useTripSync() {
+  useEffect(() => {
+    hydrate();
+    void pullActiveTrip();
+    const id = setInterval(() => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+      void pullActiveTrip();
+    }, 8000);
+    const onFocus = () => void pullActiveTrip();
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("online", onFocus);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("online", onFocus);
+    };
+  }, []);
+  return useSyncExternalStore(
+    subscribe,
+    () => syncStatus,
+    () => "off" as SyncStatus,
+  );
+}
+
+/** The invite code for the active trip, if it is shared online. */
+export function useShareCode(): string | null {
+  const state = useKintrip();
+  return state.trip.shareCode ?? null;
 }
 
 export interface NewTripInput {
@@ -134,7 +269,12 @@ export interface NewTripInput {
 
 /** Create a brand-new trip and make it active. Returns the new trip id. */
 export function createNewTrip(input: NewTripInput): string {
-  const state = createEmptyTripState(input);
+  const base = createEmptyTripState(input);
+  const state: KintripState = {
+    ...base,
+    trip: { ...base.trip, shareCode: makeShareCode() },
+    cachedAt: new Date().toISOString(),
+  };
   multi = {
     ...multi,
     activeTripId: state.trip.id,
@@ -143,6 +283,7 @@ export function createNewTrip(input: NewTripInput): string {
   touchActive();
   persist();
   emit();
+  void pushNow(state.trip.id);
   return state.trip.id;
 }
 

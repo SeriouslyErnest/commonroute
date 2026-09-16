@@ -1,10 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Field, LinkButton, inputClass } from "@/components/kintrip/ui";
-import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { joinTripByCode, setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import type { AgeGroup } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/join")({
+  validateSearch: (search: Record<string, unknown>): { code?: string } =>
+    typeof search["code"] === "string" && search["code"] ? { code: search["code"] } : {},
   head: () => ({
     meta: [
       { title: "Join a family trip — Kintrip" },
@@ -24,6 +27,35 @@ export const Route = createFileRoute("/join")({
 
 function JoinTrip() {
   const { hasTrips } = useTripSetupStatus();
+  const { code } = Route.useSearch();
+  const state = useKintrip();
+  const [status, setStatus] = useState<"idle" | "loading" | "notfound">("idle");
+
+  const alreadyHere = !!code && state.trip.shareCode === code;
+  useEffect(() => {
+    if (!code || alreadyHere) return;
+    setStatus("loading");
+    void joinTripByCode(code).then((id) => setStatus(id ? "idle" : "notfound"));
+  }, [code, alreadyHere]);
+
+  if (code && status === "loading") {
+    return (
+      <AppShell title="Opening your family's trip…">
+        <Card className="py-7 text-center text-muted-foreground">One moment while we load the latest plan.</Card>
+      </AppShell>
+    );
+  }
+  if (code && status === "notfound") {
+    return (
+      <AppShell title="We couldn't find that trip" back={{ to: "/", label: "Back" }}>
+        <Card className="py-7 text-center">
+          <p className="text-muted-foreground">
+            This invite link may have expired or been typed incorrectly. Ask the organiser to send it again.
+          </p>
+        </Card>
+      </AppShell>
+    );
+  }
   if (!hasTrips) return <JoinWithoutInvite />;
   return <JoinKnownTrip />;
 }

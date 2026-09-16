@@ -29,9 +29,10 @@ function InvitePage() {
   const [copied, setCopied] = useState(false);
   // Resolved after mount so the server and first client render always match.
   const [link, setLink] = useState("https://kintrip.app/join");
+  const shareCode = state.trip.shareCode;
   useEffect(() => {
-    setLink(`${window.location.origin}/join`);
-  }, []);
+    setLink(`${window.location.origin}/join${shareCode ? `?code=${shareCode}` : ""}`);
+  }, [shareCode]);
   const message = `Join our family trip on Kintrip — ${state.trip.title}: ${link}`;
 
 

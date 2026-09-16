@@ -84,6 +84,8 @@ export interface Trip {
   travellerCount: number;
   organiserId: string;
   status: "planning" | "final" | "travelling";
+  /** Invite secret used to sync this trip between family members' phones. */
+  shareCode?: undefined | string;
 }
 
 export interface Note {
