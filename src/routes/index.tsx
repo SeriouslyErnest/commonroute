@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
+  CalendarDays,
   CheckCircle2,
+  ChevronDown,
   Clock,
   MapPin,
   Navigation,
@@ -10,13 +12,15 @@ import {
   Sparkles,
   StickyNote,
   Train,
+  Users,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import familyCoast from "@/assets/kintrip-family-coast.jpg";
+import logo from "@/assets/kintrip-logo.png.asset.json";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
-import { exitDemoTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { createNewTrip, exitDemoTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +37,8 @@ export const Route = createFileRoute("/")({
         content:
           "Many generations. One journey. Shared memories. Collect preferences, vote together and get a realistic family itinerary.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: TripTab,
@@ -45,37 +51,97 @@ function TripTab() {
 }
 
 function NoTrips() {
+  const navigate = useNavigate();
+
   return (
-    <AppShell>
-      <section className="kin-rise mx-auto max-w-5xl overflow-hidden rounded-3xl bg-card shadow-lift sm:grid sm:grid-cols-[1.05fr_.95fr]">
-        <div className="relative min-h-[310px] sm:min-h-[560px]">
-          <img src={familyCoast} alt="A multigenerational family overlooking the coast" width={1200} height={900} className="absolute inset-0 size-full object-cover" />
-          <div className="absolute inset-0 bg-linear-to-t from-foreground/85 via-foreground/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-6 text-card sm:p-8">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-card/30 bg-card/15 px-3 py-1.5 text-xs font-bold backdrop-blur-md">
-              <PlaneTakeoff className="size-4" aria-hidden /> Plan together
-            </span>
-            <p className="text-sm font-bold text-card/85">Many generations. One journey. Shared memories.</p>
-            <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h1>
-          </div>
+    <main className="min-h-screen bg-background px-4 py-5 sm:px-6 sm:py-8">
+      <section className="kin-rise mx-auto max-w-md overflow-hidden rounded-3xl bg-card shadow-lift">
+        <div className="px-5 pt-7 text-center sm:px-8 sm:pt-9">
+          <img src={logo.url} alt="Kintrip" className="mx-auto h-14 w-auto sm:h-16" />
+          <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h1>
+          <p className="mt-2 text-sm font-semibold text-muted-foreground sm:text-base">Turn travel dreams into shared memories.</p>
         </div>
-        <div className="flex flex-col justify-center p-6 sm:p-10">
-          <p className="text-base leading-7 text-muted-foreground">Bring everyone’s needs and favourite experiences into one practical plan.</p>
-          <div className="mt-6 grid gap-3">
-            <LinkButton to="/create" className="w-full">Create your first trip <ArrowRight className="size-5" aria-hidden /></LinkButton>
-            <LinkButton to="/join" variant="outline" className="w-full">Join a family trip</LinkButton>
-          </div>
-          <p className="mt-4 text-center text-xs font-semibold text-muted-foreground">No account needed</p>
-          <div className="mt-7 border-t border-border pt-6">
-            <h2 className="text-lg">Explore with a ready-made trip</h2>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">Meet a family of seven in Japan and try voting, planning, and re-planning.</p>
-            <Button type="button" variant="secondary" className="mt-4 w-full" onClick={() => startDemoTrip()}>
-              <Sparkles className="size-5" aria-hidden /> Try the Japan demo
+
+        <div className="relative mt-5 h-44 overflow-hidden sm:h-52">
+          <img src={familyCoast} alt="A multigenerational family enjoying a coastal destination" width={1200} height={900} className="size-full object-cover object-center" />
+          <div className="absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-card to-transparent" />
+        </div>
+
+        <div className="-mt-2 px-5 pb-7 sm:px-8 sm:pb-9">
+          <form
+            className="space-y-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const form = new FormData(event.currentTarget);
+              const destination = String(form.get("destination") || "").trim();
+              createNewTrip({
+                title: `${destination} family trip`,
+                destination,
+                startDate: String(form.get("start") || ""),
+                endDate: String(form.get("end") || ""),
+                travellerCount: Number(form.get("count") || 2),
+              });
+              void navigate({ to: "/invite" });
+            }}
+          >
+            <label className="block">
+              <span className="mb-1.5 block text-base font-extrabold">Destination</span>
+              <span className="flex min-h-14 items-center gap-3 rounded-2xl border border-input bg-card px-4 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+                <MapPin className="size-5 shrink-0 text-secondary" aria-hidden />
+                <input name="destination" required placeholder="Where would you like to go?" className="min-w-0 flex-1 bg-transparent text-base font-semibold outline-none placeholder:font-medium placeholder:text-muted-foreground" />
+              </span>
+            </label>
+
+            <fieldset>
+              <legend className="mb-1.5 text-base font-extrabold">Dates</legend>
+              <div className="grid grid-cols-[auto_1fr_auto_1fr] items-center gap-2 rounded-2xl border border-input bg-card px-4 py-2 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+                <CalendarDays className="size-5 shrink-0 text-secondary" aria-hidden />
+                <label className="min-w-0">
+                  <span className="block text-[11px] font-bold text-muted-foreground">START</span>
+                  <input type="date" name="start" required aria-label="Start date" className="w-full min-w-0 bg-transparent text-sm font-semibold outline-none" />
+                </label>
+                <span className="text-muted-foreground" aria-hidden>–</span>
+                <label className="min-w-0">
+                  <span className="block text-[11px] font-bold text-muted-foreground">END</span>
+                  <input type="date" name="end" required aria-label="End date" className="w-full min-w-0 bg-transparent text-sm font-semibold outline-none" />
+                </label>
+              </div>
+            </fieldset>
+
+            <label className="block">
+              <span className="mb-1.5 block text-base font-extrabold">Group size</span>
+              <span className="relative flex min-h-14 items-center gap-3 rounded-2xl border border-input bg-card px-4 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+                <Users className="size-5 shrink-0 text-secondary" aria-hidden />
+                <select name="count" defaultValue="4" className="min-h-12 min-w-0 flex-1 appearance-none bg-transparent pr-8 text-base font-semibold outline-none">
+                  {Array.from({ length: 12 }, (_, index) => index + 1).map((count) => (
+                    <option value={count} key={count}>{count} {count === 1 ? "person" : "people"}</option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-4 size-5 text-secondary" aria-hidden />
+              </span>
+            </label>
+
+            <Button type="submit" className="w-full rounded-full text-lg">
+              Create my trip <ArrowRight className="size-6" aria-hidden />
+            </Button>
+          </form>
+
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Have an invite? <Link to="/join" className="font-bold text-secondary">Join a trip</Link>
+          </p>
+
+          <div className="mt-5 border-t border-border pt-5 text-center">
+            <Button type="button" variant="ghost" className="mx-auto min-h-11 text-sm" onClick={() => startDemoTrip()}>
+              <Sparkles className="size-4" aria-hidden /> Explore the Japan demo
             </Button>
           </div>
+
+          <p className="mt-4 text-center text-xs font-extrabold leading-5 text-secondary">
+            Many generations.<br />One journey. Shared memories.
+          </p>
         </div>
       </section>
-    </AppShell>
+    </main>
   );
 }
 
