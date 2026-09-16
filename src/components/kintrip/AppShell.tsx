@@ -54,7 +54,7 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-background pb-28">
       <header className="sticky top-0 z-20 border-b border-border/70 bg-card/90 backdrop-blur-xl">
-        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
+        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo.url} alt="Kintrip" className="h-10 w-auto" />
           </Link>
@@ -63,7 +63,7 @@ export function AppShell({
           </p>
           <Link
             to="/trips"
-            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm sm:justify-self-end"
           >
             <Layers className="size-4" aria-hidden /> My trips
           </Link>
