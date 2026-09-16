@@ -1,10 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Field, LinkButton, inputClass } from "@/components/kintrip/ui";
-import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { joinTripByCode, setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import type { AgeGroup } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/join")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    code: typeof search["code"] === "string" ? search["code"] : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Join a family trip — Kintrip" },
