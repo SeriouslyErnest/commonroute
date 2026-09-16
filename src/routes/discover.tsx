@@ -31,6 +31,7 @@ const VOTE_ORDER: VoteValue[] = ["MUST_GO", "WOULD_LIKE", "DONT_MIND", "SKIP"];
 
 function DiscoverTab() {
   const state = useKintrip();
+  const { demoActive } = useTripSetupStatus();
   const [query, setQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
