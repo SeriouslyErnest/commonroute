@@ -4,7 +4,7 @@ import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
 const KEY = "kintrip.state.v2";
-const START_SCREEN_MIGRATION = "kintrip.start-screen.v1";
+const DEMO_TRIP_ID = "tan-japan-2027";
 
 interface MultiTripState {
   activeTripId: string;
@@ -53,11 +53,10 @@ export function hydrate() {
         const isLegacyJapanSample =
           !parsed.demoTripId &&
           Object.keys(parsed.trips).length === 1 &&
-          activeTrip?.trip?.id === "tan-japan-2027" &&
-          !window.localStorage.getItem(START_SCREEN_MIGRATION);
+          activeTrip?.trip?.id === DEMO_TRIP_ID;
         if (isLegacyJapanSample) {
           multi = initialMulti();
-          window.localStorage.setItem(START_SCREEN_MIGRATION, "done");
+          window.localStorage.removeItem(KEY_V1);
           persist();
           emit();
           return;
@@ -71,6 +70,13 @@ export function hydrate() {
     const rawV1 = window.localStorage.getItem(KEY_V1);
     if (rawV1) {
       const parsed = JSON.parse(rawV1) as KintripState;
+      if (parsed?.trip?.id === DEMO_TRIP_ID) {
+        window.localStorage.removeItem(KEY_V1);
+        multi = initialMulti();
+        persist();
+        emit();
+        return;
+      }
       if (parsed?.trip?.id) {
         multi = {
           activeTripId: parsed.trip.id,
@@ -82,7 +88,7 @@ export function hydrate() {
       }
     }
   } catch {
-    /* ignore corrupt cache and fall back to the sample trip */
+    /* ignore corrupt cache and show the start screen */
   }
   persist();
   emit();
@@ -125,7 +131,6 @@ export function createNewTrip(input: NewTripInput): string {
 
 /** Load the guided demo trip (Tan Family Japan) and make it active. */
 export function startDemoTrip(): string {
-  if (typeof window !== "undefined") window.localStorage.setItem(START_SCREEN_MIGRATION, "done");
   const existingId = multi.demoTripId;
   if (existingId && multi.trips[existingId]) {
     multi = { ...multi, activeTripId: existingId };
@@ -152,6 +157,7 @@ export function exitDemoTrip() {
   delete trips[demoId];
   const activeTripId = multi.activeTripId === demoId ? (Object.keys(trips)[0] ?? "") : multi.activeTripId;
   multi = { activeTripId, trips, demoTripId: undefined };
+  if (typeof window !== "undefined") window.localStorage.removeItem(KEY_V1);
   persist();
   emit();
 }
