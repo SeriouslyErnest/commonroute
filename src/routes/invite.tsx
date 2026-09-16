@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, Mail, MessageCircle } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
@@ -27,9 +27,13 @@ export const Route = createFileRoute("/invite")({
 function InvitePage() {
   const state = useKintrip();
   const [copied, setCopied] = useState(false);
-  const link =
-    typeof window === "undefined" ? "https://kintrip.app/join" : `${window.location.origin}/join`;
+  // Resolved after mount so the server and first client render always match.
+  const [link, setLink] = useState("https://kintrip.app/join");
+  useEffect(() => {
+    setLink(`${window.location.origin}/join`);
+  }, []);
   const message = `Join our family trip on Kintrip — ${state.trip.title}: ${link}`;
+
 
   return (
     <AppShell

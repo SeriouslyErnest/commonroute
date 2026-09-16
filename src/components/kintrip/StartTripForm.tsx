@@ -23,7 +23,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
     >
       <div className="px-6 pt-8 text-center sm:px-9 sm:pt-9">
         <img src={logo.url} alt="Kintrip" className="mx-auto h-16 w-auto" />
-        <h2 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h2>
+        <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h1>
         <p className="mt-2 text-base font-semibold text-muted-foreground">Turn travel dreams into shared memories.</p>
       </div>
 

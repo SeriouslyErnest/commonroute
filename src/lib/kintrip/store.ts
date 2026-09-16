@@ -16,9 +16,27 @@ function initialMulti(): MultiTripState {
   return { activeTripId: "", trips: {} };
 }
 
+const EMPTY_MULTI: MultiTripState = { activeTripId: "", trips: {} };
+
+/**
+ * Neutral state rendered on the server and on the very first client render, so
+ * the two always match. Real saved trips arrive after hydrate() runs on mount.
+ */
+const placeholderTrip: KintripState = (() => {
+  const base = createEmptyTripState({
+    title: "Your trip",
+    destination: "",
+    startDate: "",
+    endDate: "",
+    travellerCount: 0,
+  });
+  return { ...base, trip: { ...base.trip, id: "placeholder" }, travellers: [] };
+})();
+
 let multi: MultiTripState = initialMulti();
-const fallbackTrip = createSeedState();
+let ready = false;
 let hydrated = false;
+
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -41,58 +59,57 @@ function touchActive() {
   }
 }
 
+function loadFromStorage() {
+  const raw = window.localStorage.getItem(KEY);
+  if (raw) {
+    const parsed = JSON.parse(raw) as MultiTripState;
+    const activeTrip = parsed?.trips?.[parsed.activeTripId];
+    if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
+      const isLegacyJapanSample =
+        !parsed.demoTripId &&
+        Object.keys(parsed.trips).length === 1 &&
+        activeTrip?.trip?.id === DEMO_TRIP_ID;
+      if (isLegacyJapanSample) {
+        multi = initialMulti();
+        window.localStorage.removeItem(KEY_V1);
+        return;
+      }
+      multi = { ...parsed, demoTripId: parsed.demoTripId };
+      return;
+    }
+  }
+  // migrate the original single-trip cache
+  const rawV1 = window.localStorage.getItem(KEY_V1);
+  if (rawV1) {
+    const parsed = JSON.parse(rawV1) as KintripState;
+    if (parsed?.trip?.id === DEMO_TRIP_ID) {
+      window.localStorage.removeItem(KEY_V1);
+      multi = initialMulti();
+      return;
+    }
+    if (parsed?.trip?.id) {
+      multi = {
+        activeTripId: parsed.trip.id,
+        trips: { [parsed.trip.id]: { ...createSeedState(), ...parsed } },
+      };
+    }
+  }
+}
+
 export function hydrate() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as MultiTripState;
-      const activeTrip = parsed?.trips?.[parsed.activeTripId];
-      if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
-        const isLegacyJapanSample =
-          !parsed.demoTripId &&
-          Object.keys(parsed.trips).length === 1 &&
-          activeTrip?.trip?.id === DEMO_TRIP_ID;
-        if (isLegacyJapanSample) {
-          multi = initialMulti();
-          window.localStorage.removeItem(KEY_V1);
-          persist();
-          emit();
-          return;
-        }
-        multi = { ...parsed, demoTripId: parsed.demoTripId };
-        emit();
-        return;
-      }
-    }
-    // migrate the original single-trip cache
-    const rawV1 = window.localStorage.getItem(KEY_V1);
-    if (rawV1) {
-      const parsed = JSON.parse(rawV1) as KintripState;
-      if (parsed?.trip?.id === DEMO_TRIP_ID) {
-        window.localStorage.removeItem(KEY_V1);
-        multi = initialMulti();
-        persist();
-        emit();
-        return;
-      }
-      if (parsed?.trip?.id) {
-        multi = {
-          activeTripId: parsed.trip.id,
-          trips: { [parsed.trip.id]: { ...createSeedState(), ...parsed } },
-        };
-        persist();
-        emit();
-        return;
-      }
-    }
+    loadFromStorage();
   } catch {
     /* ignore corrupt cache and show the start screen */
+    multi = initialMulti();
   }
+  ready = true;
   persist();
   emit();
 }
+
 
 /** Update the currently active trip. */
 export function setState(updater: (prev: KintripState) => KintripState) {
@@ -211,19 +228,20 @@ function subscribe(cb: () => void) {
   return () => listeners.delete(cb);
 }
 
-const getActiveSnapshot = (): KintripState => {
-  hydrate();
-  return multi.trips[multi.activeTripId] ?? fallbackTrip;
-};
-const getMultiSnapshot = () => multi;
+const getActiveSnapshot = (): KintripState =>
+  ready ? (multi.trips[multi.activeTripId] ?? placeholderTrip) : placeholderTrip;
+const getServerActiveSnapshot = (): KintripState => placeholderTrip;
+const getMultiSnapshot = (): MultiTripState => (ready ? multi : EMPTY_MULTI);
+const getServerMultiSnapshot = (): MultiTripState => EMPTY_MULTI;
 
 /** The active trip's full state. */
 export function useKintrip() {
   useEffect(() => {
     hydrate();
   }, []);
-  return useSyncExternalStore(subscribe, getActiveSnapshot, () => fallbackTrip);
+  return useSyncExternalStore(subscribe, getActiveSnapshot, getServerActiveSnapshot);
 }
+
 
 export interface TripSummary {
   id: string;
@@ -243,7 +261,7 @@ export function useTripSetupStatus() {
   useEffect(() => {
     hydrate();
   }, []);
-  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
+  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getServerMultiSnapshot);
   return {
     hasTrips: Object.keys(m.trips).length > 0,
     demoActive: !!m.demoTripId && m.demoTripId === m.activeTripId,
@@ -256,7 +274,7 @@ export function useTripList(): TripSummary[] {
   useEffect(() => {
     hydrate();
   }, []);
-  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
+  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getServerMultiSnapshot);
   return Object.values(m.trips).map((s) => ({
     id: s.trip.id,
     title: s.trip.title,
