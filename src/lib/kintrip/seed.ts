@@ -390,6 +390,56 @@ function buildVotes() {
   return votes;
 }
 
+export function createEmptyTripState(input: {
+  title: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  travellerCount: number;
+}): KintripState {
+  const id = `trip-${Date.now().toString(36)}`;
+  return {
+    trip: {
+      id,
+      title: input.title || "Our family trip",
+      destination: input.destination,
+      startDate: input.startDate,
+      endDate: input.endDate,
+      travellerCount: input.travellerCount,
+      organiserId: "organiser",
+      status: "planning",
+    },
+    travellers: [
+      {
+        id: "organiser",
+        name: "You (Organiser)",
+        relationship: "Organiser",
+        ageGroup: "adult",
+        role: "organiser",
+        joined: true,
+        prefStatus: "not_started",
+        preferences: {
+          interests: [],
+          pace: "balanced",
+          walking: "moderate",
+          mustDo: "",
+          avoid: "",
+          constraints: "",
+        },
+      },
+    ],
+    // sample attraction pool — replaced by live travel data when APIs connect
+    attractions: seedAttractions,
+    votes: {},
+    itinerary: null,
+    notes: [],
+    activeTravellerId: "organiser",
+    currentDay: 1,
+    replanLog: [],
+    cachedAt: null,
+  };
+}
+
 export function createSeedState(): KintripState {
   return {
     trip: {
