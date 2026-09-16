@@ -322,7 +322,7 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
   const fit = {
     good: [
       "All major family must-dos included",
-      `${plan[0] ? "Tokyo" : "City"} attractions grouped geographically to cut travel time`,
+      `${cities[0] ?? "Your"} attractions grouped geographically to cut travel time`,
       "Longer walking periods separated by rests",
       "Shopping and younger-traveller activities included",
       "Meals and quiet time built into every day",
