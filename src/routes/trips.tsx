@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CalendarRange, CheckCircle2, FlaskConical, MapPin, Plus, Trash2, Users } from "lucide-react";
+import { CalendarRange, CheckCircle2, MapPin, Plus, RotateCcw, Sparkles, Trash2, Users } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate } from "@/lib/kintrip/engine";
 import {
   deleteTrip,
-  restoreTripsAfterSetupTest,
-  startFirstTimeSetupTest,
+  exitDemoTrip,
+  resetDemoTrip,
+  startDemoTrip,
   switchTrip,
   useTripList,
   useTripSetupStatus,
