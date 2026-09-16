@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft, CalendarRange, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/kintrip-logo.png.asset.json";
@@ -50,6 +50,7 @@ export function AppShell({
   back?: { to: string; label: string };
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
   const { hasTrips, demoActive } = useTripSetupStatus();
 
   return (
@@ -63,7 +64,15 @@ export function AppShell({
             Many generations. One journey. Shared memories.
           </p>
           {demoActive ? (
-            <Button type="button" variant="outline" className="min-h-11 shrink-0 px-3 text-sm sm:justify-self-end" onClick={exitDemoTrip}>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11 shrink-0 px-3 text-sm sm:justify-self-end"
+              onClick={() => {
+                exitDemoTrip();
+                void navigate({ to: "/" });
+              }}
+            >
               <ArrowLeft className="size-4" aria-hidden /> Back to start
             </Button>
           ) : (
