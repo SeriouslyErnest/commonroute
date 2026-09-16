@@ -116,11 +116,10 @@ function DiscoverTab() {
         >
           {state.travellers.map((t) => (
             <option key={t.id} value={t.id}>
-                Vote as {t.name}
-              </option>
-            ))}
-          </select>
-        </div>
+              Vote as {t.name}
+            </option>
+          ))}
+        </select>
       </Card>
 
       {query.trim().length >= 2 ? (
