@@ -20,7 +20,7 @@ import santoriniStart from "@/assets/kintrip-santorini-start.jpg";
 import logo from "@/assets/kintrip-logo.png.asset.json";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
-import { createNewTrip, exitDemoTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { createNewTrip, setState, startDemoTrip, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
