@@ -60,8 +60,37 @@ function NoTrips() {
           <LinkButton to="/join" variant="outline">Join a trip</LinkButton>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">No account needed to get started.</p>
+        <div className="mt-8 w-full max-w-xl">
+          <Card className="text-left">
+            <h2 className="text-lg">Just exploring?</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Open the demo trip — a family of seven in Japan — to step through voting, the suggested plan,
+              re-planning a day and offline viewing. You can remove it anytime.
+            </p>
+            <div className="mt-4">
+              <Button type="button" variant="secondary" onClick={() => startDemoTrip()}>
+                <Sparkles className="size-5" aria-hidden /> Try the demo trip
+              </Button>
+            </div>
+          </Card>
+        </div>
       </section>
     </AppShell>
+  );
+}
+
+function DemoBanner() {
+  const { demoActive } = useTripSetupStatus();
+  if (!demoActive) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
+      <span className="inline-flex items-center gap-2 font-semibold">
+        <Sparkles className="size-4" aria-hidden /> Demo trip — sample family and sample places
+      </span>
+      <Button type="button" variant="ghost" className="shrink-0 px-3" onClick={exitDemoTrip}>
+        Exit demo
+      </Button>
+    </div>
   );
 }
 
