@@ -1,10 +1,21 @@
 import { useEffect, useSyncExternalStore } from "react";
-import { createSeedState } from "./seed";
+import { createEmptyTripState, createSeedState } from "./seed";
 import type { KintripState } from "./types";
 
-const KEY = "kintrip.state.v1";
+const KEY_V1 = "kintrip.state.v1";
+const KEY = "kintrip.state.v2";
 
-let state: KintripState = createSeedState();
+interface MultiTripState {
+  activeTripId: string;
+  trips: Record<string, KintripState>;
+}
+
+function initialMulti(): MultiTripState {
+  const seed = createSeedState();
+  return { activeTripId: seed.trip.id, trips: { [seed.trip.id]: seed } };
+}
+
+let multi: MultiTripState = initialMulti();
 let hydrated = false;
 const listeners = new Set<() => void>();
 
@@ -15,12 +26,16 @@ function emit() {
 function persist() {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(
-      KEY,
-      JSON.stringify({ ...state, cachedAt: new Date().toISOString() }),
-    );
+    window.localStorage.setItem(KEY, JSON.stringify(multi));
   } catch {
     /* storage full or unavailable — the app keeps working in memory */
+  }
+}
+
+function touchActive() {
+  const active = multi.trips[multi.activeTripId];
+  if (active) {
+    multi.trips[multi.activeTripId] = { ...active, cachedAt: new Date().toISOString() };
   }
 }
 
@@ -30,9 +45,23 @@ export function hydrate() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as KintripState;
+      const parsed = JSON.parse(raw) as MultiTripState;
+      if (parsed?.activeTripId && parsed.trips?.[parsed.activeTripId]?.trip?.id) {
+        multi = parsed;
+        emit();
+        return;
+      }
+    }
+    // migrate the original single-trip cache
+    const rawV1 = window.localStorage.getItem(KEY_V1);
+    if (rawV1) {
+      const parsed = JSON.parse(rawV1) as KintripState;
       if (parsed?.trip?.id) {
-        state = { ...createSeedState(), ...parsed };
+        multi = {
+          activeTripId: parsed.trip.id,
+          trips: { [parsed.trip.id]: { ...createSeedState(), ...parsed } },
+        };
+        persist();
         emit();
         return;
       }
@@ -44,15 +73,67 @@ export function hydrate() {
   emit();
 }
 
+/** Update the currently active trip. */
 export function setState(updater: (prev: KintripState) => KintripState) {
-  state = updater(state);
-  state = { ...state, cachedAt: new Date().toISOString() };
+  const active = multi.trips[multi.activeTripId];
+  if (!active) return;
+  multi = {
+    ...multi,
+    trips: { ...multi.trips, [multi.activeTripId]: updater(active) },
+  };
+  touchActive();
+  persist();
+  emit();
+}
+
+export interface NewTripInput {
+  title: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  travellerCount: number;
+}
+
+/** Create a brand-new trip and make it active. Returns the new trip id. */
+export function createNewTrip(input: NewTripInput): string {
+  const state = createEmptyTripState(input);
+  multi = {
+    activeTripId: state.trip.id,
+    trips: { ...multi.trips, [state.trip.id]: state },
+  };
+  touchActive();
+  persist();
+  emit();
+  return state.trip.id;
+}
+
+export function switchTrip(tripId: string) {
+  if (!multi.trips[tripId] || tripId === multi.activeTripId) return;
+  multi = { ...multi, activeTripId: tripId };
+  persist();
+  emit();
+}
+
+export function deleteTrip(tripId: string) {
+  if (!multi.trips[tripId]) return;
+  const trips = { ...multi.trips };
+  delete trips[tripId];
+  let activeTripId = multi.activeTripId;
+  if (activeTripId === tripId) {
+    activeTripId = Object.keys(trips)[0] ?? "";
+    if (!activeTripId) {
+      // never leave the app empty — fall back to the sample trip
+      return;
+    }
+  }
+  multi = { activeTripId, trips };
   persist();
   emit();
 }
 
 export function resetState() {
-  state = createSeedState();
+  const seed = createSeedState();
+  multi = { activeTripId: seed.trip.id, trips: { [seed.trip.id]: seed } };
   persist();
   emit();
 }
@@ -62,13 +143,48 @@ function subscribe(cb: () => void) {
   return () => listeners.delete(cb);
 }
 
-const getSnapshot = () => state;
+const getActiveSnapshot = () => multi.trips[multi.activeTripId]!;
+const getMultiSnapshot = () => multi;
 
+/** The active trip's full state. */
 export function useKintrip() {
   useEffect(() => {
     hydrate();
   }, []);
-  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return useSyncExternalStore(subscribe, getActiveSnapshot, getActiveSnapshot);
+}
+
+export interface TripSummary {
+  id: string;
+  title: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  status: KintripState["trip"]["status"];
+  travellerCount: number;
+  joined: number;
+  hasItinerary: boolean;
+  active: boolean;
+}
+
+/** Summaries of every trip on this device, for the My Trips screen. */
+export function useTripList(): TripSummary[] {
+  useEffect(() => {
+    hydrate();
+  }, []);
+  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
+  return Object.values(m.trips).map((s) => ({
+    id: s.trip.id,
+    title: s.trip.title,
+    destination: s.trip.destination,
+    startDate: s.trip.startDate,
+    endDate: s.trip.endDate,
+    status: s.trip.status,
+    travellerCount: s.trip.travellerCount,
+    joined: s.travellers.filter((t) => t.joined).length,
+    hasItinerary: s.itinerary !== null,
+    active: s.trip.id === m.activeTripId,
+  }));
 }
 
 export function useOnline() {
