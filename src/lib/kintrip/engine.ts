@@ -169,19 +169,30 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
   // Keep each day inside one area, so travel between stops stays short.
   const distribute = (groups: Attraction[][], count: number) => {
     const out: Attraction[][] = Array.from({ length: count }, () => []);
-    const total = groups.reduce((n, g) => n + g.length, 0);
-    const target = Math.max(2, Math.ceil(total / Math.max(1, count)));
-    let d = 0;
-    groups.forEach((group, gi) => {
-      for (const a of group) {
-        const today = out[d]!;
-        const heavy = today.some((x) => WALK_RANK[x.walking]! >= 2);
-        const cap = heavy ? 2 : Math.min(3, target);
-        if (today.length >= cap && d < count - 1) d += 1;
-        out[d]!.push(a);
-      }
-      if (gi < groups.length - 1 && out[d]!.length > 0 && d < count - 1) d += 1;
+    const leastLoaded = () =>
+      out.reduce((best, day, i) => (day.length < out[best]!.length ? i : best), 0);
+
+    groups.forEach((group, i) => {
+      const day = i < count ? i : leastLoaded();
+      out[day]!.push(...group);
     });
+
+    // Even the days out: a fully empty day borrows a stop from the busiest one.
+    for (let pass = 0; pass < count * 2; pass += 1) {
+      const empty = out.findIndex((d) => d.length === 0);
+      if (empty === -1) break;
+      const busiest = out.reduce((best, day, i) => (day.length > out[best]!.length ? i : best), 0);
+      if (out[busiest]!.length < 2) break;
+      out[empty]!.push(out[busiest]!.pop()!);
+    }
+
+    // Never leave a single day carrying a heavy load.
+    for (let pass = 0; pass < count * 2; pass += 1) {
+      const busiest = out.reduce((best, day, i) => (day.length > out[best]!.length ? i : best), 0);
+      const lightest = leastLoaded();
+      if (out[busiest]!.length - out[lightest]!.length < 2) break;
+      out[lightest]!.push(out[busiest]!.pop()!);
+    }
     return out;
   };
 
