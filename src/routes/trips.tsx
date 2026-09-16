@@ -68,6 +68,7 @@ function MyTrips() {
                 <span className="flex flex-wrap items-center gap-2">
                   <span className="text-lg font-bold">{t.title}</span>
                   {t.active ? <Chip tone="primary">Current trip</Chip> : null}
+                  {t.isDemo ? <Chip tone="sunny">Demo</Chip> : null}
                   {t.status === "final" ? <Chip tone="lime">Finalised</Chip> : null}
                 </span>
                 <span className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
@@ -122,28 +123,45 @@ function MyTrips() {
       <p className="text-sm text-muted-foreground">
         Trips are saved on this device, so you can switch between them even offline.
       </p>
-      {setupTestActive ? (
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => {
-            if (restoreTripsAfterSetupTest()) void navigate({ to: "/" });
-          }}
-        >
-          Restore previous trips
-        </Button>
-      ) : trips.length > 0 ? (
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => {
-            startFirstTimeSetupTest();
-            void navigate({ to: "/" });
-          }}
-        >
-          <FlaskConical className="size-5" aria-hidden /> Test first-time setup
-        </Button>
-      ) : null}
+      <Card>
+        <h2 className="flex items-center gap-2 text-lg">
+          <Sparkles className="size-5 text-secondary" aria-hidden /> Demo mode
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          A sample family trip to Japan with seven travellers, so you can step through every feature —
+          preferences, voting, the suggested plan, re-planning a day and offline viewing. Sample data only.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {hasDemo ? (
+            <>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  resetDemoTrip();
+                  void navigate({ to: "/" });
+                }}
+              >
+                <RotateCcw className="size-5" aria-hidden /> Restart demo
+              </Button>
+              <Button type="button" variant="ghost" onClick={exitDemoTrip}>
+                Remove demo trip
+              </Button>
+            </>
+          ) : (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                startDemoTrip();
+                void navigate({ to: "/" });
+              }}
+            >
+              <Sparkles className="size-5" aria-hidden /> Start demo trip
+            </Button>
+          )}
+        </div>
+      </Card>
     </AppShell>
   );
 }
