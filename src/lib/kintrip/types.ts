@@ -48,11 +48,11 @@ export interface ItineraryItem {
   title: string;
   start: string; // HH:MM
   durationMin: number;
-  attractionId?: string;
-  address?: string;
-  note?: string;
-  transport?: string;
-  walking?: Walking;
+  attractionId?: undefined | string;
+  address?: undefined | string;
+  note?: undefined | string;
+  transport?: undefined | string;
+  walking?: undefined | Walking;
 }
 
 export interface ItineraryDay {
@@ -61,8 +61,8 @@ export interface ItineraryDay {
   city: "Tokyo" | "Kyoto";
   areaLabel: string;
   items: ItineraryItem[];
-  note?: string;
-  timingNote?: string;
+  note?: undefined | string;
+  timingNote?: undefined | string;
 }
 
 export interface Itinerary {
@@ -89,7 +89,7 @@ export interface Trip {
 export interface Note {
   id: string;
   scope: "trip" | "day" | "activity";
-  refId?: string;
+  refId?: undefined | string;
   text: string;
   author: string;
 }
