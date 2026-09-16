@@ -1,9 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CalendarRange, CheckCircle2, MapPin, Plus, Trash2, Users } from "lucide-react";
+import { CalendarRange, CheckCircle2, FlaskConical, MapPin, Plus, Trash2, Users } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate } from "@/lib/kintrip/engine";
-import { deleteTrip, switchTrip, useTripList } from "@/lib/kintrip/store";
+import {
+  deleteTrip,
+  restoreTripsAfterSetupTest,
+  startFirstTimeSetupTest,
+  switchTrip,
+  useTripList,
+  useTripSetupStatus,
+} from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/trips")({
   head: () => ({
@@ -25,6 +32,7 @@ export const Route = createFileRoute("/trips")({
 
 function MyTrips() {
   const trips = useTripList();
+  const { setupTestActive } = useTripSetupStatus();
   const navigate = useNavigate();
 
   return (
@@ -33,6 +41,14 @@ function MyTrips() {
       subtitle="Every journey your family is planning, in one place."
       back={{ to: "/", label: "Back to trip" }}
     >
+      {trips.length === 0 ? (
+        <Card className="py-8 text-center">
+          <h2 className="text-xl">No trips yet</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            Start a new family adventure, or open an invite link to join someone else’s trip.
+          </p>
+        </Card>
+      ) : null}
       <div className="grid gap-3">
         {trips.map((t) => (
           <Card
@@ -105,6 +121,28 @@ function MyTrips() {
       <p className="text-sm text-muted-foreground">
         Trips are saved on this device, so you can switch between them even offline.
       </p>
+      {setupTestActive ? (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => {
+            if (restoreTripsAfterSetupTest()) void navigate({ to: "/" });
+          }}
+        >
+          Restore previous trips
+        </Button>
+      ) : trips.length > 0 ? (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => {
+            startFirstTimeSetupTest();
+            void navigate({ to: "/" });
+          }}
+        >
+          <FlaskConical className="size-5" aria-hidden /> Test first-time setup
+        </Button>
+      ) : null}
     </AppShell>
   );
 }

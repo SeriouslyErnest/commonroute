@@ -5,6 +5,7 @@ import {
   Clock,
   MapPin,
   Navigation,
+  PlaneTakeoff,
   RefreshCw,
   StickyNote,
   Train,
@@ -12,7 +13,7 @@ import {
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
-import { setState, useKintrip } from "@/lib/kintrip/store";
+import { restoreTripsAfterSetupTest, setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,6 +36,44 @@ export const Route = createFileRoute("/")({
 });
 
 function TripTab() {
+  const { hasTrips, setupTestActive } = useTripSetupStatus();
+  if (!hasTrips) return <NoTrips setupTestActive={setupTestActive} />;
+  return <ActiveTrip />;
+}
+
+function NoTrips({ setupTestActive }: { setupTestActive: boolean }) {
+  return (
+    <AppShell>
+      {setupTestActive ? (
+        <div className="flex items-center justify-between gap-3 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
+          <span>Your saved trips are safely set aside while you test setup.</span>
+          <Button type="button" variant="ghost" className="shrink-0 px-3" onClick={restoreTripsAfterSetupTest}>
+            Restore
+          </Button>
+        </div>
+      ) : null}
+      <section className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center py-10 text-center sm:py-16">
+        <span className="mb-5 inline-flex size-16 items-center justify-center rounded-full bg-primary-soft text-primary">
+          <PlaneTakeoff className="size-8" aria-hidden />
+        </span>
+        <p className="text-sm font-bold text-primary">Many generations. One journey. Shared memories.</p>
+        <h1 className="mt-3 text-3xl sm:text-4xl">Let’s plan your first family trip</h1>
+        <p className="mt-3 max-w-xl text-muted-foreground">
+          Bring everyone’s preferences and practical needs together, then turn them into one plan the family can enjoy.
+        </p>
+        <div className="mt-7 flex w-full max-w-sm flex-col gap-3 sm:flex-row sm:max-w-none sm:justify-center">
+          <LinkButton to="/create">
+            Create your first trip <ArrowRight className="size-5" aria-hidden />
+          </LinkButton>
+          <LinkButton to="/join" variant="outline">Join a trip</LinkButton>
+        </div>
+        <p className="mt-6 text-sm text-muted-foreground">No account needed to get started.</p>
+      </section>
+    </AppShell>
+  );
+}
+
+function ActiveTrip() {
   const state = useKintrip();
   const { trip, itinerary } = state;
   const joined = state.travellers.filter((t) => t.joined).length;

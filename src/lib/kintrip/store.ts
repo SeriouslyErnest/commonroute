@@ -4,10 +4,12 @@ import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
 const KEY = "kintrip.state.v2";
+const SETUP_BACKUP_KEY = "kintrip.setup-test.backup.v1";
 
 interface MultiTripState {
   activeTripId: string;
   trips: Record<string, KintripState>;
+  setupTestActive?: boolean;
 }
 
 function initialMulti(): MultiTripState {
@@ -46,8 +48,9 @@ export function hydrate() {
     const raw = window.localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as MultiTripState;
-      if (parsed?.activeTripId && parsed.trips?.[parsed.activeTripId]?.trip?.id) {
-        multi = parsed;
+      const activeTrip = parsed?.trips?.[parsed.activeTripId];
+      if (parsed?.trips && (activeTrip?.trip?.id || Object.keys(parsed.trips).length === 0)) {
+        multi = { ...parsed, setupTestActive: parsed.setupTestActive ?? false };
         emit();
         return;
       }
@@ -105,6 +108,37 @@ export function createNewTrip(input: NewTripInput): string {
   persist();
   emit();
   return state.trip.id;
+}
+
+/** Temporarily put saved trips aside so the first-time setup can be tested safely. */
+export function startFirstTimeSetupTest() {
+  if (typeof window === "undefined" || Object.keys(multi.trips).length === 0) return;
+  try {
+    window.localStorage.setItem(SETUP_BACKUP_KEY, JSON.stringify(multi));
+  } catch {
+    return;
+  }
+  multi = { activeTripId: "", trips: {}, setupTestActive: true };
+  persist();
+  emit();
+}
+
+export function restoreTripsAfterSetupTest(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = window.localStorage.getItem(SETUP_BACKUP_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw) as MultiTripState;
+    const active = saved.trips?.[saved.activeTripId];
+    if (!active?.trip?.id) return false;
+    multi = { ...saved, setupTestActive: false };
+    window.localStorage.removeItem(SETUP_BACKUP_KEY);
+    persist();
+    emit();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function switchTrip(tripId: string) {
@@ -165,6 +199,17 @@ export interface TripSummary {
   joined: number;
   hasItinerary: boolean;
   active: boolean;
+}
+
+export function useTripSetupStatus() {
+  useEffect(() => {
+    hydrate();
+  }, []);
+  const m = useSyncExternalStore(subscribe, getMultiSnapshot, getMultiSnapshot);
+  return {
+    hasTrips: Object.keys(m.trips).length > 0,
+    setupTestActive: m.setupTestActive === true,
+  };
 }
 
 /** Summaries of every trip on this device, for the My Trips screen. */
