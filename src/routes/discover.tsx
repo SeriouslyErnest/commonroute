@@ -32,7 +32,6 @@ const VOTE_ORDER: VoteValue[] = ["MUST_GO", "WOULD_LIKE", "DONT_MIND", "SKIP"];
 function DiscoverTab() {
   const state = useKintrip();
   const [query, setQuery] = useState("");
-  const [city, setCity] = useState<string>("All");
   const [visibleCount, setVisibleCount] = useState(6);
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -90,9 +89,8 @@ function DiscoverTab() {
 
   const list = state.attractions.filter(
     (a) =>
-      (city === "All" || a.city === city) &&
-      (a.name.toLowerCase().includes(query.toLowerCase()) ||
-        a.category.toLowerCase().includes(query.toLowerCase())),
+      a.name.toLowerCase().includes(query.toLowerCase()) ||
+      a.category.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
@@ -102,37 +100,22 @@ function DiscoverTab() {
           <Search className="absolute left-3 top-3.5 size-5 text-muted-foreground" aria-hidden />
           <input
             className={cn(inputClass, "pl-10")}
-            placeholder="Search places or interests"
+            placeholder={`Search places in ${state.trip.destination}`}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search places"
           />
         </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:flex">
-          <div className="flex gap-1 rounded-xl bg-muted p-1">
-          {["All", ...new Set(state.attractions.map((a) => a.city))].map((c) => (
-            <button
-              key={c}
-              onClick={() => setCity(c)}
-              className={cn(
-                "min-h-10 flex-1 rounded-lg px-3 text-sm font-semibold sm:flex-none",
-                city === c ? "bg-card text-secondary shadow-sm" : "text-foreground",
-              )}
-            >
-              {c}
-            </button>
-          ))}
-          </div>
-          <select
-            className="min-h-10 max-w-36 rounded-xl bg-muted px-3 text-sm font-semibold"
-            value={state.activeTravellerId}
-            onChange={(e) =>
-              setState((prev) => ({ ...prev, activeTravellerId: e.target.value }))
-            }
-            aria-label="Vote as"
-          >
-            {state.travellers.map((t) => (
-              <option key={t.id} value={t.id}>
+        <select
+          className="min-h-10 rounded-xl bg-muted px-3 text-sm font-semibold"
+          value={state.activeTravellerId}
+          onChange={(e) =>
+            setState((prev) => ({ ...prev, activeTravellerId: e.target.value }))
+          }
+          aria-label="Vote as"
+        >
+          {state.travellers.map((t) => (
+            <option key={t.id} value={t.id}>
                 Vote as {t.name}
               </option>
             ))}
