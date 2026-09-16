@@ -4,17 +4,15 @@ import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
 const KEY = "kintrip.state.v2";
-const SETUP_BACKUP_KEY = "kintrip.setup-test.backup.v1";
 
 interface MultiTripState {
   activeTripId: string;
   trips: Record<string, KintripState>;
-  setupTestActive?: boolean;
+  demoTripId?: string | undefined;
 }
 
 function initialMulti(): MultiTripState {
-  const seed = createSeedState();
-  return { activeTripId: seed.trip.id, trips: { [seed.trip.id]: seed } };
+  return { activeTripId: "", trips: {} };
 }
 
 let multi: MultiTripState = initialMulti();
