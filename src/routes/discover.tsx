@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Check, ChevronDown, Clock, Footprints, MapPin, Search, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, ChevronDown, Clock, Footprints, Loader2, MapPin, Plus, Search, Wallet } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
+import { searchPlaces, type PlaceResult } from "@/lib/kintrip/places.functions";
 import { setState, useKintrip } from "@/lib/kintrip/store";
-import type { VoteValue } from "@/lib/kintrip/types";
+import type { Attraction, VoteValue } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/discover")({
