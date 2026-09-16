@@ -36,22 +36,14 @@ export const Route = createFileRoute("/")({
 });
 
 function TripTab() {
-  const { hasTrips, setupTestActive } = useTripSetupStatus();
-  if (!hasTrips) return <NoTrips setupTestActive={setupTestActive} />;
+  const { hasTrips } = useTripSetupStatus();
+  if (!hasTrips) return <NoTrips />;
   return <ActiveTrip />;
 }
 
-function NoTrips({ setupTestActive }: { setupTestActive: boolean }) {
+function NoTrips() {
   return (
     <AppShell>
-      {setupTestActive ? (
-        <div className="flex items-center justify-between gap-3 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
-          <span>Your saved trips are safely set aside while you test setup.</span>
-          <Button type="button" variant="ghost" className="shrink-0 px-3" onClick={restoreTripsAfterSetupTest}>
-            Restore
-          </Button>
-        </div>
-      ) : null}
       <section className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center py-10 text-center sm:py-16">
         <span className="mb-5 inline-flex size-16 items-center justify-center rounded-full bg-primary-soft text-primary">
           <PlaneTakeoff className="size-8" aria-hidden />
