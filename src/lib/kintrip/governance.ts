@@ -1,3 +1,4 @@
+import { comfortReview } from "./travel";
 import type {
   Attraction,
   DecisionEvent,
@@ -431,6 +432,13 @@ export function publicationChecks(state: KintripState): PublishCheck[] {
     }
     if (s.cost.estimateType !== "exact" && s.cost.perPerson > 0) {
       checks.push({ id: `price-${id}`, text: `${a.name} cost is still an estimate`, blocking: false });
+    }
+  }
+
+  for (const day of state.itinerary?.days ?? []) {
+    for (const note of comfortReview(state, day)) {
+      if (note.severity !== "watch") continue;
+      checks.push({ id: `comfort-${note.id}`, text: `Day ${day.day}: ${note.text}`, blocking: false });
     }
   }
 
