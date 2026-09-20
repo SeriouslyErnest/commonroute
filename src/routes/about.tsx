@@ -18,26 +18,26 @@ import shotDiscover from "@/assets/app-discover.jpg";
 import shotItinerary from "@/assets/app-itinerary.jpg";
 import shotReplan from "@/assets/app-replan.jpg";
 
-export const Route = createFileRoute("/welcome")({
+export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "CommonRoute — Collaborative trip planning for everyone" },
+      { title: "About CommonRoute — Collaborative trip planning for everyone" },
       {
         name: "description",
         content:
-          "Plan family and group trips together. Share preferences, vote on places and build one practical itinerary that works for the whole group.",
+          "CommonRoute turns different preferences and practical needs into one realistic group itinerary — and helps you re-plan when things change.",
       },
-      { property: "og:title", content: "CommonRoute — Collaborative trip planning for everyone" },
+      { property: "og:title", content: "About CommonRoute — Collaborative trip planning for everyone" },
       {
         property: "og:description",
         content:
-          "Share preferences, vote on places and build one practical itinerary that works for the whole group.",
+          "Plan together. Share preferences, vote on places and build one practical itinerary for the whole group.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: WelcomePage,
+  component: AboutPage,
 });
 
 const STEPS = [
@@ -113,7 +113,7 @@ const FAQS = [
   },
 ];
 
-function WelcomePage() {
+function AboutPage() {
   return (
     <main className="min-h-screen bg-background pb-16">
       <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
@@ -163,7 +163,7 @@ function WelcomePage() {
               </a>
             </div>
             <p className="mt-4 text-sm font-semibold opacity-90">
-               Plan together. Find your common route.
+              Plan together. Find your common route.
             </p>
           </div>
         </div>
@@ -262,6 +262,9 @@ function WelcomePage() {
         <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="mx-auto h-auto w-full max-w-[360px]" />
         <p className="mt-3 text-sm font-semibold text-muted-foreground">
           Plan together. Find your common route.
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Last updated: 20 September 2026.
         </p>
       </footer>
     </main>

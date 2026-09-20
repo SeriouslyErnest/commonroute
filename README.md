@@ -1,5 +1,7 @@
 # Welcome to your Lovable project
 
+CommonRoute is a remix of [Kintrip](https://github.com/ernestsee/kintrip), a collaborative trip planner originally built for multi-generational families.
+
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
