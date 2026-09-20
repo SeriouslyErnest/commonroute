@@ -55,6 +55,12 @@ function FamilyTab() {
           <LinkButton to="/sponsor" variant="outline">
             Money decisions
           </LinkButton>
+          <LinkButton to="/fairness" variant="outline">
+            Everyone gets a win
+          </LinkButton>
+          <LinkButton to="/updates" variant="outline">
+            What&apos;s changed
+          </LinkButton>
         </div>
       </Card>
 

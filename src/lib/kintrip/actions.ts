@@ -193,6 +193,47 @@ export function unpublishItinerary() {
   });
 }
 
+/** Split one day so part of the group does something else, then meet back up. */
+export function splitDay(
+  dayNumber: number,
+  input: { memberIds: string[]; activity: string; label: string; meetingPoint: string; meetingTime: string },
+) {
+  setState((prev) => {
+    if (!prev.itinerary || !isOrganiser(prev)) return prev;
+    const rest = prev.travellers.filter((t) => !input.memberIds.includes(t.id)).map((t) => t.id);
+    const days = prev.itinerary.days.map((d) =>
+      d.day === dayNumber
+        ? {
+            ...d,
+            split: {
+              id: uid(),
+              groups: [
+                { id: uid(), label: "Main group", memberIds: rest, activity: "Stays with the planned day" },
+                { id: uid(), label: input.label || "Second group", memberIds: input.memberIds, activity: input.activity },
+              ],
+              meetingPoint: input.meetingPoint,
+              meetingTime: input.meetingTime,
+              approved: true,
+            },
+          }
+        : d,
+    );
+    const next = { ...prev, itinerary: { ...prev.itinerary, days } };
+    return withNotice(
+      logAudit(next, "Day split", `Day ${dayNumber}: ${input.activity}`),
+      { text: `Day ${dayNumber} splits into two groups, meeting at ${input.meetingPoint} at ${input.meetingTime}`, audience: "all" },
+    );
+  });
+}
+
+export function rejoinDay(dayNumber: number) {
+  setState((prev) => {
+    if (!prev.itinerary || !isOrganiser(prev)) return prev;
+    const days = prev.itinerary.days.map((d) => (d.day === dayNumber ? { ...d, split: undefined } : d));
+    return logAudit({ ...prev, itinerary: { ...prev.itinerary, days } }, "Day rejoined", `Day ${dayNumber}`);
+  });
+}
+
 /** Organiser accepts a publishing warning, with a record in the history. */
 export function acknowledgeCheck(checkId: string, text: string) {
   setState((prev) => {

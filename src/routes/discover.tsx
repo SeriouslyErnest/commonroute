@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, ChevronDown, Clock, Footprints, Loader2, MapPin, Plus, Search, Wallet } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
@@ -279,7 +279,13 @@ function DiscoverTab() {
                   </p>
                 </div>
                 <span className="flex shrink-0 flex-col items-end gap-1">
-                  <Chip tone="primary">{fitNoteFor(state, a)}</Chip>
+                  <Link
+                    to="/fit/$attractionId"
+                    params={{ attractionId: a.id }}
+                    className="text-sm font-semibold text-secondary underline-offset-2 hover:underline"
+                  >
+                    <Chip tone="primary">{fitNoteFor(state, a)}</Chip>
+                  </Link>
                   {state.suggestions[a.id] ? (
                     <Chip tone={state.suggestions[a.id]!.status === "declined" ? "sunny" : "secondary"}>
                       {STATUS_LABEL[state.suggestions[a.id]!.status]}

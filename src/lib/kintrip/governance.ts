@@ -496,6 +496,20 @@ export function withNotice(
   return { ...state, notifications: [item, ...state.notifications].slice(0, 60) };
 }
 
+/** Updates this person is allowed to see, newest first. */
+export function visibleNotifications(state: KintripState): Notification[] {
+  const roles = roleOf(state, state.activeTravellerId);
+  return state.notifications.filter((n) => {
+    if (n.audience === "all") return true;
+    if (n.audience === "organisers") return roles.includes("organiser") || roles.includes("owner");
+    return roles.includes("sponsor") || roles.includes("owner");
+  });
+}
+
+export function unreadCount(state: KintripState): number {
+  return visibleNotifications(state).filter((n) => !n.read).length;
+}
+
 export function logAudit(state: KintripState, action: string, detail: string): KintripState {
   return {
     ...state,
