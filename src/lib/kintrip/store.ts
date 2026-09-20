@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { createEmptyTripState, createSeedState } from "./seed";
 import { pullTrip, pushTrip } from "./sync.functions";
+import { normalizeState } from "./governance";
 import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
@@ -31,7 +32,7 @@ const placeholderTrip: KintripState = (() => {
     endDate: "",
     travellerCount: 0,
   });
-  return { ...base, trip: { ...base.trip, id: "placeholder" }, travellers: [] };
+  return normalizeState({ ...base, trip: { ...base.trip, id: "placeholder" }, travellers: [] });
 })();
 
 let multi: MultiTripState = initialMulti();
@@ -75,7 +76,9 @@ function loadFromStorage() {
         window.localStorage.removeItem(KEY_V1);
         return;
       }
-      multi = { ...parsed, demoTripId: parsed.demoTripId };
+      const trips: Record<string, KintripState> = {};
+      for (const [id, trip] of Object.entries(parsed.trips)) trips[id] = normalizeState(trip);
+      multi = { ...parsed, trips, demoTripId: parsed.demoTripId };
       return;
     }
   }
@@ -91,7 +94,7 @@ function loadFromStorage() {
     if (parsed?.trip?.id) {
       multi = {
         activeTripId: parsed.trip.id,
-        trips: { [parsed.trip.id]: { ...createSeedState(), ...parsed } },
+        trips: { [parsed.trip.id]: normalizeState({ ...createSeedState(), ...parsed }) },
       };
     }
   }
@@ -200,7 +203,7 @@ export async function pullActiveTrip() {
     const remoteAt = remote.state?.cachedAt ?? "";
     const localAt = local?.cachedAt ?? "";
     if (local && remoteAt && remoteAt > localAt) {
-      multi = { ...multi, trips: { ...multi.trips, [tripId]: remote.state } };
+      multi = { ...multi, trips: { ...multi.trips, [tripId]: normalizeState(remote.state) } };
       persist();
       emit();
     } else if (local && localAt > remoteAt) {
@@ -220,7 +223,7 @@ export async function joinTripByCode(code: string): Promise<string | null> {
   multi = {
     ...multi,
     activeTripId: remote.tripId,
-    trips: { ...multi.trips, [remote.tripId]: remote.state },
+    trips: { ...multi.trips, [remote.tripId]: normalizeState(remote.state) },
   };
   persist();
   emit();

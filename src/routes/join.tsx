@@ -110,6 +110,8 @@ function JoinKnownTrip() {
                   relationship: String(f.get("relationship")),
                   ageGroup: String(f.get("age")) as AgeGroup,
                   role: "member",
+                  roles: ["contributor"],
+                  needs: [],
                   joined: true,
                   prefStatus: "not_started",
                   preferences: {

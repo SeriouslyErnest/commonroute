@@ -19,6 +19,9 @@ import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as PreferencesRouteImport } from './routes/preferences'
 import { Route as ReplanRouteImport } from './routes/replan'
+import { Route as ReviewRouteImport } from './routes/review'
+import { Route as RolesRouteImport } from './routes/roles'
+import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 
@@ -72,6 +75,21 @@ const ReplanRoute = ReplanRouteImport.update({
   path: '/replan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RolesRoute = RolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SponsorRoute = SponsorRouteImport.update({
+  id: '/sponsor',
+  path: '/sponsor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TripsRoute = TripsRouteImport.update({
   id: '/trips',
   path: '/trips',
@@ -94,6 +112,9 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/preferences': typeof PreferencesRoute
   '/replan': typeof ReplanRoute
+  '/review': typeof ReviewRoute
+  '/roles': typeof RolesRoute
+  '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
   '/welcome': typeof WelcomeRoute
 }
@@ -108,6 +129,9 @@ export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/preferences': typeof PreferencesRoute
   '/replan': typeof ReplanRoute
+  '/review': typeof ReviewRoute
+  '/roles': typeof RolesRoute
+  '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
   '/welcome': typeof WelcomeRoute
 }
@@ -123,6 +147,9 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/preferences': typeof PreferencesRoute
   '/replan': typeof ReplanRoute
+  '/review': typeof ReviewRoute
+  '/roles': typeof RolesRoute
+  '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
   '/welcome': typeof WelcomeRoute
 }
@@ -139,6 +166,9 @@ export interface FileRouteTypes {
     | '/join'
     | '/preferences'
     | '/replan'
+    | '/review'
+    | '/roles'
+    | '/sponsor'
     | '/trips'
     | '/welcome'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +183,9 @@ export interface FileRouteTypes {
     | '/join'
     | '/preferences'
     | '/replan'
+    | '/review'
+    | '/roles'
+    | '/sponsor'
     | '/trips'
     | '/welcome'
   id:
@@ -167,6 +200,9 @@ export interface FileRouteTypes {
     | '/join'
     | '/preferences'
     | '/replan'
+    | '/review'
+    | '/roles'
+    | '/sponsor'
     | '/trips'
     | '/welcome'
   fileRoutesById: FileRoutesById
@@ -182,6 +218,9 @@ export interface RootRouteChildren {
   JoinRoute: typeof JoinRoute
   PreferencesRoute: typeof PreferencesRoute
   ReplanRoute: typeof ReplanRoute
+  ReviewRoute: typeof ReviewRoute
+  RolesRoute: typeof RolesRoute
+  SponsorRoute: typeof SponsorRoute
   TripsRoute: typeof TripsRoute
   WelcomeRoute: typeof WelcomeRoute
 }
@@ -258,6 +297,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReplanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roles': {
+      id: '/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof RolesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsor': {
+      id: '/sponsor'
+      path: '/sponsor'
+      fullPath: '/sponsor'
+      preLoaderRoute: typeof SponsorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trips': {
       id: '/trips'
       path: '/trips'
@@ -286,6 +346,9 @@ const rootRouteChildren: RootRouteChildren = {
   JoinRoute: JoinRoute,
   PreferencesRoute: PreferencesRoute,
   ReplanRoute: ReplanRoute,
+  ReviewRoute: ReviewRoute,
+  RolesRoute: RolesRoute,
+  SponsorRoute: SponsorRoute,
   TripsRoute: TripsRoute,
   WelcomeRoute: WelcomeRoute,
 }

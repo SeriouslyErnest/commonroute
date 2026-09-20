@@ -1,4 +1,15 @@
-import type { Attraction, KintripState, Traveller, VoteValue } from "./types";
+import { defaultCost } from "./governance";
+import type {
+  Attraction,
+  DecisionSettings,
+  KintripState,
+  Suggestion,
+  SuggestionStatus,
+  Traveller,
+  TravellerConstraint,
+  TripRole,
+  VoteValue,
+} from "./types";
 
 const pref = (
   interests: string[],
@@ -8,7 +19,7 @@ const pref = (
   constraints: string,
 ) => ({ interests, pace, walking, mustDo, avoid: "", constraints });
 
-export const seedTravellers: Traveller[] = [
+const rawTravellers: Omit<Traveller, "roles" | "needs">[] = [
   {
     id: "dad",
     name: "Wei (Dad)",
@@ -122,6 +133,38 @@ export const seedTravellers: Traveller[] = [
     ),
   },
 ];
+
+const need = (
+  id: string,
+  type: TravellerConstraint["type"],
+  severity: TravellerConstraint["severity"],
+  label: string,
+  visibility: TravellerConstraint["visibility"] = "group",
+): TravellerConstraint => ({ id, type, severity, label, visibility });
+
+const seedRoles: Record<string, TripRole[]> = {
+  dad: ["owner", "organiser"],
+  mum: ["organiser"],
+  aunt: ["sponsor", "contributor"],
+  grandpa: ["contributor"],
+  grandma: ["contributor"],
+  son: ["contributor"],
+  daughter: ["viewer"],
+};
+
+const seedNeeds: Record<string, TravellerConstraint[]> = {
+  grandpa: [need("g1", "max_walk", "hard_limit", "No more than 30 minutes of walking at a time")],
+  grandma: [need("g2", "rest_window", "comfort_need", "Needs a sit-down rest each afternoon")],
+  daughter: [need("d1", "accompaniment", "comfort_need", "Should stay with an adult", "organisers")],
+};
+
+export const seedTravellers: Traveller[] = rawTravellers.map((t) => ({
+  ...t,
+  roles: seedRoles[t.id] ?? ["contributor"],
+  needs: seedNeeds[t.id] ?? [],
+  managed: t.id === "daughter",
+  responsibleAdultId: t.id === "daughter" ? "mum" : undefined,
+}));
 
 export const seedAttractions: Attraction[] = [
   {
@@ -390,6 +433,61 @@ function buildVotes() {
   return votes;
 }
 
+const defaultDecisions: DecisionSettings = {
+  mode: "organiser",
+  voteThreshold: 0.6,
+  quorum: 0.5,
+  organiserOverrideAllowed: true,
+  sponsorThreshold: 100,
+  currency: "SGD",
+  publication: "organisers",
+};
+
+const seedStatuses: Record<string, SuggestionStatus> = {
+  sensoji: "approved",
+  teamlab: "booked",
+  meiji: "approved",
+  tsukiji: "approved",
+  fushimi: "approved",
+  kiyomizu: "approved",
+  gion: "approved",
+  arashiyama: "approved",
+  nishiki: "approved",
+  kinkakuji: "approved",
+  skytree: "sponsor_approval_required",
+  shibuya: "suggested",
+  imperial: "suggested",
+  ginza: "backup",
+  akihabara: "under_review",
+};
+
+function buildSuggestions(): Record<string, Suggestion> {
+  const out: Record<string, Suggestion> = {};
+  for (const a of seedAttractions) {
+    const status = seedStatuses[a.id] ?? "suggested";
+    const cost = defaultCost(a);
+    if (a.id === "skytree") {
+      cost.perPerson = 35;
+      cost.funding = "shared";
+      cost.estimateType = "estimated";
+    }
+    if (a.id === "teamlab") {
+      cost.perPerson = 30;
+      cost.funding = "already_booked";
+      cost.estimateType = "exact";
+    }
+    out[a.id] = {
+      attractionId: a.id,
+      status,
+      cost,
+      backupTags: a.id === "ginza" ? ["rain", "tired"] : [],
+      suggestedBy: "dad",
+      history: [],
+    };
+  }
+  return out;
+}
+
 export function createEmptyTripState(input: {
   title: string;
   destination: string;
@@ -416,6 +514,8 @@ export function createEmptyTripState(input: {
         relationship: "Organiser",
         ageGroup: "adult",
         role: "organiser",
+        roles: ["owner", "organiser"],
+        needs: [],
         joined: true,
         prefStatus: "not_started",
         preferences: {
@@ -431,6 +531,11 @@ export function createEmptyTripState(input: {
     // New trips start empty — the family builds the shortlist from Google Maps search.
     attractions: [],
     votes: {},
+    suggestions: {},
+    decisions: { ...defaultDecisions },
+    sponsorApprovals: [],
+    notifications: [],
+    audit: [],
     itinerary: null,
     notes: [],
     activeTravellerId: "organiser",
@@ -455,6 +560,11 @@ export function createSeedState(): KintripState {
     travellers: seedTravellers,
     attractions: seedAttractions,
     votes: buildVotes(),
+    suggestions: buildSuggestions(),
+    decisions: { ...defaultDecisions, sharedBudget: 4000 },
+    sponsorApprovals: [],
+    notifications: [],
+    audit: [],
     itinerary: null,
     notes: [
       { id: "n1", scope: "trip", text: "Tickets and rail passes are with Dad.", author: "Wei (Dad)" },
