@@ -86,25 +86,32 @@ function PreferencesForm({ me }: { me: Traveller }) {
         <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(step / 5) * 100}%` }} />
       </div>
 
-      <label className="block">
-        <span className="text-sm font-semibold">Answering as</span>
-        <select
-          className={cn(inputClass, "mt-1.5")}
-          value={state.activeTravellerId}
-          onChange={(e) => {
-            const id = e.target.value;
-            setState((prev) => ({ ...prev, activeTravellerId: id }));
-            const t = state.travellers.find((x) => x.id === id);
-            if (t) setDraft(t.preferences);
-          }}
-        >
-          {state.travellers.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      {demoActive ? (
+        <label className="block">
+          <span className="text-sm font-semibold">Demo: answering as</span>
+          <select
+            className={cn(inputClass, "mt-1.5")}
+            value={state.activeTravellerId}
+            onChange={(e) => {
+              const id = e.target.value;
+              setState((prev) => ({ ...prev, activeTravellerId: id }));
+              const t = state.travellers.find((x) => x.id === id);
+              if (t) setDraft(t.preferences);
+            }}
+          >
+            {state.travellers.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          These answers are saved as <span className="font-semibold text-foreground">{me.name}</span>. Everyone
+          answers for themselves on their own device.
+        </p>
+      )}
 
       <Card className="space-y-4">
         {step === 1 ? (
