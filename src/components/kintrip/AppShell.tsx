@@ -26,6 +26,31 @@ function UpdatesBell() {
   );
 }
 
+function AccountButton() {
+  const { session, email, loading } = useAccount();
+  if (loading) return null;
+  if (!session) {
+    return (
+      <Link
+        to="/auth"
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-3 text-sm font-bold text-secondary shadow-sm"
+      >
+        <LogIn className="size-4" aria-hidden /> Sign in
+      </Link>
+    );
+  }
+  const initial = (email ?? "?").trim().charAt(0).toUpperCase();
+  return (
+    <Link
+      to="/account"
+      aria-label={`Your account (${email ?? "signed in"})`}
+      className="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-secondary-soft text-base font-extrabold text-secondary shadow-sm"
+    >
+      {initial}
+    </Link>
+  );
+}
+
 function SyncBadge() {
   const status = useTripSync();
   if (status === "off") return null;
