@@ -15,6 +15,8 @@ export const Route = createFileRoute("/create")({
         property: "og:description",
         content: "Start a multi-generational trip in under a minute.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: CreateTrip,

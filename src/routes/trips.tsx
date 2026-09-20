@@ -26,6 +26,8 @@ export const Route = createFileRoute("/trips")({
         property: "og:description",
         content: "Switch between your family trips, start a new one, or join an existing trip.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MyTrips,

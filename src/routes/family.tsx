@@ -18,6 +18,8 @@ export const Route = createFileRoute("/family")({
         property: "og:description",
         content: "Who has joined, what each traveller enjoys, and the needs the plan respects.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: FamilyTab,

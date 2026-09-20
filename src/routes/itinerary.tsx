@@ -20,6 +20,8 @@ export const Route = createFileRoute("/itinerary")({
         property: "og:description",
         content: "One recommended plan, grouped geographically, with meals, rests and must-dos kept in.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ItineraryTab,

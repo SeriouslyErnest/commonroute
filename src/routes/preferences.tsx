@@ -19,6 +19,8 @@ export const Route = createFileRoute("/preferences")({
         property: "og:description",
         content: "Five quick questions so the plan fits everyone in the family.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PreferencesPage,

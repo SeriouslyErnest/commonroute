@@ -26,6 +26,8 @@ export const Route = createFileRoute("/discover")({
         property: "og:description",
         content: "Shortlist attractions together and let every family member vote in one tap.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DiscoverTab,

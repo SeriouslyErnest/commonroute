@@ -20,6 +20,8 @@ export const Route = createFileRoute("/join")({
         property: "og:description",
         content: "Join your family's trip with your name and relationship — no account needed.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: JoinTrip,

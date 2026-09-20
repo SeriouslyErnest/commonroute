@@ -20,6 +20,8 @@ export const Route = createFileRoute("/consensus")({
         property: "og:description",
         content: "Strong favourites, mixed preferences and key considerations in one summary.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ConsensusPage,

@@ -21,6 +21,8 @@ export const Route = createFileRoute("/replan")({
         property: "og:description",
         content: "Tell CommonRoute what changed and get one revised plan for the rest of today.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ReplanPage,
