@@ -4,7 +4,11 @@ import { Check, ChevronDown, Clock, Footprints, Loader2, MapPin, Plus, Search, W
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
-import { searchPlaces, type PlaceResult } from "@/lib/kintrip/places.functions";
+import {
+  searchPlaces,
+  type PlaceProvider,
+  type PlaceResult,
+} from "@/lib/kintrip/places.functions";
 import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import type { Attraction, VoteValue } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
@@ -36,24 +40,41 @@ function DiscoverTab() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [provider, setProvider] = useState<PlaceProvider>("free");
+  const [searchError, setSearchError] = useState<string | null>(null);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
+
+  useEffect(() => {
+    const saved = localStorage.getItem("kintrip.placeProvider");
+    if (saved === "free" || saved === "google") setProvider(saved);
+  }, []);
+
+  const chooseProvider = (next: PlaceProvider) => {
+    setProvider(next);
+    localStorage.setItem("kintrip.placeProvider", next);
+  };
 
   useEffect(() => {
     const q = query.trim();
     if (q.length < 2) {
       setGoogleResults([]);
       setSearching(false);
+      setSearchError(null);
       return;
     }
     setSearching(true);
+    setSearchError(null);
     const timer = setTimeout(() => {
-      searchPlaces({ data: { query: q, destination: state.trip.destination } })
+      searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
         .then((results) => setGoogleResults(results))
-        .catch(() => setGoogleResults([]))
+        .catch(() => {
+          setGoogleResults([]);
+          setSearchError("Search is unavailable right now. Try the other map source.");
+        })
         .finally(() => setSearching(false));
     }, 400);
     return () => clearTimeout(timer);
-  }, [query, state.trip.destination]);
+  }, [query, state.trip.destination, provider]);
 
   if (!me) return null;
 
@@ -71,7 +92,7 @@ function DiscoverTab() {
       name: p.name,
       city,
       area: addressParts[1] || city,
-      category: "From Google Maps",
+      category: p.provider === "google" ? "From Google Maps" : "From map search",
       description: p.address,
       durationMin: 120,
       walking: "moderate",
@@ -125,6 +146,35 @@ function DiscoverTab() {
         ) : (
           <Chip tone="primary">Your votes only · {me.name}</Chip>
         )}
+        <div className="sm:col-span-2">
+          <div
+            role="group"
+            aria-label="Place search source"
+            className="inline-flex rounded-full bg-muted p-1 text-sm font-semibold"
+          >
+            {(
+              [
+                ["free", "Free map search"],
+                ["google", "Google Maps"],
+              ] as Array<[PlaceProvider, string]>
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => chooseProvider(value)}
+                aria-pressed={provider === value}
+                className={cn(
+                  "min-h-9 rounded-full px-3",
+                  provider === value
+                    ? "bg-card text-secondary shadow-sm"
+                    : "text-muted-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </Card>
 
       {query.trim().length >= 2 ? (
@@ -135,9 +185,11 @@ function DiscoverTab() {
             ) : (
               <MapPin className="size-5 text-secondary" aria-hidden />
             )}
-            Found on Google Maps
+            {provider === "google" ? "Found on Google Maps" : "Found on free map search"}
           </h2>
-          {!searching && googleResults.length === 0 ? (
+          {searchError ? (
+            <p className="text-sm text-muted-foreground">{searchError}</p>
+          ) : !searching && googleResults.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No places found for “{query.trim()}” in {state.trip.destination}. Try a different name.
             </p>
