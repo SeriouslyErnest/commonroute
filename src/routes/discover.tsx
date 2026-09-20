@@ -162,7 +162,6 @@ function DiscoverTab() {
       capturedAt: new Date().toISOString(),
     };
     const existing = findDuplicate(state.attractions, attraction);
-    console.log('dupcheck', state.attractions.length, attraction.name, attraction.latitude, existing?.name);
     if (existing) {
       setAddNotice(`${existing.name} is already on your shortlist.`);
       return;
