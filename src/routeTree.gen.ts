@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as ConsensusRouteImport } from './routes/consensus'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -27,6 +28,7 @@ import { Route as ReplanRouteImport } from './routes/replan'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as SponsorRouteImport } from './routes/sponsor'
+import { Route as TodayRouteImport } from './routes/today'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as FitAttractionIdRouteImport } from './routes/fit.$attractionId'
@@ -49,6 +51,11 @@ const AccountRoute = AccountRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingsRoute = BookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsensusRoute = ConsensusRouteImport.update({
@@ -121,6 +128,11 @@ const SponsorRoute = SponsorRouteImport.update({
   path: '/sponsor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TodayRoute = TodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TripsRoute = TripsRouteImport.update({
   id: '/trips',
   path: '/trips',
@@ -142,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/bookings': typeof BookingsRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
@@ -156,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
+  '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
@@ -165,6 +179,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/bookings': typeof BookingsRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
@@ -179,6 +194,7 @@ export interface FileRoutesByTo {
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
+  '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
@@ -189,6 +205,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/bookings': typeof BookingsRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
@@ -203,6 +220,7 @@ export interface FileRoutesById {
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
+  '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
@@ -214,6 +232,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/auth'
+    | '/bookings'
     | '/consensus'
     | '/create'
     | '/discover'
@@ -228,6 +247,7 @@ export interface FileRouteTypes {
     | '/review'
     | '/roles'
     | '/sponsor'
+    | '/today'
     | '/trips'
     | '/updates'
     | '/fit/$attractionId'
@@ -237,6 +257,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/auth'
+    | '/bookings'
     | '/consensus'
     | '/create'
     | '/discover'
@@ -251,6 +272,7 @@ export interface FileRouteTypes {
     | '/review'
     | '/roles'
     | '/sponsor'
+    | '/today'
     | '/trips'
     | '/updates'
     | '/fit/$attractionId'
@@ -260,6 +282,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/auth'
+    | '/bookings'
     | '/consensus'
     | '/create'
     | '/discover'
@@ -274,6 +297,7 @@ export interface FileRouteTypes {
     | '/review'
     | '/roles'
     | '/sponsor'
+    | '/today'
     | '/trips'
     | '/updates'
     | '/fit/$attractionId'
@@ -284,6 +308,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
+  BookingsRoute: typeof BookingsRoute
   ConsensusRoute: typeof ConsensusRoute
   CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
@@ -298,6 +323,7 @@ export interface RootRouteChildren {
   ReviewRoute: typeof ReviewRoute
   RolesRoute: typeof RolesRoute
   SponsorRoute: typeof SponsorRoute
+  TodayRoute: typeof TodayRoute
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
   FitAttractionIdRoute: typeof FitAttractionIdRoute
@@ -331,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookings': {
+      id: '/bookings'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof BookingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consensus': {
@@ -431,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SponsorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/today': {
+      id: '/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trips': {
       id: '/trips'
       path: '/trips'
@@ -460,6 +500,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
+  BookingsRoute: BookingsRoute,
   ConsensusRoute: ConsensusRoute,
   CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,
@@ -474,6 +515,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewRoute: ReviewRoute,
   RolesRoute: RolesRoute,
   SponsorRoute: SponsorRoute,
+  TodayRoute: TodayRoute,
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,
   FitAttractionIdRoute: FitAttractionIdRoute,
