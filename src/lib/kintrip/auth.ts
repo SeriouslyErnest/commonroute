@@ -68,3 +68,17 @@ export async function sendSignInLink(email: string, returnTo: string) {
 export async function signOutEverything() {
   await supabase.auth.signOut();
 }
+
+/** Sign out of this device and every other device this account is open on. */
+export async function signOutEveryDevice() {
+  await supabase.auth.signOut({ scope: "global" });
+}
+
+/** Start an email change: a confirmation link goes to the new address. */
+export async function changeEmail(next: string) {
+  const { error } = await supabase.auth.updateUser(
+    { email: next.trim() },
+    { emailRedirectTo: `${window.location.origin}/auth?next=/account` },
+  );
+  if (error) throw new Error(error.message);
+}
