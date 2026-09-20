@@ -103,6 +103,7 @@ export function AppShell({
             Plan together. Find your common route.
           </p>
           <span className="flex items-center gap-2 sm:justify-self-end">
+          <AccountButton />
           {hasTrips ? <UpdatesBell /> : null}
           {demoActive ? (
             <Button
