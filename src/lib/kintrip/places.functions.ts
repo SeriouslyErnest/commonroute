@@ -128,7 +128,7 @@ async function searchFree(query: string, destination: string): Promise<PlaceResu
       }>;
     };
     return (payload.results ?? [])
-      .map((r, i) => {
+      .map((r, i): PlaceResult | null => {
         const name = r.name || r.address_line1 || r.formatted || "";
         const address = r.formatted ?? "";
         if (!name) return null;
@@ -171,7 +171,7 @@ async function searchFree(query: string, destination: string): Promise<PlaceResu
     lon?: string;
   }>;
   return payload
-    .map((r, i) => {
+    .map((r, i): PlaceResult | null => {
       const display = r.display_name ?? "";
       const name = r.name || display.split(",")[0]?.trim() || "";
       if (!name) return null;
