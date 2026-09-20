@@ -6,3 +6,5 @@
 - [x] Add a clear Demo-mode return action that restores the editable starting page.
 - [x] Keep Back to start visible on every Demo screen and reduce expensive mobile blur effects.
 - [x] Match the starting screen to the supplied setup reference and keep Japan exclusively in Demo mode.
+- [ ] Link the managed Google Maps Platform connection to the remixed project.
+- [ ] Evaluate open-source map alternatives and decide whether to switch from Google Maps (user question).
