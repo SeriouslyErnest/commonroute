@@ -72,6 +72,11 @@ export function travelGaps(state: KintripState, day: ItineraryDay): TravelGap[] 
       a.attractionId ? byId.get(a.attractionId) : undefined,
       b.attractionId ? byId.get(b.attractionId) : undefined,
     );
+    // Meals and breaks usually happen where you already are, so no travel leg is shown.
+    const nearby =
+      (!a.attractionId && (a.kind === "meal" || a.kind === "rest")) ||
+      (!b.attractionId && (b.kind === "meal" || b.kind === "rest"));
+    if (nearby) continue;
     const gap = toMinutes(b.start) - (toMinutes(a.start) + a.durationMin);
     gaps.push({ afterItemId: a.id, beforeItemId: b.id, estimate, gap, tight: gap < estimate.minutes });
   }
@@ -148,7 +153,10 @@ export function comfortReview(state: KintripState, day: ItineraryDay): ComfortNo
   if (tight > 0) {
     notes.push({
       id: `travel-${day.day}`,
-      text: `${tight} ${tight === 1 ? "hop" : "hops"} between stops look tight once travel time is counted.`,
+      text:
+        tight === 1
+          ? "One hop between stops looks tight once travel time is counted."
+          : `${tight} hops between stops look tight once travel time is counted.`,
       severity: "watch",
     });
   }
