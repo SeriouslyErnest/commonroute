@@ -80,7 +80,7 @@ function AccountPage() {
   }
 
   return (
-    <AppShell title="Your account" subtitle={email ?? undefined}>
+    <AppShell title="Your account" {...(email ? { subtitle: email } : {})}>
       <div className="space-y-4">
         <Card>
           <form className="space-y-4" onSubmit={save}>
