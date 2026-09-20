@@ -4,6 +4,8 @@ import { Check, Download, Share2, Sparkles, TriangleAlert } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate, generateItinerary, pretty } from "@/lib/kintrip/engine";
+import { canPublish, dayEnergy, publicationChecks } from "@/lib/kintrip/governance";
+import { publishItinerary, toggleItemLock, unpublishItinerary } from "@/lib/kintrip/actions";
 import { setState, useKintrip } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/itinerary")({
@@ -48,6 +50,10 @@ function ItineraryTab() {
   }
 
   const activities = itinerary.days.flatMap((d) => d.items.filter((i) => i.kind === "activity"));
+  const checks = publicationChecks(state);
+  const blocking = checks.filter((c) => c.blocking);
+  const warnings = checks.filter((c) => !c.blocking);
+  const mayPublish = canPublish(state);
 
   return (
     <AppShell
@@ -98,7 +104,11 @@ function ItineraryTab() {
                 </span>
                 <span className="text-sm font-semibold text-secondary">{open ? "Hide" : "View"}</span>
               </button>
-              {day.timingNote ? <Chip tone="sunny">1 timing note</Chip> : null}
+              <div className="flex flex-wrap gap-2">
+                <Chip tone={energyTone(day.day, state)}>{dayEnergy(state, day).label} day</Chip>
+                {day.timingNote ? <Chip tone="sunny">1 timing note</Chip> : null}
+              </div>
+              <p className="text-sm text-muted-foreground">{dayEnergy(state, day).explanation}</p>
               {open ? (
                 <ol className="space-y-3 pt-2">
                   {day.items.map((item) => (
@@ -113,6 +123,11 @@ function ItineraryTab() {
                             ? `${item.durationMin} min · ${item.transport}`
                             : `${item.durationMin} min${item.address ? ` · ${item.address}` : ""}`}
                         </span>
+                        {item.locked ? (
+                          <span className="mt-1 block text-sm font-semibold text-secondary">
+                            Locked in{item.lockedBy ? ` by ${item.lockedBy}` : ""} — this stop stays put
+                          </span>
+                        ) : null}
                         {item.note ? (
                           <span className="mt-1 block text-sm text-muted-foreground">{item.note}</span>
                         ) : null}
@@ -122,6 +137,7 @@ function ItineraryTab() {
                               variant="outline"
                               className="min-h-10 px-3 text-sm"
                               onClick={() => moveItem(day.day, item.id, 1)}
+                              disabled={item.locked}
                             >
                               Move to next day
                             </Button>
@@ -129,8 +145,16 @@ function ItineraryTab() {
                               variant="outline"
                               className="min-h-10 px-3 text-sm"
                               onClick={() => removeItem(day.day, item.id)}
+                              disabled={item.locked}
                             >
                               Remove
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              className="min-h-10 px-3 text-sm"
+                              onClick={() => toggleItemLock(day.day, item.id)}
+                            >
+                              {item.locked ? "Unlock" : "Lock in"}
                             </Button>
                           </span>
                         ) : null}
@@ -143,6 +167,50 @@ function ItineraryTab() {
           );
         })}
       </div>
+
+      <Card className="space-y-3">
+        <h2 className="text-lg">Share this plan with the group</h2>
+        {blocking.length > 0 ? (
+          <ul className="space-y-1 text-sm">
+            {blocking.map((c) => (
+              <li key={c.id} className="text-coral-foreground">✕ {c.text}</li>
+            ))}
+          </ul>
+        ) : null}
+        {warnings.length > 0 ? (
+          <ul className="space-y-1 text-sm">
+            {warnings.map((c) => (
+              <li key={c.id} className="text-muted-foreground">⚠ {c.text}</li>
+            ))}
+          </ul>
+        ) : null}
+        {blocking.length === 0 && warnings.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Everything checks out — this plan is ready to publish.</p>
+        ) : null}
+        {itinerary.published ? (
+          <div className="space-y-2">
+            <Chip tone="lime">
+              Published{itinerary.publishedBy ? ` by ${itinerary.publishedBy}` : ""}
+            </Chip>
+            {mayPublish ? (
+              <Button variant="outline" onClick={() => unpublishItinerary()}>
+                Move back to draft
+              </Button>
+            ) : null}
+          </div>
+        ) : mayPublish ? (
+          <Button
+            disabled={blocking.length > 0}
+            onClick={() => publishItinerary(warnings.map((w) => w.id))}
+          >
+            Publish to the group
+          </Button>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            An organiser will publish the plan once it is ready.
+          </p>
+        )}
+      </Card>
 
       <Card className="flex flex-wrap gap-2">
         <Button
@@ -183,6 +251,13 @@ function ItineraryTab() {
       </p>
     </AppShell>
   );
+}
+
+function energyTone(dayNumber: number, state: ReturnType<typeof useKintrip>) {
+  const day = state.itinerary?.days.find((d) => d.day === dayNumber);
+  if (!day) return "neutral" as const;
+  const label = dayEnergy(state, day).label;
+  return label === "Demanding" ? ("sunny" as const) : label === "Moderate" ? ("primary" as const) : ("lime" as const);
 }
 
 function moveItem(day: number, itemId: string, offset: number) {

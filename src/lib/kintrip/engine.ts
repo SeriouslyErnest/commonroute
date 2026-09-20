@@ -1,3 +1,4 @@
+import { backupAttractions, eligibleAttractions } from "./governance";
 import type {
   Attraction,
   Itinerary,
@@ -152,7 +153,11 @@ function travelFor(fromArea: string | null, toArea: string) {
 
 export function generateItinerary(state: KintripState, variant = 0): Itinerary {
   const limit = familyWalkingLimit(state);
-  const ranked = consensusFor(state).filter((c) => c.score > 0);
+  const eligible = eligibleAttractions(state);
+  const allowed = eligible.length > 0 ? new Set(eligible.map((a) => a.id)) : null;
+  const ranked = consensusFor(state).filter((c) =>
+    allowed ? allowed.has(c.attraction.id) : c.score > 0,
+  );
   const days = Math.max(
     1,
     Math.round(
@@ -332,6 +337,20 @@ export function generateItinerary(state: KintripState, variant = 0): Itinerary {
     ),
   };
 
+  // Mark how firm each stop is: booked places are anchors and never moved.
+  for (const d of dayPlans) {
+    d.items = d.items.map((item) => {
+      if (item.kind === "rest") return { ...item, rigidity: "rest" as const };
+      if (item.kind !== "activity") return item;
+      const status = state.suggestions[item.attractionId ?? ""]?.status;
+      return {
+        ...item,
+        rigidity: status === "booked" ? ("anchor" as const) : ("preferred" as const),
+        locked: status === "booked" ? true : item.locked,
+      };
+    });
+  }
+
   return {
     tripId: state.trip.id,
     version: variant + 1,
@@ -386,6 +405,7 @@ export function replanDay(
   const dropped: ItineraryItem[] = [];
   for (const item of remainingActivities) {
     if (item.id === priority?.id) continue;
+    if (item.locked || item.rigidity === "anchor") continue; // booked or locked stops stay put
     const attraction = state.attractions.find((a) => a.id === item.attractionId);
     const outdoor = attraction ? !attraction.indoor : false;
     const heavy = attraction ? WALK_RANK[attraction.walking]! >= 1 : false;
@@ -411,8 +431,11 @@ export function replanDay(
 
   // Indoor, lower-effort alternative when the weather turns.
   if ((rain || tired) && dropped.length > 0) {
-    const alt = state.attractions
-      .filter((a) => a.city === day.city && a.indoor && !used.has(a.id))
+    const backups = backupAttractions(state, rain ? "rain" : "tired").filter(
+      (a) => a.city === day.city && !used.has(a.id),
+    );
+    const alt = [...backups, ...state.attractions]
+      .filter((a) => a.city === day.city && (a.indoor || backups.includes(a)) && !used.has(a.id))
       .sort((a, b) => (scores.get(b.id) ?? 0) - (scores.get(a.id) ?? 0))[0];
     if (alt) {
       remaining.push({

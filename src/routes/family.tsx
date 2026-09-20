@@ -46,6 +46,15 @@ function FamilyTab() {
           <LinkButton to="/invite" variant="outline">
             Invite more people
           </LinkButton>
+          <LinkButton to="/roles" variant="outline">
+            Roles and decisions
+          </LinkButton>
+          <LinkButton to="/review" variant="outline">
+            Review suggestions
+          </LinkButton>
+          <LinkButton to="/sponsor" variant="outline">
+            Money decisions
+          </LinkButton>
         </div>
       </Card>
 

@@ -4,6 +4,7 @@ import { Check, ChevronDown, Clock, Footprints, Loader2, MapPin, Plus, Search, W
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
+import { newSuggestion, STATUS_LABEL } from "@/lib/kintrip/governance";
 import {
   searchPlaces,
   type PlaceProvider,
@@ -107,9 +108,20 @@ function DiscoverTab() {
     setState((prev) =>
       prev.attractions.some((a) => a.id === id)
         ? prev
-        : { ...prev, attractions: [...prev.attractions, attraction] },
+        : {
+            ...prev,
+            attractions: [...prev.attractions, attraction],
+            suggestions: {
+              ...prev.suggestions,
+              [id]: newSuggestion(attraction, prev.activeTravellerId),
+            },
+          },
     );
   };
+
+  const pendingReview = Object.values(state.suggestions).filter(
+    (x) => x.status === "suggested" || x.status === "under_review",
+  ).length;
 
   const list = state.attractions.filter(
     (a) =>
@@ -178,6 +190,18 @@ function DiscoverTab() {
           </div>
         </div>
       </Card>
+
+      {pendingReview > 0 ? (
+        <Card className="flex flex-wrap items-center justify-between gap-2 bg-primary-soft">
+          <p className="text-sm">
+            <strong>{pendingReview}</strong> suggested {pendingReview === 1 ? "place is" : "places are"} waiting
+            for an organiser decision.
+          </p>
+          <LinkButton to="/review" variant="secondary">
+            Review suggestions
+          </LinkButton>
+        </Card>
+      ) : null}
 
       {query.trim().length >= 2 ? (
         <Card className="space-y-2">
@@ -254,7 +278,14 @@ function DiscoverTab() {
                     {a.area}, {a.city} · {a.category}
                   </p>
                 </div>
-                <Chip tone="primary">{fitNoteFor(state, a)}</Chip>
+                <span className="flex shrink-0 flex-col items-end gap-1">
+                  <Chip tone="primary">{fitNoteFor(state, a)}</Chip>
+                  {state.suggestions[a.id] ? (
+                    <Chip tone={state.suggestions[a.id]!.status === "declined" ? "sunny" : "secondary"}>
+                      {STATUS_LABEL[state.suggestions[a.id]!.status]}
+                    </Chip>
+                  ) : null}
+                </span>
               </div>
               <p className="text-sm">{a.description}</p>
               <a
