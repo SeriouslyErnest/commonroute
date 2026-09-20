@@ -361,6 +361,7 @@ export interface PublishCheck {
 
 export function publicationChecks(state: KintripState): PublishCheck[] {
   const checks: PublishCheck[] = [];
+  const acknowledged = new Set(state.itinerary?.acknowledged ?? []);
   const plannedIds = new Set(
     (state.itinerary?.days ?? []).flatMap((d) => d.items.map((i) => i.attractionId).filter(Boolean) as string[]),
   );
@@ -407,7 +408,8 @@ export function publicationChecks(state: KintripState): PublishCheck[] {
       });
     }
   }
-  return checks;
+  // An organiser can accept a warning in writing; accepted items stop blocking.
+  return checks.map((c) => (acknowledged.has(c.id) ? { ...c, blocking: false } : c));
 }
 
 export function approvedSpend(state: KintripState) {

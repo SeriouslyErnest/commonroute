@@ -193,6 +193,19 @@ export function unpublishItinerary() {
   });
 }
 
+/** Organiser accepts a publishing warning, with a record in the history. */
+export function acknowledgeCheck(checkId: string, text: string) {
+  setState((prev) => {
+    if (!prev.itinerary || !isOrganiser(prev)) return prev;
+    const acknowledged = [...new Set([...(prev.itinerary.acknowledged ?? []), checkId])];
+    return logAudit(
+      { ...prev, itinerary: { ...prev.itinerary, acknowledged } },
+      "Warning accepted",
+      text,
+    );
+  });
+}
+
 export function markNotificationsRead() {
   setState((prev) => ({ ...prev, notifications: prev.notifications.map((n) => ({ ...n, read: true })) }));
 }

@@ -5,7 +5,12 @@ import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate, generateItinerary, pretty } from "@/lib/kintrip/engine";
 import { canPublish, dayEnergy, publicationChecks } from "@/lib/kintrip/governance";
-import { publishItinerary, toggleItemLock, unpublishItinerary } from "@/lib/kintrip/actions";
+import {
+  acknowledgeCheck,
+  publishItinerary,
+  toggleItemLock,
+  unpublishItinerary,
+} from "@/lib/kintrip/actions";
 import { setState, useKintrip } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/itinerary")({
@@ -173,7 +178,18 @@ function ItineraryTab() {
         {blocking.length > 0 ? (
           <ul className="space-y-1 text-sm">
             {blocking.map((c) => (
-              <li key={c.id} className="text-coral-foreground">✕ {c.text}</li>
+              <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 text-coral-foreground">
+                <span>✕ {c.text}</span>
+                {mayPublish ? (
+                  <Button
+                    variant="outline"
+                    className="min-h-10 px-3 text-sm"
+                    onClick={() => acknowledgeCheck(c.id, c.text)}
+                  >
+                    We&apos;ve sorted this
+                  </Button>
+                ) : null}
+              </li>
             ))}
           </ul>
         ) : null}
