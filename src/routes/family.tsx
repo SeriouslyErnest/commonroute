@@ -58,11 +58,19 @@ function FamilyTab() {
           <LinkButton to="/fairness" variant="outline">
             Everyone gets a win
           </LinkButton>
+          <LinkButton to="/bookings" variant="outline">
+            Bookings and stay
+          </LinkButton>
+          <LinkButton to="/getting-ready" variant="outline">
+            Getting ready
+          </LinkButton>
           <LinkButton to="/updates" variant="outline">
             What&apos;s changed
           </LinkButton>
         </div>
       </Card>
+
+      <HelpPanel />
 
       <div className="grid gap-3 sm:grid-cols-2">
         {state.travellers.map((t) => (

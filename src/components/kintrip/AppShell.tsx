@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, LogIn, Map, Users, WifiOff } from "lucide-react";
+import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, LogIn, Map, Sun, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
@@ -73,6 +73,7 @@ function SyncBadge() {
 
 const tabs = [
   { to: "/", label: "Trip", icon: CalendarRange },
+  { to: "/today", label: "Today", icon: Sun },
   { to: "/discover", label: "Discover", icon: Compass },
   { to: "/itinerary", label: "Itinerary", icon: Map },
   { to: "/family", label: "Group", icon: Users },

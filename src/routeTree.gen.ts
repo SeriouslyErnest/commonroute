@@ -19,6 +19,7 @@ import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as FairnessRouteImport } from './routes/fairness'
 import { Route as FamilyRouteImport } from './routes/family'
+import { Route as GettingReadyRouteImport } from './routes/getting-ready'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
@@ -81,6 +82,11 @@ const FairnessRoute = FairnessRouteImport.update({
 const FamilyRoute = FamilyRouteImport.update({
   id: '/family',
   path: '/family',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GettingReadyRoute = GettingReadyRouteImport.update({
+  id: '/getting-ready',
+  path: '/getting-ready',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InviteRoute = InviteRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
+  '/getting-ready': typeof GettingReadyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
+  '/getting-ready': typeof GettingReadyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
+  '/getting-ready': typeof GettingReadyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/fairness'
     | '/family'
+    | '/getting-ready'
     | '/invite'
     | '/itinerary'
     | '/join'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/fairness'
     | '/family'
+    | '/getting-ready'
     | '/invite'
     | '/itinerary'
     | '/join'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/fairness'
     | '/family'
+    | '/getting-ready'
     | '/invite'
     | '/itinerary'
     | '/join'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   FairnessRoute: typeof FairnessRoute
   FamilyRoute: typeof FamilyRoute
+  GettingReadyRoute: typeof GettingReadyRoute
   InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
@@ -399,6 +412,13 @@ declare module '@tanstack/react-router' {
       path: '/family'
       fullPath: '/family'
       preLoaderRoute: typeof FamilyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/getting-ready': {
+      id: '/getting-ready'
+      path: '/getting-ready'
+      fullPath: '/getting-ready'
+      preLoaderRoute: typeof GettingReadyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invite': {
@@ -506,6 +526,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   FairnessRoute: FairnessRoute,
   FamilyRoute: FamilyRoute,
+  GettingReadyRoute: GettingReadyRoute,
   InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,
