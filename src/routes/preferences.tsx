@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Field, inputClass } from "@/components/kintrip/ui";
-import { setState, useKintrip } from "@/lib/kintrip/store";
+import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import type { Pace, Traveller, Walking } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
 
