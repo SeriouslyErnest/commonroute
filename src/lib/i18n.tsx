@@ -441,7 +441,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) continue;
         const source = originals.get(node) ?? node.data;
         originals.set(node, source);
-        node.data = translateText(source);
+        const translated = translateText(source);
+        if (node.data !== translated) node.data = translated;
       }
       const elements = root instanceof Element ? [root, ...root.querySelectorAll("*")] : [];
       for (const element of elements) {
@@ -455,7 +456,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
           if (!current) continue;
           const source = stored.get(attribute) ?? current;
           stored.set(attribute, source);
-          element.setAttribute(attribute, translateText(source));
+          const translated = translateText(source);
+          if (current !== translated) element.setAttribute(attribute, translated);
         }
       }
     };
