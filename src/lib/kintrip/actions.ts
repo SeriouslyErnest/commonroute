@@ -8,16 +8,24 @@ import {
   isSponsor,
   canPublish,
   publicationChecks,
+  canEditFor,
+  proxyLabel,
 } from "./governance";
 import type {
+  Booking,
   DeclineReasonCode,
   DecisionSettings,
+  KintripState,
+  PackingItem,
   SponsorApproval,
   SponsorDecision,
   SuggestionCost,
   SuggestionStatus,
+  Traveller,
   TravellerConstraint,
   TripRole,
+  TripTask,
+  VoteValue,
 } from "./types";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
