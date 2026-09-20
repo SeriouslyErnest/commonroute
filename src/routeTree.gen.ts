@@ -27,7 +27,6 @@ import { Route as RolesRouteImport } from './routes/roles'
 import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
-import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as FitAttractionIdRouteImport } from './routes/fit.$attractionId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -120,11 +119,6 @@ const UpdatesRoute = UpdatesRouteImport.update({
   path: '/updates',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WelcomeRoute = WelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FitAttractionIdRoute = FitAttractionIdRouteImport.update({
   id: '/fit/$attractionId',
   path: '/fit/$attractionId',
@@ -150,7 +144,6 @@ export interface FileRoutesByFullPath {
   '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
-  '/welcome': typeof WelcomeRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
 }
 export interface FileRoutesByTo {
@@ -172,7 +165,6 @@ export interface FileRoutesByTo {
   '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
-  '/welcome': typeof WelcomeRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
 }
 export interface FileRoutesById {
@@ -195,7 +187,6 @@ export interface FileRoutesById {
   '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
-  '/welcome': typeof WelcomeRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
 }
 export interface FileRouteTypes {
@@ -219,7 +210,6 @@ export interface FileRouteTypes {
     | '/sponsor'
     | '/trips'
     | '/updates'
-    | '/welcome'
     | '/fit/$attractionId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -241,7 +231,6 @@ export interface FileRouteTypes {
     | '/sponsor'
     | '/trips'
     | '/updates'
-    | '/welcome'
     | '/fit/$attractionId'
   id:
     | '__root__'
@@ -263,7 +252,6 @@ export interface FileRouteTypes {
     | '/sponsor'
     | '/trips'
     | '/updates'
-    | '/welcome'
     | '/fit/$attractionId'
   fileRoutesById: FileRoutesById
 }
@@ -286,7 +274,6 @@ export interface RootRouteChildren {
   SponsorRoute: typeof SponsorRoute
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
-  WelcomeRoute: typeof WelcomeRoute
   FitAttractionIdRoute: typeof FitAttractionIdRoute
 }
 
@@ -418,13 +405,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpdatesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/welcome': {
-      id: '/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/fit/$attractionId': {
       id: '/fit/$attractionId'
       path: '/fit/$attractionId'
@@ -454,7 +434,6 @@ const rootRouteChildren: RootRouteChildren = {
   SponsorRoute: SponsorRoute,
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,
-  WelcomeRoute: WelcomeRoute,
   FitAttractionIdRoute: FitAttractionIdRoute,
 }
 export const routeTree = rootRouteImport
