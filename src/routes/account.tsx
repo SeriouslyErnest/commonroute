@@ -1,10 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Mail, Trash2, User } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Field, LinkButton, inputClass } from "@/components/kintrip/ui";
-import { signOutEverything, useAccount } from "@/lib/kintrip/auth";
-import { getProfile, updateProfile } from "@/lib/kintrip/account.functions";
+import {
+  changeEmail,
+  signOutEverything,
+  signOutEveryDevice,
+  useAccount,
+} from "@/lib/kintrip/auth";
+import { deleteAccount, getProfile, updateProfile } from "@/lib/kintrip/account.functions";
 import { linkAccountTrips, useTripList } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/account")({
@@ -33,6 +38,10 @@ function AccountPage() {
   const [name, setName] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteStatus, setDeleteStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!session) return;
@@ -132,7 +141,46 @@ function AccountPage() {
           </p>
         </Card>
 
-        <Card>
+        <Card className="space-y-3">
+          <h2 className="text-lg font-bold text-foreground">Sign-in email</h2>
+          <p className="text-sm text-muted-foreground">
+            Change the address your sign-in links are sent to. We'll email the new address a link to
+            confirm it; until you tap that link, the old address keeps working.
+          </p>
+          <Field label="New email address">
+            <input
+              className={inputClass}
+              type="email"
+              value={newEmail}
+              placeholder="you@example.com"
+              onChange={(e) => setNewEmail(e.target.value)}
+            />
+          </Field>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!newEmail.trim()}
+              onClick={async () => {
+                setEmailStatus(null);
+                try {
+                  await changeEmail(newEmail);
+                  setEmailStatus("Check your new address for a confirmation link.");
+                  setNewEmail("");
+                } catch (err) {
+                  setEmailStatus(err instanceof Error ? err.message : "Couldn't change your email");
+                }
+              }}
+            >
+              <Mail className="size-4" aria-hidden /> Send confirmation link
+            </Button>
+            {emailStatus ? (
+              <span className="text-sm font-semibold text-muted-foreground">{emailStatus}</span>
+            ) : null}
+          </div>
+        </Card>
+
+        <Card className="space-y-3">
           <Button
             type="button"
             variant="outline"
@@ -143,6 +191,56 @@ function AccountPage() {
           >
             <LogOut className="size-4" aria-hidden /> Sign out
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={async () => {
+              await signOutEveryDevice();
+              void navigate({ to: "/", replace: true });
+            }}
+          >
+            <LogOut className="size-4" aria-hidden /> Sign out on all my devices
+          </Button>
+        </Card>
+
+        <Card className="space-y-3">
+          <h2 className="text-lg font-bold text-foreground">Close your account</h2>
+          <p className="text-sm text-muted-foreground">
+            This removes your profile and the list of trips saved to your account. Trips you share
+            with others stay with the group, and anything saved on this device stays here.
+          </p>
+          {confirmDelete ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={async () => {
+                  setDeleteStatus(null);
+                  try {
+                    await deleteAccount();
+                    await signOutEverything();
+                    void navigate({ to: "/", replace: true });
+                  } catch (err) {
+                    setDeleteStatus(
+                      err instanceof Error ? err.message : "Couldn't close your account",
+                    );
+                  }
+                }}
+              >
+                <Trash2 className="size-4" aria-hidden /> Yes, close my account
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setConfirmDelete(false)}>
+                Keep my account
+              </Button>
+            </div>
+          ) : (
+            <Button type="button" variant="outline" onClick={() => setConfirmDelete(true)}>
+              <Trash2 className="size-4" aria-hidden /> Close my account
+            </Button>
+          )}
+          {deleteStatus ? (
+            <p className="text-sm font-semibold text-muted-foreground">{deleteStatus}</p>
+          ) : null}
         </Card>
       </div>
     </AppShell>
