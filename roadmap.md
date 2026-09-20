@@ -13,3 +13,4 @@
 - [x] Organiser governance: roles, review queue, decision reasons, sponsor money decisions, needs/hard limits, group fit, publishing checks, locked stops
 - [x] Group updates inbox, everyone-gets-a-win check, per-place fit detail, split-a-day between two groups, printable plan / PDF
 - [x] Passwordless accounts: email-link sign in, profile name, trips saved to your account across devices (PRD v2.1 P0)
+- [x] PRD v2.1 follow-ups: place coordinates + source captured, duplicate shortlist prevention, trip currency choice, better free map search, email change / sign out everywhere / close account
