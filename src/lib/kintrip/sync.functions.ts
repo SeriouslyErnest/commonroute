@@ -17,22 +17,47 @@ function isValidCode(code: unknown): code is string {
   return typeof code === "string" && /^[A-Za-z0-9-]{6,40}$/.test(code);
 }
 
+/** Guards the shared table against oversized or malformed trip payloads. */
+const MAX_STATE_BYTES = 512 * 1024;
+
+function safeState(state: unknown): Record<string, unknown> {
+  if (!state || typeof state !== "object" || Array.isArray(state)) {
+    throw new Error("Invalid trip data");
+  }
+  const json = JSON.stringify(state);
+  if (!json || json.length > MAX_STATE_BYTES) {
+    throw new Error("This trip is too large to share");
+  }
+  return JSON.parse(json) as Record<string, unknown>;
+}
+
 export const pushTrip = createServerFn({ method: "POST" })
   .inputValidator((input: PushInput) => {
-    if (!input || typeof input.tripId !== "string" || !isValidCode(input.shareCode)) {
+    if (
+      !input ||
+      typeof input.tripId !== "string" ||
+      !/^[A-Za-z0-9_-]{3,64}$/.test(input.tripId) ||
+      !isValidCode(input.shareCode)
+    ) {
       throw new Error("Invalid trip");
     }
-    return input;
+    return { ...input, state: safeState(input.state) as unknown as KintripState };
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: existing } = await supabaseAdmin
       .from("kintrip_trips")
-      .select("trip_id")
-      .eq("share_code", data.shareCode)
-      .maybeSingle();
-    if (existing && existing.trip_id !== data.tripId) {
-      throw new Error("Share code already in use");
+      .select("trip_id, share_code")
+      .or(`share_code.eq.${data.shareCode},trip_id.eq.${data.tripId}`);
+    for (const row of existing ?? []) {
+      // A trip may only be written by someone holding its own invite code, and
+      // an invite code may only ever point at the trip it was issued for.
+      if (row.share_code === data.shareCode && row.trip_id !== data.tripId) {
+        throw new Error("Share code already in use");
+      }
+      if (row.trip_id === data.tripId && row.share_code !== data.shareCode) {
+        throw new Error("Invalid invite code for this trip");
+      }
     }
     const { data: row, error } = await supabaseAdmin
       .from("kintrip_trips")
@@ -40,7 +65,7 @@ export const pushTrip = createServerFn({ method: "POST" })
         {
           trip_id: data.tripId,
           share_code: data.shareCode,
-          state: JSON.parse(JSON.stringify(data.state)),
+          state: data.state as unknown as never,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "trip_id" },

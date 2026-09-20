@@ -142,10 +142,23 @@ function setSyncStatus(next: SyncStatus) {
   emit();
 }
 
+/**
+ * The invite code is the only secret protecting a shared trip, so it must be
+ * unguessable: 10 characters from a 32-symbol alphabet (~50 bits) drawn from
+ * the platform CSPRNG rather than Math.random().
+ */
 function makeShareCode(): string {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const length = 10;
+  const bytes = new Uint8Array(length);
+  const cryptoObj = typeof globalThis !== "undefined" ? globalThis.crypto : undefined;
+  if (cryptoObj?.getRandomValues) {
+    cryptoObj.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < length; i += 1) bytes[i] = Math.floor(Math.random() * 256);
+  }
   let out = "";
-  for (let i = 0; i < 8; i += 1) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+  for (let i = 0; i < length; i += 1) out += alphabet[bytes[i]! % alphabet.length];
   return out;
 }
 

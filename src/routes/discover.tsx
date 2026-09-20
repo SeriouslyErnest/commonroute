@@ -20,12 +20,12 @@ export const Route = createFileRoute("/discover")({
       { title: "Discover & vote — CommonRoute" },
       {
         name: "description",
-        content: "Shortlist attractions together and let every family member vote in one tap.",
+        content: "Shortlist attractions together and let everyone in your group vote in one tap.",
       },
       { property: "og:title", content: "Discover & vote — CommonRoute" },
       {
         property: "og:description",
-        content: "Shortlist attractions together and let every family member vote in one tap.",
+        content: "Shortlist attractions together and let everyone in your group vote in one tap.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -354,7 +354,7 @@ function DiscoverTab() {
       ) : null}
 
       <div className="grid gap-2 pb-4 sm:flex sm:justify-center">
-        <LinkButton to="/consensus">See family summary</LinkButton>
+        <LinkButton to="/consensus">See group summary</LinkButton>
         <Button
           variant="outline"
           onClick={() =>
