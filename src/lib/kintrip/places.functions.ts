@@ -11,8 +11,8 @@ export interface PlaceResult {
   address: string;
   mapsUrl: string;
   provider: PlaceProvider;
-  latitude?: number;
-  longitude?: number;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 const inputSchema = z.object({
