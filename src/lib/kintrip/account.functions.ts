@@ -33,10 +33,24 @@ function validTrips(input: { trips: MembershipInput[] }) {
   return { trips };
 }
 
+/** Suspended accounts keep all their data but cannot write anything new. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertActive(context: any) {
+  const { data } = await context.supabase
+    .from("account_status")
+    .select("state")
+    .eq("user_id", context.userId)
+    .maybeSingle();
+  if (data?.state === "suspended") {
+    throw new Error("This account is paused. Contact support to have it restored.");
+  }
+}
+
 export const saveMemberships = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(validTrips)
   .handler(async ({ data, context }) => {
+    await assertActive(context);
     if (!data.trips.length) return { saved: 0 };
     const rows = data.trips.map((t) => ({
       user_id: context.userId,
@@ -106,6 +120,7 @@ export const updateProfile = createServerFn({ method: "POST" })
     return { displayName: name };
   })
   .handler(async ({ data, context }) => {
+    await assertActive(context);
     const { error } = await context.supabase
       .from("profiles")
       .upsert(
