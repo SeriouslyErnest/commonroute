@@ -239,14 +239,14 @@ export function tallyFor(state: KintripState, attractionId: string): VoteTally {
     score: 0,
     support: 0,
   };
-  for (const tr of state.travellers) {
+  for (const tr of votingTravellers(state)) {
     const v = state.votes[tr.id]?.[attractionId];
     if (!v) continue;
     t[v] += 1;
     t.cast += 1;
     t.score += VOTE_SCORE[v];
   }
-  const people = Math.max(1, state.travellers.length);
+  const people = Math.max(1, votingTravellers(state).length);
   t.support = (t.MUST_GO + t.WOULD_LIKE) / people;
   return t;
 }
@@ -265,7 +265,7 @@ export interface GroupFit {
 
 export function groupFit(state: KintripState, a: Attraction): GroupFit {
   const tally = tallyFor(state, a.id);
-  const people = Math.max(1, state.travellers.length);
+  const people = Math.max(1, votingTravellers(state).length);
   const interested = tally.MUST_GO + tally.WOULD_LIKE;
   const positives: string[] = [];
   const warnings: string[] = [];
@@ -351,7 +351,7 @@ export function fairness(state: KintripState): Fairness {
   }
   const covered: string[] = [];
   const uncovered: Traveller[] = [];
-  for (const t of state.travellers) {
+  for (const t of votingTravellers(state)) {
     const win = [...planned].some((id) => {
       const vote = state.votes[t.id]?.[id];
       if (vote === "MUST_GO") return true;
@@ -361,7 +361,7 @@ export function fairness(state: KintripState): Fairness {
     if (win) covered.push(t.id);
     else uncovered.push(t);
   }
-  return { covered, uncovered, total: state.travellers.length };
+  return { covered, uncovered, total: votingTravellers(state).length };
 }
 
 /* ---------------- energy ---------------- */
