@@ -65,8 +65,10 @@ function findDuplicate(list: Attraction[], next: Attraction): Attraction | undef
     if (next.providerPlaceId && a.providerPlaceId === next.providerPlaceId) return true;
     const sameName = simpleName(a.name) === simpleName(next.name);
     if (!sameName) return false;
+    // Same name in the same destination: treat as one place unless it is clearly
+    // a different site across town (map sources pin parks and streets loosely).
     const distance = metresApart(a, next);
-    return distance === null || distance < 600;
+    return distance === null || distance < 1500;
   });
 }
 
