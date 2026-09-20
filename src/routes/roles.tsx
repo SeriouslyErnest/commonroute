@@ -14,6 +14,8 @@ import { addNeed, removeNeed, setRoles, updateDecisionSettings } from "@/lib/kin
 import { useKintrip } from "@/lib/kintrip/store";
 import type { DecisionMode, Severity, TripRole } from "@/lib/kintrip/types";
 
+const CURRENCIES = ["SGD", "USD", "EUR", "GBP", "AUD", "JPY", "MYR", "IDR", "THB", "INR", "CNY", "HKD", "KRW", "NZD", "CAD", "CHF"];
+
 export const Route = createFileRoute("/roles")({
   head: () => ({
     meta: [
