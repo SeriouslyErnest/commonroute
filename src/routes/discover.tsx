@@ -66,7 +66,7 @@ function findDuplicate(list: Attraction[], next: Attraction): Attraction | undef
     const sameName = simpleName(a.name) === simpleName(next.name);
     if (!sameName) return false;
     const distance = metresApart(a, next);
-    return distance === null || distance < 200;
+    return distance === null || distance < 600;
   });
 }
 
