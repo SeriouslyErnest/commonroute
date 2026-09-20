@@ -1,9 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Footprints, Gauge, Heart, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, Footprints, Gauge, Heart, ShieldCheck, UserPlus } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
-import { Card, Chip, LinkButton } from "@/components/kintrip/ui";
+import { Button, Card, Chip, Field, LinkButton, inputClass } from "@/components/kintrip/ui";
+import {
+  acceptHelp,
+  addAssistedTraveller,
+  assignHelper,
+  revokeHelp,
+  setVotingEligibility,
+} from "@/lib/kintrip/actions";
 import { familyWalkingLimit } from "@/lib/kintrip/engine";
+import { isOrganiser } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
+import type { Traveller } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/family")({
   head: () => ({
