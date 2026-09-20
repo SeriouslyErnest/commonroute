@@ -36,6 +36,42 @@ export const Route = createFileRoute("/discover")({
 
 const VOTE_ORDER: VoteValue[] = ["MUST_GO", "WOULD_LIKE", "DONT_MIND", "SKIP"];
 
+const simpleName = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** Metres between two points, so the same place found twice isn't listed twice. */
+function metresApart(a: Attraction, b: Attraction): number | null {
+  if (a.latitude == null || a.longitude == null || b.latitude == null || b.longitude == null) {
+    return null;
+  }
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(b.latitude - a.latitude);
+  const dLon = toRad(b.longitude - a.longitude);
+  const lat1 = toRad(a.latitude);
+  const lat2 = toRad(b.latitude);
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return 6371000 * 2 * Math.asin(Math.sqrt(h));
+}
+
+/** The same place can come back from either map source under a different id. */
+function findDuplicate(list: Attraction[], next: Attraction): Attraction | undefined {
+  return list.find((a) => {
+    if (a.id === next.id) return true;
+    if (next.providerPlaceId && a.providerPlaceId === next.providerPlaceId) return true;
+    const sameName = simpleName(a.name) === simpleName(next.name);
+    if (!sameName) return false;
+    // Same name in the same destination: treat as one place unless it is clearly
+    // a different site across town (map sources pin parks and streets loosely).
+    const distance = metresApart(a, next);
+    return distance === null || distance < 1500;
+  });
+}
+
 function DiscoverTab() {
   const state = useKintrip();
   const { demoActive } = useTripSetupStatus();
@@ -45,6 +81,7 @@ function DiscoverTab() {
   const [searching, setSearching] = useState(false);
   const [provider, setProvider] = useState<PlaceProvider>("free");
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [addNotice, setAddNotice] = useState<string | null>(null);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
 
   useEffect(() => {
@@ -67,6 +104,7 @@ function DiscoverTab() {
     }
     setSearching(true);
     setSearchError(null);
+    setAddNotice(null);
     const timer = setTimeout(() => {
       searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
         .then((results) => setGoogleResults(results))
@@ -79,7 +117,19 @@ function DiscoverTab() {
     return () => clearTimeout(timer);
   }, [query, state.trip.destination, provider]);
 
-  if (!me) return null;
+  if (!me) {
+    return (
+      <AppShell title="Discover & vote">
+        <Card className="space-y-3">
+          <p className="text-muted-foreground">
+            You don't have a trip open yet. Start one, or open an invite, and you can shortlist
+            places and vote here.
+          </p>
+          <LinkButton to="/create">Start a trip</LinkButton>
+        </Card>
+      </AppShell>
+    );
+  }
 
   const addPlace = (p: PlaceResult) => {
     const id = `gp-${p.placeId}`;
@@ -104,19 +154,37 @@ function DiscoverTab() {
       opens: "09:00",
       closes: "18:00",
       sourceUrl: p.mapsUrl,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      provider: p.provider,
+      providerPlaceId: p.placeId,
+      sourceQuery: query.trim(),
+      capturedAt: new Date().toISOString(),
     };
+    const existing = findDuplicate(state.attractions, attraction);
+    if (existing) {
+      setAddNotice(`${existing.name} is already on your shortlist.`);
+      return;
+    }
     setState((prev) =>
-      prev.attractions.some((a) => a.id === id)
+      findDuplicate(prev.attractions, attraction)
         ? prev
         : {
             ...prev,
             attractions: [...prev.attractions, attraction],
             suggestions: {
               ...prev.suggestions,
-              [id]: newSuggestion(attraction, prev.activeTravellerId),
+              [id]: {
+                ...newSuggestion(attraction, prev.activeTravellerId),
+                cost: {
+                  ...newSuggestion(attraction, prev.activeTravellerId).cost,
+                  currency: prev.decisions.currency,
+                },
+              },
             },
           },
     );
+    setAddNotice(`${attraction.name} added to the shortlist.`);
   };
 
   const pendingReview = Object.values(state.suggestions).filter(
@@ -213,6 +281,11 @@ function DiscoverTab() {
             )}
             {provider === "google" ? "Found on Google Maps" : "Found on free map search"}
           </h2>
+          {addNotice ? (
+            <p className="text-sm text-secondary" role="status">
+              {addNotice}
+            </p>
+          ) : null}
           {searchError ? (
             <p className="text-sm text-muted-foreground">{searchError}</p>
           ) : !searching && googleResults.length === 0 ? (
@@ -222,7 +295,9 @@ function DiscoverTab() {
           ) : (
             <ul className="space-y-2">
               {googleResults.map((p) => {
-                const added = state.attractions.some((a) => a.id === `gp-${p.placeId}`);
+                const added = state.attractions.some(
+                  (a) => a.id === `gp-${p.placeId}` || a.providerPlaceId === p.placeId,
+                );
                 return (
                   <li
                     key={p.placeId}

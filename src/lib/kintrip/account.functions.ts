@@ -115,3 +115,18 @@ export const updateProfile = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { displayName: data.displayName };
   });
+
+/**
+ * Close an account: removes the person's saved trip list and profile, then the
+ * sign-in record itself. Shared trips stay with the rest of the group.
+ */
+export const deleteAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await context.supabase.from("kintrip_memberships").delete().eq("user_id", context.userId);
+    await context.supabase.from("profiles").delete().eq("id", context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(context.userId);
+    if (error) throw new Error(error.message);
+    return { deleted: true };
+  });

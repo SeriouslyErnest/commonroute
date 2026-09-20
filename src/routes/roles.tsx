@@ -14,6 +14,8 @@ import { addNeed, removeNeed, setRoles, updateDecisionSettings } from "@/lib/kin
 import { useKintrip } from "@/lib/kintrip/store";
 import type { DecisionMode, Severity, TripRole } from "@/lib/kintrip/types";
 
+const CURRENCIES = ["SGD", "USD", "EUR", "GBP", "AUD", "JPY", "MYR", "IDR", "THB", "INR", "CNY", "HKD", "KRW", "NZD", "CAD", "CHF"];
+
 export const Route = createFileRoute("/roles")({
   head: () => ({
     meta: [
@@ -67,8 +69,24 @@ function RolesPage() {
             </option>
           ))}
         </select>
+        <label className="block text-sm font-semibold" htmlFor="currency">
+          Currency for costs
+        </label>
+        <select
+          id="currency"
+          className={inputClass}
+          value={state.decisions.currency}
+          disabled={!organiser}
+          onChange={(e) => updateDecisionSettings({ currency: e.target.value })}
+        >
+          {CURRENCIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
         <label className="block text-sm font-semibold" htmlFor="budget">
-          Shared budget for the whole group (optional)
+          Shared budget for the whole group (optional), in {state.decisions.currency}
         </label>
         <input
           id="budget"
