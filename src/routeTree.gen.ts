@@ -34,6 +34,7 @@ import { Route as TodayRouteImport } from './routes/today'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as FitAttractionIdRouteImport } from './routes/fit.$attractionId'
+import { Route as OpsConsoleRouteImport } from './routes/ops.console'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -160,6 +161,11 @@ const FitAttractionIdRoute = FitAttractionIdRouteImport.update({
   path: '/fit/$attractionId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OpsConsoleRoute = OpsConsoleRouteImport.update({
+  id: '/ops/console',
+  path: '/ops/console',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
+  '/ops/console': typeof OpsConsoleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
+  '/ops/console': typeof OpsConsoleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
+  '/ops/console': typeof OpsConsoleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/trips'
     | '/updates'
     | '/fit/$attractionId'
+    | '/ops/console'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/trips'
     | '/updates'
     | '/fit/$attractionId'
+    | '/ops/console'
   id:
     | '__root__'
     | '/'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/trips'
     | '/updates'
     | '/fit/$attractionId'
+    | '/ops/console'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -353,6 +365,7 @@ export interface RootRouteChildren {
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
   FitAttractionIdRoute: typeof FitAttractionIdRoute
+  OpsConsoleRoute: typeof OpsConsoleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -532,6 +545,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FitAttractionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ops/console': {
+      id: '/ops/console'
+      path: '/ops/console'
+      fullPath: '/ops/console'
+      preLoaderRoute: typeof OpsConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -561,6 +581,7 @@ const rootRouteChildren: RootRouteChildren = {
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,
   FitAttractionIdRoute: FitAttractionIdRoute,
+  OpsConsoleRoute: OpsConsoleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
