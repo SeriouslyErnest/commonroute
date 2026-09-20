@@ -40,24 +40,41 @@ function DiscoverTab() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [provider, setProvider] = useState<PlaceProvider>("free");
+  const [searchError, setSearchError] = useState<string | null>(null);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
+
+  useEffect(() => {
+    const saved = localStorage.getItem("kintrip.placeProvider");
+    if (saved === "free" || saved === "google") setProvider(saved);
+  }, []);
+
+  const chooseProvider = (next: PlaceProvider) => {
+    setProvider(next);
+    localStorage.setItem("kintrip.placeProvider", next);
+  };
 
   useEffect(() => {
     const q = query.trim();
     if (q.length < 2) {
       setGoogleResults([]);
       setSearching(false);
+      setSearchError(null);
       return;
     }
     setSearching(true);
+    setSearchError(null);
     const timer = setTimeout(() => {
-      searchPlaces({ data: { query: q, destination: state.trip.destination } })
+      searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
         .then((results) => setGoogleResults(results))
-        .catch(() => setGoogleResults([]))
+        .catch(() => {
+          setGoogleResults([]);
+          setSearchError("Search is unavailable right now. Try the other map source.");
+        })
         .finally(() => setSearching(false));
     }, 400);
     return () => clearTimeout(timer);
-  }, [query, state.trip.destination]);
+  }, [query, state.trip.destination, provider]);
 
   if (!me) return null;
 
