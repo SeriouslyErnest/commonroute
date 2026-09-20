@@ -8,16 +8,18 @@ import { useKintrip } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/family")({
   head: () => ({
     meta: [
-      { title: "Your family — Kintrip" },
+      { title: "Your travel group — CommonRoute" },
       {
         name: "description",
         content: "See who has joined the trip, what matters to each traveller and what to plan around.",
       },
-      { property: "og:title", content: "Your family — Kintrip" },
+      { property: "og:title", content: "Your travel group — CommonRoute" },
       {
         property: "og:description",
         content: "Who has joined, what each traveller enjoys, and the needs the plan respects.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: FamilyTab,
@@ -28,7 +30,7 @@ function FamilyTab() {
   const limit = familyWalkingLimit(state);
 
   return (
-    <AppShell title="Your family" subtitle={`${state.travellers.length} ${state.travellers.length === 1 ? "traveller" : "travellers"} on this trip`}>
+    <AppShell title="Your travel group" subtitle={`${state.travellers.length} ${state.travellers.length === 1 ? "traveller" : "travellers"} on this trip`}>
       <Card className="bg-secondary-soft">
         <h2 className="flex items-center gap-2 text-lg">
           <ShieldCheck className="size-5 text-secondary" aria-hidden /> What the plan respects
@@ -42,7 +44,7 @@ function FamilyTab() {
             Update preferences
           </LinkButton>
           <LinkButton to="/invite" variant="outline">
-            Invite more family
+            Invite more people
           </LinkButton>
         </div>
       </Card>

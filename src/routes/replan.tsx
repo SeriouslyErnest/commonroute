@@ -10,17 +10,19 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/replan")({
   head: () => ({
     meta: [
-      { title: "Re-plan my day — Kintrip" },
+      { title: "Re-plan my day — CommonRoute" },
       {
         name: "description",
         content:
-          "Rain, tiredness or running late? Kintrip reshapes the rest of the day and keeps the must-dos.",
+          "Rain, tiredness or running late? CommonRoute reshapes the rest of the day and keeps the must-dos.",
       },
-      { property: "og:title", content: "Re-plan my day — Kintrip" },
+      { property: "og:title", content: "Re-plan my day — CommonRoute" },
       {
         property: "og:description",
-        content: "Tell Kintrip what changed and get one revised plan for the rest of today.",
+        content: "Tell CommonRoute what changed and get one revised plan for the rest of today.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ReplanPage,
@@ -44,7 +46,7 @@ function ReplanPage() {
   if (!state.itinerary) {
     return (
       <AppShell title="Re-plan my day" back={{ to: "/", label: "Back to today" }}>
-        <Card>Generate an itinerary first, then Kintrip can adjust it while you travel.</Card>
+        <Card>Generate an itinerary first, then CommonRoute can adjust it while you travel.</Card>
       </AppShell>
     );
   }

@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
-import logo from "@/assets/kintrip-logo.png.asset.json";
+import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
 import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
@@ -10,10 +10,10 @@ function SyncBadge() {
   const status = useTripSync();
   if (status === "off") return null;
   const map = {
-    saving: { icon: Cloud, text: "Saving for your family…" },
-    synced: { icon: Check, text: "Shared with your family" },
+    saving: { icon: Cloud, text: "Saving for your group…" },
+    synced: { icon: Check, text: "Shared with your group" },
     offline: { icon: CloudOff, text: "Offline — changes save when you reconnect" },
-    error: { icon: CloudOff, text: "Couldn't reach your family's trip — retrying" },
+    error: { icon: CloudOff, text: "Couldn't reach your group's trip — retrying" },
   } as const;
   const entry = map[status];
   const Icon = entry.icon;
@@ -28,7 +28,7 @@ const tabs = [
   { to: "/", label: "Trip", icon: CalendarRange },
   { to: "/discover", label: "Discover", icon: Compass },
   { to: "/itinerary", label: "Itinerary", icon: Map },
-  { to: "/family", label: "Family", icon: Users },
+  { to: "/family", label: "Group", icon: Users },
 ] as const;
 
 export function OfflineBar() {
@@ -73,13 +73,14 @@ export function AppShell({
 
   return (
     <div className="min-h-screen bg-background pb-40 sm:pb-32">
-      <header className="sticky top-0 z-20 border-b border-border/70 bg-card">
+      <header className="sticky top-0 z-20 border-b border-border bg-card/95">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo.url} alt="Kintrip" className="h-10 w-auto" />
+            <img src={symbol.url} alt="" className="size-11 object-contain" />
+            <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
           </Link>
           <p className="hidden text-sm text-muted-foreground sm:block">
-            Many generations. One journey. Shared memories.
+            Plan together. Find your common route.
           </p>
           {demoActive ? (
             <Button
@@ -124,7 +125,7 @@ export function AppShell({
       </main>
 
       {hasTrips ? (
-        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-3xl border border-card/10 bg-foreground px-2 shadow-lift sm:bottom-5">
+        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-2xl border border-border bg-secondary px-2 shadow-lift sm:bottom-5">
           <ul className="mx-auto flex">
             {tabs.map(({ to, label, icon: Icon }) => {
               const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
@@ -134,7 +135,7 @@ export function AppShell({
                     to={to}
                     className={cn(
                       "flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[11px] font-bold transition-colors",
-                      active ? "bg-card/10 text-primary" : "text-card/65 hover:text-card",
+                       active ? "bg-card/10 text-success" : "text-secondary-foreground/70 hover:text-secondary-foreground",
                     )}
                   >
                     <Icon className="size-6" aria-hidden />

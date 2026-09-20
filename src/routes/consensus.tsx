@@ -9,17 +9,19 @@ import { setState, useKintrip } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/consensus")({
   head: () => ({
     meta: [
-      { title: "Where the family stands — Kintrip" },
+      { title: "Where the group stands — CommonRoute" },
       {
         name: "description",
         content:
           "Strong favourites, mixed preferences and key considerations — turned into something you can act on.",
       },
-      { property: "og:title", content: "Where the family stands — Kintrip" },
+      { property: "og:title", content: "Where the group stands — CommonRoute" },
       {
         property: "og:description",
         content: "Strong favourites, mixed preferences and key considerations in one summary.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ConsensusPage,
@@ -35,7 +37,7 @@ function ConsensusPage() {
 
   return (
     <AppShell
-      title="Where the family stands"
+       title="Where the group stands"
       subtitle={`${rows.length} places reviewed`}
       back={{ to: "/discover", label: "Back to discover" }}
     >
@@ -47,7 +49,7 @@ function ConsensusPage() {
 
       <Section
         icon={<Sparkles className="size-5 text-primary" aria-hidden />}
-        title="Strong family favourites"
+         title="Strong group favourites"
         rows={strong}
       />
       <Section

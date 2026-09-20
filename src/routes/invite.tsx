@@ -9,16 +9,18 @@ import { useKintrip } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/invite")({
   head: () => ({
     meta: [
-      { title: "Invite your family — Kintrip" },
+      { title: "Invite your group — CommonRoute" },
       {
         name: "description",
         content: "Share one link and get everyone's preferences without chasing messages.",
       },
-      { property: "og:title", content: "Invite your family — Kintrip" },
+      { property: "og:title", content: "Invite your group — CommonRoute" },
       {
         property: "og:description",
         content: "Share one link and get everyone's preferences without chasing messages.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: InvitePage,
@@ -28,12 +30,12 @@ function InvitePage() {
   const state = useKintrip();
   const [copied, setCopied] = useState(false);
   // Resolved after mount so the server and first client render always match.
-  const [link, setLink] = useState("https://kintrip.app/join");
+  const [link, setLink] = useState("/join");
   const shareCode = state.trip.shareCode;
   useEffect(() => {
     setLink(`${window.location.origin}/join${shareCode ? `?code=${shareCode}` : ""}`);
   }, [shareCode]);
-  const message = `Join our family trip on Kintrip — ${state.trip.title}: ${link}`;
+  const message = `Join our trip on CommonRoute — ${state.trip.title}: ${link}`;
 
 
   return (
@@ -46,7 +48,7 @@ function InvitePage() {
         <p className="rounded-xl bg-muted px-4 py-3 text-sm break-all">{link}</p>
         <div className="flex flex-wrap gap-2">
           <a
-            className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-5 font-semibold text-primary-foreground"
+            className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-collaboration px-5 font-semibold text-collaboration-foreground"
             href={`https://wa.me/?text=${encodeURIComponent(message)}`}
             target="_blank"
             rel="noreferrer"

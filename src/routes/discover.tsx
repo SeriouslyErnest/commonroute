@@ -16,16 +16,18 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/discover")({
   head: () => ({
     meta: [
-      { title: "Discover & vote — Kintrip" },
+      { title: "Discover & vote — CommonRoute" },
       {
         name: "description",
         content: "Shortlist attractions together and let every family member vote in one tap.",
       },
-      { property: "og:title", content: "Discover & vote — Kintrip" },
+      { property: "og:title", content: "Discover & vote — CommonRoute" },
       {
         property: "og:description",
         content: "Shortlist attractions together and let every family member vote in one tap.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DiscoverTab,
@@ -166,7 +168,7 @@ function DiscoverTab() {
                 className={cn(
                   "min-h-9 rounded-full px-3",
                   provider === value
-                    ? "bg-card text-secondary shadow-sm"
+                       ? "bg-card text-primary shadow-sm"
                     : "text-muted-foreground",
                 )}
               >
@@ -217,7 +219,7 @@ function DiscoverTab() {
                       <MapPin className="size-4" aria-hidden /> View
                     </a>
                     <Button
-                      variant={added ? "outline" : "primary"}
+                       variant={added ? "outline" : "collaborative"}
                       disabled={added}
                       onClick={() => addPlace(p)}
                       className="min-h-10 px-3 text-sm"
@@ -291,7 +293,7 @@ function DiscoverTab() {
                     className={cn(
                       "min-h-12 rounded-xl border text-sm font-semibold",
                       myVote === v
-                         ? "border-primary bg-primary text-primary-foreground shadow-sm ring-2 ring-primary/20"
+                         ? "border-collaboration bg-collaboration text-collaboration-foreground shadow-sm ring-2 ring-collaboration/20"
                         : "border-border bg-card text-foreground",
                     )}
                     aria-pressed={myVote === v}

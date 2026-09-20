@@ -9,16 +9,18 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/preferences")({
   head: () => ({
     meta: [
-      { title: "Family preferences — Kintrip" },
+      { title: "Group preferences — CommonRoute" },
       {
         name: "description",
         content: "Five quick questions so the plan fits your interests, pace, walking comfort and needs.",
       },
-      { property: "og:title", content: "Family preferences — Kintrip" },
+      { property: "og:title", content: "Group preferences — CommonRoute" },
       {
         property: "og:description",
         content: "Five quick questions so the plan fits everyone in the family.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PreferencesPage,
@@ -46,7 +48,7 @@ function PreferencesPage() {
   if (!me) {
     return (
       <AppShell
-        title="Help us plan for your family"
+        title="Help us plan for your group"
         subtitle="Loading your details…"
         back={{ to: "/family", label: "Back to family" }}
       >
@@ -76,7 +78,7 @@ function PreferencesForm({ me }: { me: Traveller }) {
 
   return (
     <AppShell
-      title="Help us plan for your family"
+      title="Help us plan for your group"
       subtitle={`${step} of 5 · answering as ${me.name}`}
       back={{ to: "/family", label: "Back to family" }}
     >
@@ -107,7 +109,7 @@ function PreferencesForm({ me }: { me: Traveller }) {
       <Card className="space-y-4">
         {step === 1 ? (
           <>
-            <h2 className="text-lg">What interests your family?</h2>
+            <h2 className="text-lg">What interests you?</h2>
             <div className="flex flex-wrap gap-2">
               {INTERESTS.map((i) => {
                 const on = draft.interests.includes(i);

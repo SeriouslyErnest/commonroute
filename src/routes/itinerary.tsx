@@ -9,17 +9,19 @@ import { setState, useKintrip } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/itinerary")({
   head: () => ({
     meta: [
-      { title: "Your family itinerary — Kintrip" },
+      { title: "Your group itinerary — CommonRoute" },
       {
         name: "description",
         content:
           "One recommended family itinerary, with a plain-language explanation of why it works for everyone.",
       },
-      { property: "og:title", content: "Your family itinerary — Kintrip" },
+      { property: "og:title", content: "Your group itinerary — CommonRoute" },
       {
         property: "og:description",
         content: "One recommended plan, grouped geographically, with meals, rests and must-dos kept in.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ItineraryTab,
@@ -36,7 +38,7 @@ function ItineraryTab() {
       <AppShell title="Your itinerary" subtitle="Nothing generated yet">
         <Card className="space-y-3">
           <p>
-            Once the family has voted, Kintrip builds one recommended plan that balances everyone's
+            Once the group has voted, CommonRoute builds one recommended plan that balances everyone&apos;s
             must-dos with walking limits, meals and rest.
           </p>
           <LinkButton to="/consensus">Review and build our itinerary</LinkButton>
@@ -55,7 +57,7 @@ function ItineraryTab() {
       <Card className="border-primary/40 bg-primary-soft">
         <div className="flex items-center justify-between gap-2">
           <h2 className="flex items-center gap-2 text-lg">
-            <Sparkles className="size-5 text-primary" aria-hidden /> Good family fit
+            <Sparkles className="size-5 text-primary" aria-hidden /> Strong group fit
           </h2>
           {itinerary.finalised ? <Chip tone="lime">Final / ready</Chip> : null}
         </div>

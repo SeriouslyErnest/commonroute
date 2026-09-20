@@ -21,17 +21,17 @@ import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Kintrip — Plan a trip that works for every generation" },
+      { title: "CommonRoute — Collaborative trip planning for everyone" },
       {
         name: "description",
         content:
-          "Kintrip turns your family's different preferences and needs into one realistic itinerary — and helps you re-plan the day when things change.",
+          "CommonRoute turns different preferences and practical needs into one realistic group itinerary — and helps you re-plan when things change.",
       },
-      { property: "og:title", content: "Kintrip — family travel planning" },
+      { property: "og:title", content: "CommonRoute — Collaborative trip planning for everyone" },
       {
         property: "og:description",
         content:
-          "Many generations. One journey. Shared memories. Collect preferences, vote together and get a realistic family itinerary.",
+          "Plan together. Share preferences, vote on places and build one practical itinerary for the whole group.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -59,8 +59,8 @@ function DemoBanner() {
   if (!demoActive) return null;
   return (
     <div className="flex items-center gap-2 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
-      <span className="inline-flex items-center gap-2 font-semibold">
-        <Sparkles className="size-4" aria-hidden /> Demo trip — sample family and sample places
+        <span className="inline-flex items-center gap-2 font-semibold">
+          <Sparkles className="size-4" aria-hidden /> Demo trip — sample group and sample places
       </span>
     </div>
   );
@@ -77,7 +77,7 @@ function ActiveTrip() {
 
   if (!itinerary) {
     const steps = [
-      { label: "Invite your family", done: joined > 1, to: "/invite", hint: `${joined} joined` },
+      { label: "Invite your group", done: joined > 1, to: "/invite", hint: `${joined} joined` },
       {
         label: "Collect preferences",
         done: withPrefs >= joined,
@@ -108,14 +108,14 @@ function ActiveTrip() {
           <Card className="bg-primary-soft p-5 sm:p-6">
             <Chip tone="primary">Next step</Chip>
             <h2 className="mt-3 text-2xl">Turn everyone’s choices into one plan</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Everyone has shared their preferences and votes. See the family picture before building the itinerary.</p>
-            <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review family choices <ArrowRight className="size-5" /></LinkButton>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Everyone has shared their preferences and votes. See the group picture before building the itinerary.</p>
+            <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review group choices <ArrowRight className="size-5" /></LinkButton>
           </Card>
           <Card className="p-5">
             <p className="text-sm font-bold text-secondary">Planning progress</p>
             <p className="mt-1 text-3xl font-extrabold">3 of 4</p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full w-3/4 rounded-full bg-primary" /></div>
-            <p className="mt-3 text-sm text-muted-foreground">One quick review, then your family itinerary is ready.</p>
+            <p className="mt-3 text-sm text-muted-foreground">One quick review, then your group itinerary is ready.</p>
           </Card>
         </div>
 
