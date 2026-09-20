@@ -11,3 +11,4 @@
 - [x] Rebrand the complete product as CommonRoute while preserving all existing functionality and local-only Demo mode.
 
 - [x] Organiser governance: roles, review queue, decision reasons, sponsor money decisions, needs/hard limits, group fit, publishing checks, locked stops
+- [x] Group updates inbox, everyone-gets-a-win check, per-place fit detail, split-a-day between two groups, printable plan / PDF

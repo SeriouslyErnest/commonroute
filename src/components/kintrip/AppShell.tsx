@@ -97,7 +97,7 @@ export function AppShell({
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={symbol.url} alt="" className="size-11 object-contain" />
-            <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
+            <span className="hidden font-display text-xl font-extrabold text-secondary min-[420px]:inline">CommonRoute</span>
           </Link>
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.
