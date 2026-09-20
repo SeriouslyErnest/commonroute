@@ -1,8 +1,9 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
+import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, LogIn, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
+import { useAccount } from "@/lib/kintrip/auth";
 import { unreadCount } from "@/lib/kintrip/governance";
 import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
