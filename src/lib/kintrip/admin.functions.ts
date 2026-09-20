@@ -29,11 +29,8 @@ async function adminClient() {
 }
 
 /** Resolves the caller's admin role, creating the first super admin when the configured owner signs in. */
-async function resolveRole(context: {
-  userId: string;
-  supabase: { rpc: (fn: "admin_role_of", args: { _user_id: string }) => Promise<{ data: unknown }> };
-  claims: Record<string, unknown>;
-}): Promise<{ role: AdminRole | null; email: string | null }> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function resolveRole(context: any): Promise<{ role: AdminRole | null; email: string | null }> {
   const email = typeof context.claims["email"] === "string" ? (context.claims["email"] as string) : null;
   const { data } = await context.supabase.rpc("admin_role_of", { _user_id: context.userId });
   if (data) return { role: data as AdminRole, email };
@@ -253,7 +250,7 @@ export const adminCreateGrant = createServerFn({ method: "POST" })
       if (!reason) throw new Error("Please give a reason — it is recorded in the audit log");
       const days = Number(input?.days);
       if (!Number.isFinite(days) || days < 1 || days > 3650) throw new Error("Choose a length between 1 and 3650 days");
-      const source = input?.source === "trial" ? "trial" : "complimentary";
+      const source: "complimentary" | "trial" = input?.source === "trial" ? "trial" : "complimentary";
       return { userId: input.userId, bundle, source, days: Math.round(days), reason };
     },
   )
