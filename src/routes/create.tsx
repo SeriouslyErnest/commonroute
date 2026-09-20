@@ -5,12 +5,12 @@ import { StartTripCard } from "@/components/kintrip/StartTripForm";
 export const Route = createFileRoute("/create")({
   head: () => ({
     meta: [
-      { title: "Create a family trip — Kintrip" },
+      { title: "Create a group trip — CommonRoute" },
       {
         name: "description",
         content: "Start a multi-generational trip in under a minute: destination, dates, travellers.",
       },
-      { property: "og:title", content: "Create a family trip — Kintrip" },
+      { property: "og:title", content: "Create a group trip — CommonRoute" },
       {
         property: "og:description",
         content: "Start a multi-generational trip in under a minute.",

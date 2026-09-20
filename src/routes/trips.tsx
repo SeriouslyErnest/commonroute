@@ -16,12 +16,12 @@ import {
 export const Route = createFileRoute("/trips")({
   head: () => ({
     meta: [
-      { title: "My trips — Kintrip" },
+      { title: "My trips — CommonRoute" },
       {
         name: "description",
         content: "Switch between your family trips, start a new one, or join an existing trip.",
       },
-      { property: "og:title", content: "My trips — Kintrip" },
+      { property: "og:title", content: "My trips — CommonRoute" },
       {
         property: "og:description",
         content: "Switch between your family trips, start a new one, or join an existing trip.",
@@ -39,14 +39,14 @@ function MyTrips() {
   return (
     <AppShell
       title="My trips"
-      subtitle="Every journey your family is planning, in one place."
+       subtitle="Every journey your group is planning, in one place."
       back={{ to: "/", label: "Back to trip" }}
     >
       {trips.length === 0 ? (
         <Card className="py-8 text-center">
           <h2 className="text-xl">No trips yet</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            Start a new family adventure, or open an invite link to join someone else’s trip.
+             Start a new group adventure, or open an invite link to join someone else’s trip.
           </p>
         </Card>
       ) : null}

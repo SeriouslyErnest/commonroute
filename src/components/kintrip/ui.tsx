@@ -8,6 +8,7 @@ const base =
 const variants = {
   primary: "bg-secondary text-secondary-foreground shadow-secondary/20 hover:bg-secondary/90 hover:shadow-md",
   secondary: "bg-primary text-primary-foreground shadow-primary/20 hover:bg-primary/90 hover:shadow-md",
+  collaborative: "bg-collaboration text-collaboration-foreground shadow-sm hover:bg-collaboration/90 hover:shadow-md",
   outline: "border border-border bg-card text-foreground hover:border-primary/40 hover:bg-muted",
   ghost: "text-secondary hover:bg-secondary-soft",
 } as const;
