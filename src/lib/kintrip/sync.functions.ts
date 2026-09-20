@@ -65,7 +65,7 @@ export const pushTrip = createServerFn({ method: "POST" })
         {
           trip_id: data.tripId,
           share_code: data.shareCode,
-          state: data.state as unknown as Record<string, unknown>,
+          state: data.state as unknown as never,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "trip_id" },
