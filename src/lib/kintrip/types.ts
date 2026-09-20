@@ -48,6 +48,9 @@ export interface TravellerConstraint {
   severity: Severity;
   label: string;
   visibility: NeedVisibility;
+  /** Set when a helper entered this on someone else's behalf. */
+  enteredBy?: undefined | string;
+  enteredAt?: undefined | string;
 }
 
 export interface Preferences {
@@ -62,6 +65,16 @@ export interface Preferences {
   restWindow?: undefined | string;
 }
 
+/** How a traveller's answers are entered: by themselves, or by a trusted adult. */
+export type ManagementMode = "self" | "assisted";
+
+export interface ConsentEvent {
+  at: string;
+  action: "assigned" | "accepted" | "revoked" | "responsibility_confirmed" | "claimed";
+  by: string;
+  note?: undefined | string;
+}
+
 export interface Traveller {
   id: string;
   name: string;
@@ -71,6 +84,13 @@ export interface Traveller {
   roles: TripRole[];
   managed?: undefined | boolean;
   responsibleAdultId?: undefined | string;
+  /** "assisted" means a named adult may enter answers for this person. */
+  managementMode?: undefined | ManagementMode;
+  /** An adult being helped must accept; a dependent needs the adult to confirm responsibility. */
+  assistAccepted?: undefined | boolean;
+  /** False for people who have needs but no vote (for example a toddler). */
+  canVote?: undefined | boolean;
+  consentLog?: undefined | ConsentEvent[];
   needs: TravellerConstraint[];
   joined: boolean;
   prefStatus: PrefStatus;
@@ -256,6 +276,8 @@ export interface Trip {
   status: "planning" | "final" | "travelling";
   /** Invite secret used to sync this trip between group members' phones. */
   shareCode?: undefined | string;
+  /** IANA time zone of the destination; times are shown in this zone. */
+  timeZone?: undefined | string;
 }
 
 export interface Note {
@@ -264,6 +286,75 @@ export interface Note {
   refId?: undefined | string;
   text: string;
   author: string;
+}
+
+/* ---------------- bookings ---------------- */
+
+export type BookingType = "stay" | "activity" | "transport" | "meal" | "other";
+export type BookingStatus = "planned" | "confirmed" | "cancelled";
+
+export interface Booking {
+  id: string;
+  type: BookingType;
+  title: string;
+  provider?: undefined | string;
+  link?: undefined | string;
+  status: BookingStatus;
+  /** Local date/time at the destination, e.g. 2027-03-21T10:30 — never UTC-shifted. */
+  startLocal?: undefined | string;
+  endLocal?: undefined | string;
+  timeZone: string;
+  travellerIds: string[];
+  location?: undefined | string;
+  /** Address in its original local script, plus an optional translated line. */
+  addressLocal?: undefined | string;
+  addressTranslated?: undefined | string;
+  contact?: undefined | string;
+  ownerId: string;
+  /** Confirmation reference: the booker only, unless shared explicitly. */
+  reference?: undefined | string;
+  referenceSharedWith: string[];
+  cancellationDeadline?: undefined | string;
+  attractionId?: undefined | string;
+  note?: undefined | string;
+  createdAt: string;
+  version: number;
+}
+
+/* ---------------- shared jobs and packing ---------------- */
+
+export type TaskState = "unassigned" | "awaiting_acceptance" | "accepted" | "complete" | "cancelled";
+
+export interface TripTask {
+  id: string;
+  title: string;
+  detail?: undefined | string;
+  assigneeId?: undefined | string;
+  helperIds: string[];
+  deadline?: undefined | string;
+  timeZone?: undefined | string;
+  state: TaskState;
+  attractionId?: undefined | string;
+  visibility: NeedVisibility;
+  version: number;
+  history: { at: string; actorName: string; action: string }[];
+}
+
+export type PackingScope = "personal" | "dependent" | "shared";
+
+export interface PackingItem {
+  id: string;
+  label: string;
+  scope: PackingScope;
+  /** Whose list this belongs to (personal), or who it is for (dependent). */
+  travellerId?: undefined | string;
+  responsibleId?: undefined | string;
+  quantityNeeded?: undefined | number;
+  quantityCommitted?: undefined | number;
+  quantityPacked?: undefined | number;
+  packed: boolean;
+  visibility: NeedVisibility;
+  version: number;
 }
 
 export interface KintripState {
@@ -278,6 +369,9 @@ export interface KintripState {
   audit: AuditEvent[];
   itinerary: Itinerary | null;
   notes: Note[];
+  bookings: Booking[];
+  tasks: TripTask[];
+  packing: PackingItem[];
   activeTravellerId: string;
   currentDay: number;
   replanLog: { day: number; at: string; reason: string; changes: string[] }[];

@@ -1,9 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Footprints, Gauge, Heart, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, Footprints, Gauge, Heart, ShieldCheck, UserPlus } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
-import { Card, Chip, LinkButton } from "@/components/kintrip/ui";
+import { Button, Card, Chip, Field, LinkButton, inputClass } from "@/components/kintrip/ui";
+import {
+  acceptHelp,
+  addAssistedTraveller,
+  assignHelper,
+  revokeHelp,
+  setVotingEligibility,
+} from "@/lib/kintrip/actions";
 import { familyWalkingLimit } from "@/lib/kintrip/engine";
+import { isOrganiser } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
+import type { Traveller } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/family")({
   head: () => ({
@@ -58,11 +68,19 @@ function FamilyTab() {
           <LinkButton to="/fairness" variant="outline">
             Everyone gets a win
           </LinkButton>
+          <LinkButton to="/bookings" variant="outline">
+            Bookings and stay
+          </LinkButton>
+          <LinkButton to="/getting-ready" variant="outline">
+            Getting ready
+          </LinkButton>
           <LinkButton to="/updates" variant="outline">
             What&apos;s changed
           </LinkButton>
         </div>
       </Card>
+
+      <HelpPanel />
 
       <div className="grid gap-3 sm:grid-cols-2">
         {state.travellers.map((t) => (
@@ -82,6 +100,16 @@ function FamilyTab() {
                  <Chip tone="sunny">Preferences not started</Chip>
                )}
             </div>
+            <p className="flex flex-wrap gap-2">
+              {t.responsibleAdultId && t.managementMode === "assisted" ? (
+                <Chip tone="primary">
+                  {t.assistAccepted === false
+                    ? `Waiting for ${t.name} to accept help`
+                    : `Helped by ${state.travellers.find((x) => x.id === t.responsibleAdultId)?.name ?? "an adult"}`}
+                </Chip>
+              ) : null}
+              {t.canVote === false ? <Chip tone="sunny">No vote · needs still counted</Chip> : null}
+            </p>
             <p className="flex flex-wrap gap-2 text-sm">
               {t.preferences.interests.map((i) => (
                 <Chip key={i} tone="primary">
@@ -111,5 +139,171 @@ function FamilyTab() {
         </Link>
       </p>
     </AppShell>
+  );
+}
+
+/** Add and manage people who need someone to answer on their behalf. */
+function HelpPanel() {
+  const state = useKintrip();
+  const me = state.activeTravellerId;
+  const organiser = isOrganiser(state);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    relationship: "",
+    ageGroup: "child" as Traveller["ageGroup"],
+    canVote: false,
+    confirmed: false,
+  });
+
+  const adults = state.travellers.filter((t) => t.ageGroup === "adult" || t.ageGroup === "senior");
+
+  return (
+    <Card className="space-y-3">
+      <h2 className="flex items-center gap-2 text-lg">
+        <UserPlus className="size-5 text-primary" aria-hidden /> People who need a hand
+      </h2>
+      <p className="text-sm text-muted-foreground">
+        A child or a relative without their own sign-in can still be part of the trip. A named adult
+        enters their needs and answers, and every entry says who made it. Helping someone never gives
+        that adult extra say over the trip or the money.
+      </p>
+
+      {organiser ? (
+        <Button type="button" variant="outline" onClick={() => setOpen((o) => !o)}>
+          <UserPlus className="size-4" aria-hidden /> Add someone I look after
+        </Button>
+      ) : null}
+
+      {open ? (
+        <div className="space-y-3 rounded-xl bg-muted p-3">
+          <Field label="Their name">
+            <input
+              className={inputClass}
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+          </Field>
+          <Field label="Relationship to you">
+            <input
+              className={inputClass}
+              value={form.relationship}
+              onChange={(e) => setForm({ ...form, relationship: e.target.value })}
+              placeholder="Daughter"
+            />
+          </Field>
+          <Field label="Age group">
+            <select
+              className={inputClass}
+              value={form.ageGroup}
+              onChange={(e) => setForm({ ...form, ageGroup: e.target.value as Traveller["ageGroup"] })}
+            >
+              <option value="child">Child</option>
+              <option value="teen">Teenager</option>
+              <option value="adult">Adult</option>
+              <option value="senior">Older adult</option>
+            </select>
+          </Field>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="mt-1 size-5"
+              checked={form.canVote}
+              onChange={(e) => setForm({ ...form, canVote: e.target.checked })}
+            />
+            They should have a vote on places
+          </label>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="mt-1 size-5"
+              checked={form.confirmed}
+              onChange={(e) => setForm({ ...form, confirmed: e.target.checked })}
+            />
+            I confirm I look after this person on this trip and may answer for them.
+          </label>
+          <Button
+            type="button"
+            disabled={!form.name.trim() || !form.confirmed}
+            onClick={() => {
+              addAssistedTraveller({
+                name: form.name,
+                relationship: form.relationship,
+                ageGroup: form.ageGroup,
+                managerId: me,
+                canVote: form.canVote,
+                responsibilityConfirmed: form.confirmed,
+              });
+              setForm({ name: "", relationship: "", ageGroup: "child", canVote: false, confirmed: false });
+              setOpen(false);
+            }}
+          >
+            Add them
+          </Button>
+        </div>
+      ) : null}
+
+      <ul className="space-y-2">
+        {state.travellers.map((t) => {
+          const helped = t.managementMode === "assisted" && !!t.responsibleAdultId;
+          const iAmHelper = helped && t.responsibleAdultId === me;
+          const canChange = organiser || t.id === me || iAmHelper;
+          if (!helped && !organiser) return null;
+          return (
+            <li key={t.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-muted px-3 py-2">
+              <div>
+                <p className="font-semibold">{t.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {helped
+                    ? t.assistAccepted === false
+                      ? "Help offered — not accepted yet"
+                      : `Helped by ${state.travellers.find((x) => x.id === t.responsibleAdultId)?.name ?? "an adult"}`
+                    : "Answers for themselves"}
+                  {t.canVote === false ? " · no vote" : ""}
+                </p>
+              </div>
+              <span className="flex flex-wrap gap-2">
+                {!helped && organiser ? (
+                  <select
+                    className={inputClass}
+                    value=""
+                    aria-label={`Choose who helps ${t.name}`}
+                    onChange={(e) => e.target.value && assignHelper(t.id, e.target.value)}
+                  >
+                    <option value="">Who helps them?</option>
+                    {adults
+                      .filter((a) => a.id !== t.id)
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name}
+                        </option>
+                      ))}
+                  </select>
+                ) : null}
+                {helped && t.assistAccepted === false && t.id === me ? (
+                  <Button type="button" onClick={() => acceptHelp(t.id)}>
+                    Yes, they can help me
+                  </Button>
+                ) : null}
+                {helped && canChange ? (
+                  <Button type="button" variant="outline" onClick={() => revokeHelp(t.id)}>
+                    Stop the help
+                  </Button>
+                ) : null}
+                {organiser ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setVotingEligibility(t.id, t.canVote === false)}
+                  >
+                    {t.canVote === false ? "Give them a vote" : "No vote for them"}
+                  </Button>
+                ) : null}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
   );
 }

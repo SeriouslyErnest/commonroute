@@ -1,6 +1,9 @@
 import { defaultCost } from "./governance";
 import type {
   Attraction,
+  Booking,
+  PackingItem,
+  TripTask,
   DecisionSettings,
   KintripState,
   Suggestion,
@@ -158,13 +161,43 @@ const seedNeeds: Record<string, TravellerConstraint[]> = {
   daughter: [need("d1", "accompaniment", "comfort_need", "Should stay with an adult", "organisers")],
 };
 
-export const seedTravellers: Traveller[] = rawTravellers.map((t) => ({
-  ...t,
-  roles: seedRoles[t.id] ?? ["contributor"],
-  needs: seedNeeds[t.id] ?? [],
-  managed: t.id === "daughter",
-  responsibleAdultId: t.id === "daughter" ? "mum" : undefined,
-}));
+export const seedTravellers: Traveller[] = [
+  ...rawTravellers.map((t) => ({
+    ...t,
+    roles: seedRoles[t.id] ?? (["contributor"] as TripRole[]),
+    needs: seedNeeds[t.id] ?? [],
+    managed: t.id === "daughter",
+    responsibleAdultId: t.id === "daughter" ? "mum" : undefined,
+    managementMode: (t.id === "daughter" ? "assisted" : "self") as "assisted" | "self",
+    assistAccepted: t.id === "daughter" ? true : undefined,
+    canVote: true,
+    consentLog: [],
+  })),
+  // A toddler with care needs but no vote — counted for needs, not for tallies.
+  {
+    id: "toddler",
+    name: "Ethan, 3",
+    relationship: "Nephew",
+    ageGroup: "child",
+    role: "member" as const,
+    roles: ["viewer"] as TripRole[],
+    managed: true,
+    responsibleAdultId: "aunt",
+    managementMode: "assisted" as const,
+    assistAccepted: true,
+    canVote: false,
+    consentLog: [
+      { at: "2026-12-01T09:00:00.000Z", action: "responsibility_confirmed" as const, by: "Aunty Serene, 43" },
+    ],
+    needs: [
+      need("t1", "rest_window", "hard_limit", "Nap between 13:00 and 15:00", "organisers"),
+      need("t2", "step_free", "comfort_need", "Stroller-friendly routes"),
+    ],
+    joined: true,
+    prefStatus: "complete" as const,
+    preferences: pref(["Parks", "Animals"], "relaxed", "low", "Somewhere to run around", "Short days"),
+  },
+];
 
 export const seedAttractions: Attraction[] = [
   {
@@ -488,6 +521,132 @@ function buildSuggestions(): Record<string, Suggestion> {
   return out;
 }
 
+const TZ = "Asia/Tokyo";
+
+export const seedBookings: Booking[] = [
+  {
+    id: "bk-stay",
+    type: "stay",
+    title: "Hotel Niwa Tokyo",
+    provider: "Booked direct",
+    status: "confirmed",
+    startLocal: "2027-03-20T15:00",
+    endLocal: "2027-03-24T11:00",
+    timeZone: TZ,
+    travellerIds: ["dad", "mum", "grandpa", "grandma", "son", "daughter", "aunt", "toddler"],
+    location: "Kanda, Tokyo",
+    addressLocal: "\u6771\u4eac\u90fd\u5343\u4ee3\u7530\u533a\u4e09\u5d0e\u753a2-1-16",
+    addressTranslated: "2-1-16 Misakicho, Chiyoda City, Tokyo",
+    contact: "+81 3 3293 0028",
+    ownerId: "dad",
+    reference: "NIWA-77413",
+    referenceSharedWith: ["mum"],
+    createdAt: "2026-12-02T08:00:00.000Z",
+    version: 1,
+  },
+  {
+    id: "bk-teamlab",
+    type: "activity",
+    title: "teamLab Planets entry",
+    provider: "Official site",
+    status: "confirmed",
+    startLocal: "2027-03-22T10:30",
+    endLocal: "2027-03-22T12:30",
+    timeZone: TZ,
+    travellerIds: ["dad", "mum", "son", "daughter", "aunt"],
+    location: "Toyosu, Tokyo",
+    ownerId: "dad",
+    reference: "TLP-2298311",
+    referenceSharedWith: [],
+    attractionId: "teamlab",
+    cancellationDeadline: "2027-03-15",
+    createdAt: "2026-12-04T08:00:00.000Z",
+    version: 1,
+  },
+];
+
+export const seedTasks: TripTask[] = [
+  {
+    id: "tk-rail",
+    title: "Buy the rail passes",
+    detail: "Seven passes, collect at the airport counter.",
+    assigneeId: "dad",
+    helperIds: [],
+    deadline: "2027-03-01",
+    timeZone: TZ,
+    state: "accepted",
+    visibility: "group",
+    version: 1,
+    history: [{ at: "2026-12-05T02:00:00.000Z", actorName: "Wei (Dad)", action: "Created" }],
+  },
+  {
+    id: "tk-wheelchair",
+    title: "Check step-free routes for Grandpa",
+    assigneeId: "mum",
+    helperIds: ["aunt"],
+    deadline: "2027-03-10",
+    timeZone: TZ,
+    state: "awaiting_acceptance",
+    visibility: "group",
+    version: 1,
+    history: [{ at: "2026-12-05T02:05:00.000Z", actorName: "Wei (Dad)", action: "Assigned" }],
+  },
+  {
+    id: "tk-snacks",
+    title: "Pack snacks for travel days",
+    helperIds: [],
+    state: "unassigned",
+    visibility: "group",
+    version: 1,
+    history: [{ at: "2026-12-05T02:10:00.000Z", actorName: "Lin (Mum)", action: "Created" }],
+  },
+];
+
+export const seedPacking: PackingItem[] = [
+  {
+    id: "pk-stroller",
+    label: "Lightweight stroller",
+    scope: "shared",
+    responsibleId: "aunt",
+    quantityNeeded: 1,
+    quantityCommitted: 1,
+    quantityPacked: 0,
+    packed: false,
+    visibility: "group",
+    version: 1,
+  },
+  {
+    id: "pk-firstaid",
+    label: "First aid kit",
+    scope: "shared",
+    quantityNeeded: 1,
+    quantityCommitted: 0,
+    quantityPacked: 0,
+    packed: false,
+    visibility: "group",
+    version: 1,
+  },
+  {
+    id: "pk-stick",
+    label: "Folding walking stick",
+    scope: "dependent",
+    travellerId: "grandpa",
+    responsibleId: "dad",
+    packed: false,
+    visibility: "organisers",
+    version: 1,
+  },
+  {
+    id: "pk-docs",
+    label: "Passport and travel documents",
+    scope: "personal",
+    travellerId: "dad",
+    packed: true,
+    visibility: "private",
+    version: 1,
+  },
+];
+
 export function createEmptyTripState(input: {
   title: string;
   destination: string;
@@ -538,6 +697,9 @@ export function createEmptyTripState(input: {
     audit: [],
     itinerary: null,
     notes: [],
+    bookings: [],
+    tasks: [],
+    packing: [],
     activeTravellerId: "organiser",
     currentDay: 1,
     replanLog: [],
@@ -553,9 +715,10 @@ export function createSeedState(): KintripState {
       destination: "Tokyo + Kyoto, Japan",
       startDate: "2027-03-20",
       endDate: "2027-03-27",
-      travellerCount: 7,
+      travellerCount: 8,
       organiserId: "dad",
       status: "planning",
+      timeZone: TZ,
     },
     travellers: seedTravellers,
     attractions: seedAttractions,
@@ -570,6 +733,9 @@ export function createSeedState(): KintripState {
       { id: "n1", scope: "trip", text: "Tickets and rail passes are with Dad.", author: "Wei (Dad)" },
       { id: "n2", scope: "trip", text: "Meet at hotel lobby at 8:30 each morning.", author: "Lin (Mum)" },
     ],
+    bookings: seedBookings,
+    tasks: seedTasks,
+    packing: seedPacking,
     activeTravellerId: "dad",
     currentDay: 3,
     replanLog: [],
