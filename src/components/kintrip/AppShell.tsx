@@ -1,10 +1,30 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
+import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
+import { unreadCount } from "@/lib/kintrip/governance";
 import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
+
+function UpdatesBell() {
+  const state = useKintrip();
+  const unread = unreadCount(state);
+  return (
+    <Link
+      to="/updates"
+      aria-label={unread > 0 ? `${unread} new updates` : "Group updates"}
+      className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-secondary shadow-sm"
+    >
+      <Bell className="size-5" aria-hidden />
+      {unread > 0 ? (
+        <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-success px-1 text-center text-[11px] font-bold leading-5 text-secondary-foreground">
+          {unread > 9 ? "9+" : unread}
+        </span>
+      ) : null}
+    </Link>
+  );
+}
 
 function SyncBadge() {
   const status = useTripSync();
@@ -82,6 +102,8 @@ export function AppShell({
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.
           </p>
+          <span className="flex items-center gap-2 sm:justify-self-end">
+          {hasTrips ? <UpdatesBell /> : null}
           {demoActive ? (
             <Button
               type="button"
@@ -102,6 +124,7 @@ export function AppShell({
               <Layers className="size-4" aria-hidden /> My trips
             </Link>
           )}
+          </span>
         </div>
       </header>
 

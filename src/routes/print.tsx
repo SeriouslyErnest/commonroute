@@ -45,7 +45,7 @@ function PrintScreen() {
       ) : (
         <article className="space-y-5">
           <header className="space-y-1 border-b border-border pb-4">
-            <h1 className="text-2xl">{state.trip.name || state.trip.destination}</h1>
+            <h1 className="text-2xl">{state.trip.title || state.trip.destination}</h1>
             <p className="text-muted-foreground">
               {state.trip.destination} · {formatDate(itinerary.days[0]?.date ?? "")} –{" "}
               {formatDate(itinerary.days.at(-1)?.date ?? "")} · {state.travellers.length} travellers
