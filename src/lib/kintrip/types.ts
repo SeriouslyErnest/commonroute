@@ -357,6 +357,40 @@ export interface PackingItem {
   version: number;
 }
 
+/* ---------------- published changes, attendance ---------------- */
+
+export type ChangeKind = "added" | "removed" | "moved" | "split" | "booking" | "other";
+
+export interface PlanChange {
+  kind: ChangeKind;
+  text: string;
+  dayNumber?: undefined | number;
+  /** A material change needs everyone to see it (time, place, or who goes where). */
+  material: boolean;
+  affected: string[];
+}
+
+export interface PublishedChange {
+  id: string;
+  version: number;
+  previousVersion: number;
+  at: string;
+  by: string;
+  changes: PlanChange[];
+  acknowledged: string[];
+}
+
+export type AttendanceState = "coming" | "sitting_out" | "unsure";
+
+export interface AttendanceRecord {
+  travellerId: string;
+  itemId: string;
+  state: AttendanceState;
+  arriveLate?: undefined | string;
+  leaveEarly?: undefined | string;
+  at: string;
+}
+
 export interface KintripState {
   trip: Trip;
   travellers: Traveller[];
@@ -372,6 +406,10 @@ export interface KintripState {
   bookings: Booking[];
   tasks: TripTask[];
   packing: PackingItem[];
+  publishedChanges: PublishedChange[];
+  attendance: AttendanceRecord[];
+  /** Snapshot of the last published days, so changes can be described plainly. */
+  publishedSnapshot: { version: number; days: ItineraryDay[] } | null;
   activeTravellerId: string;
   currentDay: number;
   replanLog: { day: number; at: string; reason: string; changes: string[] }[];

@@ -1,3 +1,4 @@
+import { comfortReview } from "./travel";
 import type {
   Attraction,
   DecisionEvent,
@@ -137,6 +138,9 @@ export function normalizeState(input: KintripState): KintripState {
     bookings: state.bookings ?? [],
     tasks: state.tasks ?? [],
     packing: state.packing ?? [],
+    publishedChanges: state.publishedChanges ?? [],
+    attendance: state.attendance ?? [],
+    publishedSnapshot: state.publishedSnapshot ?? null,
   };
 }
 
@@ -428,6 +432,13 @@ export function publicationChecks(state: KintripState): PublishCheck[] {
     }
     if (s.cost.estimateType !== "exact" && s.cost.perPerson > 0) {
       checks.push({ id: `price-${id}`, text: `${a.name} cost is still an estimate`, blocking: false });
+    }
+  }
+
+  for (const day of state.itinerary?.days ?? []) {
+    for (const note of comfortReview(state, day)) {
+      if (note.severity !== "watch") continue;
+      checks.push({ id: `comfort-${note.id}`, text: `Day ${day.day}: ${note.text}`, blocking: false });
     }
   }
 

@@ -14,6 +14,17 @@ export type AppLocale = "en" | "zh-CN";
 const STORAGE_KEY = "commonroute.locale";
 
 const ZH: Record<string, string> = {
+  "Every update to the plan your group has already seen": "小组已看过的行程的所有更新",
+  "Got it": "知道了",
+  "See every change →": "查看全部变动 →",
+  "The plan changed since you last looked.": "自你上次查看后，行程有变动。",
+  "I've seen this": "我已看过",
+  "Not seen yet": "尚未查看",
+  "Seen": "已查看",
+  "Coming": "参加",
+  "Sitting this one out": "这次不参加",
+  "Comfort, meals and travel time": "舒适度、用餐与路上时间",
+  "Open the plan →": "打开行程 →",
   "Sign in": "登录",
   "Your account": "你的账户",
   "My trips": "我的旅行",

@@ -74,7 +74,7 @@ function FamilyTab() {
           <LinkButton to="/getting-ready" variant="outline">
             Getting ready
           </LinkButton>
-          <LinkButton to="/updates" variant="outline">
+          <LinkButton to="/changes" variant="outline">
             What&apos;s changed
           </LinkButton>
         </div>

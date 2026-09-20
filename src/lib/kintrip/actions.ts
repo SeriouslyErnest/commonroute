@@ -12,7 +12,12 @@ import {
   proxyLabel,
 } from "./governance";
 import type {
+  AttendanceRecord,
+  AttendanceState,
   Booking,
+  ItineraryDay,
+  PlanChange,
+  PublishedChange,
   DeclineReasonCode,
   DecisionSettings,
   KintripState,
@@ -183,8 +188,30 @@ export function publishItinerary(acknowledged: string[]) {
       publishedBy: actorName(prev),
       acknowledged,
     };
-    return withNotice(logAudit({ ...prev, itinerary }, "Itinerary published", `Version ${itinerary.version}`), {
-      text: "The group plan has been published",
+    const before = prev.publishedSnapshot;
+    const changes: PlanChange[] = before ? diffDays(before.days, itinerary.days) : [];
+    const record: PublishedChange | null =
+      before && changes.length > 0
+        ? {
+            id: uid(),
+            version: itinerary.version,
+            previousVersion: before.version,
+            at: itinerary.publishedAt!,
+            by: itinerary.publishedBy!,
+            changes,
+            acknowledged: [],
+          }
+        : null;
+    const next: KintripState = {
+      ...prev,
+      itinerary,
+      publishedSnapshot: { version: itinerary.version, days: itinerary.days },
+      publishedChanges: record ? [record, ...(prev.publishedChanges ?? [])] : (prev.publishedChanges ?? []),
+    };
+    return withNotice(logAudit(next, "Itinerary published", `Version ${itinerary.version}`), {
+      text: record
+        ? `The plan changed — ${changes.length} ${changes.length === 1 ? "change" : "changes"} to look at`
+        : "The group plan has been published",
       audience: "all",
     });
   });
@@ -738,5 +765,143 @@ export function applyPackingTemplate(name: keyof typeof PACKING_TEMPLATES) {
     }
     if (items.length === 0) return prev;
     return logAudit({ ...prev, packing: [...prev.packing, ...items] }, "Packing template added", String(name));
+  });
+}
+
+/* ================= v2.2 Phase B — changes, comfort, attendance ================= */
+
+/** Describe, in plain words, how the new plan differs from the published one. */
+function diffDays(before: ItineraryDay[], after: ItineraryDay[]): PlanChange[] {
+  const changes: PlanChange[] = [];
+  for (const day of after) {
+    const old = before.find((d) => d.day === day.day);
+    if (!old) continue;
+    const oldItems = new Map(old.items.map((i) => [i.id, i]));
+    const newItems = new Map(day.items.map((i) => [i.id, i]));
+    for (const item of day.items) {
+      const prevItem = oldItems.get(item.id);
+      if (!prevItem) {
+        changes.push({ kind: "added", text: `Day ${day.day}: ${item.title} was added at ${item.start}`, dayNumber: day.day, material: true, affected: [] });
+      } else if (prevItem.start !== item.start) {
+        changes.push({ kind: "moved", text: `Day ${day.day}: ${item.title} moved from ${prevItem.start} to ${item.start}`, dayNumber: day.day, material: true, affected: [] });
+      }
+    }
+    for (const prevItem of old.items) {
+      if (!newItems.has(prevItem.id)) {
+        changes.push({ kind: "removed", text: `Day ${day.day}: ${prevItem.title} is no longer in the plan`, dayNumber: day.day, material: true, affected: [] });
+      }
+    }
+    const oldSplit = old.split?.id ?? "";
+    const newSplit = day.split?.id ?? "";
+    if (oldSplit !== newSplit) {
+      changes.push({
+        kind: "split",
+        text: day.split
+          ? `Day ${day.day} splits into two groups, meeting at ${day.split.meetingPoint} at ${day.split.meetingTime}`
+          : `Day ${day.day} is back together as one group`,
+        dayNumber: day.day,
+        material: true,
+        affected: day.split ? day.split.groups.flatMap((g) => g.memberIds) : [],
+      });
+    }
+  }
+  return changes;
+}
+
+/** Everyone who still has not said they have seen this version. */
+export function unacknowledgedFor(state: KintripState, travellerId: string) {
+  return (state.publishedChanges ?? []).filter(
+    (c) =>
+      !c.acknowledged.includes(travellerId) &&
+      c.changes.some(
+        (ch) => ch.material && (ch.affected.length === 0 || ch.affected.includes(travellerId)),
+      ),
+  );
+}
+
+export function acknowledgeChange(changeId: string, travellerId?: string) {
+  setState((prev) => {
+    const who = travellerId ?? prev.activeTravellerId;
+    if (!canEditFor(prev, who)) return prev;
+    return {
+      ...prev,
+      publishedChanges: (prev.publishedChanges ?? []).map((c) =>
+        c.id === changeId ? { ...c, acknowledged: [...new Set([...c.acknowledged, who])] } : c,
+      ),
+    };
+  });
+}
+
+/** Say whether someone is joining a particular stop. */
+export function setAttendance(
+  travellerId: string,
+  itemId: string,
+  value: AttendanceState,
+  opts: { arriveLate?: string; leaveEarly?: string } = {},
+) {
+  setState((prev) => {
+    if (!canEditFor(prev, travellerId)) return prev;
+    const rest = (prev.attendance ?? []).filter((a) => !(a.travellerId === travellerId && a.itemId === itemId));
+    const record: AttendanceRecord = {
+      travellerId,
+      itemId,
+      state: value,
+      arriveLate: opts.arriveLate,
+      leaveEarly: opts.leaveEarly,
+      at: new Date().toISOString(),
+    };
+    return { ...prev, attendance: [...rest, record] };
+  });
+}
+
+export function attendanceFor(state: KintripState, itemId: string) {
+  const records = (state.attendance ?? []).filter((a) => a.itemId === itemId);
+  const coming = records.filter((a) => a.state === "coming").length;
+  const out = records.filter((a) => a.state === "sitting_out").length;
+  const unsure = records.filter((a) => a.state === "unsure").length;
+  return { records, coming, out, unsure, unanswered: state.travellers.length - records.length };
+}
+
+/** Add a meal or a sit-down break to a day. */
+export function addDayItem(
+  dayNumber: number,
+  input: { kind: "meal" | "rest" | "activity"; title: string; start: string; durationMin: number; note?: string },
+) {
+  setState((prev) => {
+    if (!prev.itinerary || !isOrganiser(prev)) return prev;
+    const days = prev.itinerary.days.map((d) =>
+      d.day === dayNumber
+        ? {
+            ...d,
+            items: [
+              ...d.items,
+              {
+                id: uid(),
+                kind: input.kind,
+                title: input.title,
+                start: input.start,
+                durationMin: input.durationMin,
+                note: input.note,
+                rigidity: input.kind === "rest" ? ("rest" as const) : ("flex" as const),
+              },
+            ],
+          }
+        : d,
+    );
+    return logAudit(
+      { ...prev, itinerary: { ...prev.itinerary, days } },
+      input.kind === "meal" ? "Meal break added" : "Break added",
+      `Day ${dayNumber}: ${input.title} at ${input.start}`,
+    );
+  });
+}
+
+export function removeDayItem(dayNumber: number, itemId: string) {
+  setState((prev) => {
+    if (!prev.itinerary || !isOrganiser(prev)) return prev;
+    const days = prev.itinerary.days.map((d) =>
+      d.day === dayNumber ? { ...d, items: d.items.filter((i) => i.id !== itemId || i.locked) } : d,
+    );
+    return logAudit({ ...prev, itinerary: { ...prev.itinerary, days } }, "Stop removed", `Day ${dayNumber}`);
   });
 }

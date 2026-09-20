@@ -5,6 +5,8 @@ import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { formatDate, generateItinerary, pretty } from "@/lib/kintrip/engine";
 import { canPublish, dayEnergy, isOrganiser, publicationChecks } from "@/lib/kintrip/governance";
+import { addDayItem } from "@/lib/kintrip/actions";
+import { comfortReview, travelGaps } from "@/lib/kintrip/travel";
 import {
   acknowledgeCheck,
   publishItinerary,
@@ -170,6 +172,7 @@ function ItineraryTab() {
                   ))}
                 </ol>
               ) : null}
+              {open ? <ComfortPanel day={day} /> : null}
               {open ? <SplitPanel day={day} /> : null}
             </Card>
           );
@@ -327,6 +330,56 @@ function removeItem(day: number, itemId: string) {
 }
 
 /** Lets an organiser send part of the group somewhere else for a day, then meet back up. */
+/** Meals, breaks and honest travel time for one day. */
+function ComfortPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["itinerary"]>["days"][number] }) {
+  const state = useKintrip();
+  const mayEdit = isOrganiser(state);
+  const notes = comfortReview(state, day);
+  const gaps = travelGaps(state, day).filter((g) => g.tight);
+  const nameOf = (id: string) => day.items.find((i) => i.id === id)?.title ?? "a stop";
+
+  return (
+    <div className="mt-3 space-y-2 rounded-2xl bg-muted px-4 py-3">
+      <h3 className="text-base font-extrabold text-secondary">Comfort, meals and travel time</h3>
+      <ul className="space-y-2 text-sm">
+        {notes.map((n) => (
+          <li key={n.id} className="flex flex-wrap items-center justify-between gap-2">
+            <span className={n.severity === "watch" ? "text-coral-foreground" : "text-muted-foreground"}>
+              {n.text}
+            </span>
+            {n.fix && mayEdit ? (
+              <Button
+                variant="outline"
+                className="min-h-10 px-3 text-sm"
+                onClick={() =>
+                  addDayItem(day.day, {
+                    kind: n.fix!.kind,
+                    title: n.fix!.title,
+                    start: n.fix!.start,
+                    durationMin: n.fix!.durationMin,
+                  })
+                }
+              >
+                Add {n.fix.title.toLowerCase()}
+              </Button>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+      {gaps.length > 0 ? (
+        <ul className="space-y-1 text-sm text-muted-foreground">
+          {gaps.map((g) => (
+            <li key={g.afterItemId}>
+              {nameOf(g.afterItemId)} → {nameOf(g.beforeItemId)}: about {g.estimate.minutes} min to travel,
+              only {Math.max(0, g.gap)} min allowed.
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 function SplitPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["itinerary"]>["days"][number] }) {
   const state = useKintrip();
   const mayEdit = isOrganiser(state);
