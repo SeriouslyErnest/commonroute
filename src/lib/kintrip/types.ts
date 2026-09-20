@@ -48,6 +48,9 @@ export interface TravellerConstraint {
   severity: Severity;
   label: string;
   visibility: NeedVisibility;
+  /** Set when a helper entered this on someone else's behalf. */
+  enteredBy?: undefined | string;
+  enteredAt?: undefined | string;
 }
 
 export interface Preferences {
@@ -62,6 +65,16 @@ export interface Preferences {
   restWindow?: undefined | string;
 }
 
+/** How a traveller's answers are entered: by themselves, or by a trusted adult. */
+export type ManagementMode = "self" | "assisted";
+
+export interface ConsentEvent {
+  at: string;
+  action: "assigned" | "accepted" | "revoked" | "responsibility_confirmed" | "claimed";
+  by: string;
+  note?: undefined | string;
+}
+
 export interface Traveller {
   id: string;
   name: string;
@@ -71,6 +84,13 @@ export interface Traveller {
   roles: TripRole[];
   managed?: undefined | boolean;
   responsibleAdultId?: undefined | string;
+  /** "assisted" means a named adult may enter answers for this person. */
+  managementMode?: undefined | ManagementMode;
+  /** An adult being helped must accept; a dependent needs the adult to confirm responsibility. */
+  assistAccepted?: undefined | boolean;
+  /** False for people who have needs but no vote (for example a toddler). */
+  canVote?: undefined | boolean;
+  consentLog?: undefined | ConsentEvent[];
   needs: TravellerConstraint[];
   joined: boolean;
   prefStatus: PrefStatus;
