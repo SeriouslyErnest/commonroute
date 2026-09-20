@@ -4,6 +4,7 @@ import { Mail, CheckCircle2 } from "lucide-react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button, Card, Field, inputClass } from "@/components/kintrip/ui";
 import { safeReturnPath, sendSignInLink, useAccount } from "@/lib/kintrip/auth";
+import { LanguageToggle } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -62,6 +63,7 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md space-y-5">
+        <div className="flex justify-end"><LanguageToggle /></div>
         <div className="flex flex-col items-center gap-2 text-center">
           <img src={symbol.url} alt="" className="size-14 object-contain" />
           <h1 className="text-2xl font-extrabold text-secondary">Sign in to CommonRoute</h1>

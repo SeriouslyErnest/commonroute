@@ -4,6 +4,7 @@ import { Button } from "@/components/kintrip/ui";
 import { formatDate, pretty } from "@/lib/kintrip/engine";
 import { dayEnergy } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
+import { LanguageToggle } from "@/lib/i18n";
 
 export const Route = createFileRoute("/print")({
   head: () => ({
@@ -35,9 +36,12 @@ function PrintScreen() {
         <Link to="/itinerary" className="text-sm font-semibold text-secondary">
           ← Back to the plan
         </Link>
-        <Button onClick={() => window.print()}>
-          <Printer className="size-5" aria-hidden /> Print or save as PDF
-        </Button>
+        <span className="flex items-center gap-2">
+          <LanguageToggle />
+          <Button onClick={() => window.print()}>
+            <Printer className="size-5" aria-hidden /> Print or save as PDF
+          </Button>
+        </span>
       </div>
 
       {!itinerary ? (

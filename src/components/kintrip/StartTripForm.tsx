@@ -5,6 +5,7 @@ import santoriniStart from "@/assets/kintrip-santorini-start.jpg";
 import { Button } from "@/components/kintrip/ui";
 import { cn } from "@/lib/utils";
 import { createNewTrip, startDemoTrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { LanguageToggle, useLocale } from "@/lib/i18n";
 
 /**
  * The CommonRoute setup card.
@@ -13,6 +14,7 @@ import { createNewTrip, startDemoTrip, useTripSetupStatus } from "@/lib/kintrip/
 export function StartTripCard({ embedded = false }: { embedded?: boolean | undefined }) {
   const navigate = useNavigate();
   const { hasDemo } = useTripSetupStatus();
+  const { locale } = useLocale();
 
   return (
     <section
@@ -21,7 +23,8 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
         embedded ? "rounded-3xl shadow-lift" : "min-h-screen sm:min-h-0 sm:rounded-3xl sm:shadow-lift",
       )}
     >
-      <div className="px-6 pt-8 text-center sm:px-9 sm:pt-9">
+      <div className="flex justify-end px-4 pt-4"><LanguageToggle /></div>
+      <div className="px-6 pt-3 text-center sm:px-9">
         <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="commonroute-lockup mx-auto h-auto w-full max-w-[330px]" />
         <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Plan a trip that works for everyone.</h1>
         <p className="mt-2 text-base font-semibold text-muted-foreground">Bring every idea and practical need into one shared plan.</p>
@@ -46,7 +49,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
             const form = new FormData(event.currentTarget);
             const destination = String(form.get("destination") || "").trim();
             createNewTrip({
-              title: `${destination} group trip`,
+              title: locale === "zh-CN" ? `${destination}群组旅行` : `${destination} group trip`,
               destination,
               startDate: String(form.get("start") || ""),
               endDate: String(form.get("end") || ""),

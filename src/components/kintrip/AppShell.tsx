@@ -7,6 +7,7 @@ import { useAccount } from "@/lib/kintrip/auth";
 import { unreadCount } from "@/lib/kintrip/governance";
 import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
+import { LanguageToggle } from "@/lib/i18n";
 
 function UpdatesBell() {
   const state = useKintrip();
@@ -128,7 +129,8 @@ export function AppShell({
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.
           </p>
-          <span className="flex items-center gap-2 sm:justify-self-end">
+           <span className="flex items-center gap-2 sm:justify-self-end">
+           <LanguageToggle />
           <AccountButton />
           {hasTrips ? <UpdatesBell /> : null}
           {demoActive ? (
