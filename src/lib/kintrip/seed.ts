@@ -158,13 +158,43 @@ const seedNeeds: Record<string, TravellerConstraint[]> = {
   daughter: [need("d1", "accompaniment", "comfort_need", "Should stay with an adult", "organisers")],
 };
 
-export const seedTravellers: Traveller[] = rawTravellers.map((t) => ({
-  ...t,
-  roles: seedRoles[t.id] ?? ["contributor"],
-  needs: seedNeeds[t.id] ?? [],
-  managed: t.id === "daughter",
-  responsibleAdultId: t.id === "daughter" ? "mum" : undefined,
-}));
+export const seedTravellers: Traveller[] = [
+  ...rawTravellers.map((t) => ({
+    ...t,
+    roles: seedRoles[t.id] ?? (["contributor"] as TripRole[]),
+    needs: seedNeeds[t.id] ?? [],
+    managed: t.id === "daughter",
+    responsibleAdultId: t.id === "daughter" ? "mum" : undefined,
+    managementMode: (t.id === "daughter" ? "assisted" : "self") as "assisted" | "self",
+    assistAccepted: t.id === "daughter" ? true : undefined,
+    canVote: true,
+    consentLog: [],
+  })),
+  // A toddler with care needs but no vote — counted for needs, not for tallies.
+  {
+    id: "toddler",
+    name: "Ethan, 3",
+    relationship: "Nephew",
+    ageGroup: "child",
+    role: "member" as const,
+    roles: ["viewer"] as TripRole[],
+    managed: true,
+    responsibleAdultId: "aunt",
+    managementMode: "assisted" as const,
+    assistAccepted: true,
+    canVote: false,
+    consentLog: [
+      { at: "2026-12-01T09:00:00.000Z", action: "responsibility_confirmed" as const, by: "Aunty Serene, 43" },
+    ],
+    needs: [
+      need("t1", "rest_window", "hard_limit", "Nap between 13:00 and 15:00", "organisers"),
+      need("t2", "step_free", "comfort_need", "Stroller-friendly routes"),
+    ],
+    joined: true,
+    prefStatus: "complete" as const,
+    preferences: pref(["Parks", "Animals"], "relaxed", "low", "Somewhere to run around", "Short days"),
+  },
+];
 
 export const seedAttractions: Attraction[] = [
   {
