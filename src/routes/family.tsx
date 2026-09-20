@@ -90,6 +90,16 @@ function FamilyTab() {
                  <Chip tone="sunny">Preferences not started</Chip>
                )}
             </div>
+            <p className="flex flex-wrap gap-2">
+              {t.responsibleAdultId && t.managementMode === "assisted" ? (
+                <Chip tone="primary">
+                  {t.assistAccepted === false
+                    ? `Waiting for ${t.name} to accept help`
+                    : `Helped by ${state.travellers.find((x) => x.id === t.responsibleAdultId)?.name ?? "an adult"}`}
+                </Chip>
+              ) : null}
+              {t.canVote === false ? <Chip tone="sunny">No vote · needs still counted</Chip> : null}
+            </p>
             <p className="flex flex-wrap gap-2 text-sm">
               {t.preferences.interests.map((i) => (
                 <Chip key={i} tone="primary">
