@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Download, Share2, Sparkles, TriangleAlert } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
-import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
+import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { formatDate, generateItinerary, pretty } from "@/lib/kintrip/engine";
-import { canPublish, dayEnergy, publicationChecks } from "@/lib/kintrip/governance";
+import { canPublish, dayEnergy, isOrganiser, publicationChecks } from "@/lib/kintrip/governance";
 import {
   acknowledgeCheck,
   publishItinerary,
+  rejoinDay,
+  splitDay,
   toggleItemLock,
   unpublishItinerary,
 } from "@/lib/kintrip/actions";
@@ -168,6 +170,7 @@ function ItineraryTab() {
                   ))}
                 </ol>
               ) : null}
+              {open ? <SplitPanel day={day} /> : null}
             </Card>
           );
         })}
@@ -257,6 +260,12 @@ function ItineraryTab() {
         >
           <Share2 className="size-5" aria-hidden /> {shared ? "Link copied" : "Share live link"}
         </Button>
+        <LinkButton to="/print" variant="outline">
+          Print or save as PDF
+        </LinkButton>
+        <LinkButton to="/fairness" variant="ghost">
+          Everyone gets a win
+        </LinkButton>
         <Button variant="ghost" onClick={() => setState((prev) => ({ ...prev }))}>
           <Download className="size-5" aria-hidden /> Save for offline
         </Button>
@@ -314,5 +323,131 @@ function removeItem(day: number, itemId: string) {
           },
         }
       : prev,
+  );
+}
+
+/** Lets an organiser send part of the group somewhere else for a day, then meet back up. */
+function SplitPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["itinerary"]>["days"][number] }) {
+  const state = useKintrip();
+  const mayEdit = isOrganiser(state);
+  const [openForm, setOpenForm] = useState(false);
+  const [members, setMembers] = useState<string[]>([]);
+  const [activity, setActivity] = useState("");
+  const [label, setLabel] = useState("Second group");
+  const [meetingPoint, setMeetingPoint] = useState("");
+  const [meetingTime, setMeetingTime] = useState("17:30");
+
+  if (day.split) {
+    return (
+      <div className="space-y-2 rounded-xl bg-muted px-3 py-3">
+        <p className="font-semibold">Two groups on this day</p>
+        <ul className="space-y-1 text-sm">
+          {day.split.groups.map((g) => (
+            <li key={g.id}>
+              <span className="font-semibold">{g.label}:</span> {g.activity}
+              <span className="block text-muted-foreground">
+                {g.memberIds
+                  .map((id) => state.travellers.find((t) => t.id === id)?.name)
+                  .filter(Boolean)
+                  .join(", ") || "Nobody yet"}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="text-sm text-muted-foreground">
+          Meeting back at {day.split.meetingPoint} at {day.split.meetingTime}.
+        </p>
+        {mayEdit ? (
+          <Button variant="outline" className="min-h-10 px-3 text-sm" onClick={() => rejoinDay(day.day)}>
+            Keep everyone together instead
+          </Button>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (!mayEdit) return null;
+
+  if (!openForm) {
+    return (
+      <Button variant="ghost" className="min-h-10 px-3 text-sm" onClick={() => setOpenForm(true)}>
+        Split this day into two groups
+      </Button>
+    );
+  }
+
+  return (
+    <div className="space-y-3 rounded-xl bg-muted px-3 py-3">
+      <p className="font-semibold">Who goes somewhere else?</p>
+      <ul className="space-y-1">
+        {state.travellers.map((t) => (
+          <li key={t.id}>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="size-5"
+                checked={members.includes(t.id)}
+                onChange={(e) =>
+                  setMembers((prev) => (e.target.checked ? [...prev, t.id] : prev.filter((id) => id !== t.id)))
+                }
+              />
+              {t.name} · {t.relationship}
+            </label>
+          </li>
+        ))}
+      </ul>
+      <label className="block text-sm font-semibold">
+        Group name
+        <input className={inputClass} value={label} onChange={(e) => setLabel(e.target.value)} />
+      </label>
+      <label className="block text-sm font-semibold">
+        What they&apos;ll do
+        <input
+          className={inputClass}
+          value={activity}
+          placeholder="Rest at the hotel, then the nearby park"
+          onChange={(e) => setActivity(e.target.value)}
+        />
+      </label>
+      <label className="block text-sm font-semibold">
+        Where you meet again
+        <input
+          className={inputClass}
+          value={meetingPoint}
+          placeholder="Hotel lobby"
+          onChange={(e) => setMeetingPoint(e.target.value)}
+        />
+      </label>
+      <label className="block text-sm font-semibold">
+        Meeting time
+        <input
+          type="time"
+          className={inputClass}
+          value={meetingTime}
+          onChange={(e) => setMeetingTime(e.target.value)}
+        />
+      </label>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          className="min-h-11 px-4 text-sm"
+          disabled={members.length === 0 || !activity.trim() || !meetingPoint.trim()}
+          onClick={() => {
+            splitDay(day.day, {
+              memberIds: members,
+              activity: activity.trim(),
+              label: label.trim(),
+              meetingPoint: meetingPoint.trim(),
+              meetingTime,
+            });
+            setOpenForm(false);
+          }}
+        >
+          Save this split
+        </Button>
+        <Button variant="ghost" className="min-h-11 px-4 text-sm" onClick={() => setOpenForm(false)}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 }
