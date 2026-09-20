@@ -104,19 +104,37 @@ function DiscoverTab() {
       opens: "09:00",
       closes: "18:00",
       sourceUrl: p.mapsUrl,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      provider: p.provider,
+      providerPlaceId: p.placeId,
+      sourceQuery: query.trim(),
+      capturedAt: new Date().toISOString(),
     };
+    const existing = findDuplicate(state.attractions, attraction);
+    if (existing) {
+      setAddNotice(`${existing.name} is already on your shortlist.`);
+      return;
+    }
     setState((prev) =>
-      prev.attractions.some((a) => a.id === id)
+      findDuplicate(prev.attractions, attraction)
         ? prev
         : {
             ...prev,
             attractions: [...prev.attractions, attraction],
             suggestions: {
               ...prev.suggestions,
-              [id]: newSuggestion(attraction, prev.activeTravellerId),
+              [id]: {
+                ...newSuggestion(attraction, prev.activeTravellerId),
+                cost: {
+                  ...newSuggestion(attraction, prev.activeTravellerId).cost,
+                  currency: prev.decisions.currency,
+                },
+              },
             },
           },
     );
+    setAddNotice(`${attraction.name} added to the shortlist.`);
   };
 
   const pendingReview = Object.values(state.suggestions).filter(
