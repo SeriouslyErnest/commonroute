@@ -154,6 +154,7 @@ async function searchFree(query: string, destination: string): Promise<PlaceResu
   const res = await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`, {
     headers: {
       "User-Agent": "Kintrip/1.0 (family trip planner)",
+      "Accept-Language": "en",
       Accept: "application/json",
     },
     signal: AbortSignal.timeout(8000),
