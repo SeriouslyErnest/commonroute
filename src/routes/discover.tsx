@@ -146,6 +146,35 @@ function DiscoverTab() {
         ) : (
           <Chip tone="primary">Your votes only · {me.name}</Chip>
         )}
+        <div className="sm:col-span-2">
+          <div
+            role="group"
+            aria-label="Place search source"
+            className="inline-flex rounded-full bg-muted p-1 text-sm font-semibold"
+          >
+            {(
+              [
+                ["free", "Free map search"],
+                ["google", "Google Maps"],
+              ] as Array<[PlaceProvider, string]>
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => chooseProvider(value)}
+                aria-pressed={provider === value}
+                className={cn(
+                  "min-h-9 rounded-full px-3",
+                  provider === value
+                    ? "bg-card text-secondary shadow-sm"
+                    : "text-muted-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </Card>
 
       {query.trim().length >= 2 ? (
@@ -156,9 +185,11 @@ function DiscoverTab() {
             ) : (
               <MapPin className="size-5 text-secondary" aria-hidden />
             )}
-            Found on Google Maps
+            {provider === "google" ? "Found on Google Maps" : "Found on free map search"}
           </h2>
-          {!searching && googleResults.length === 0 ? (
+          {searchError ? (
+            <p className="text-sm text-muted-foreground">{searchError}</p>
+          ) : !searching && googleResults.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No places found for “{query.trim()}” in {state.trip.destination}. Try a different name.
             </p>
