@@ -17,7 +17,7 @@ export const Route = createFileRoute("/preferences")({
       { property: "og:title", content: "Group preferences — CommonRoute" },
       {
         property: "og:description",
-        content: "Five quick questions so the plan fits everyone in the family.",
+        content: "Five quick questions so the plan fits everyone in your group.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -50,7 +50,7 @@ function PreferencesPage() {
       <AppShell
         title="Help us plan for your group"
         subtitle="Loading your details…"
-        back={{ to: "/family", label: "Back to family" }}
+        back={{ to: "/family", label: "Back to group" }}
       >
         <Card>Loading your trip…</Card>
       </AppShell>
@@ -81,7 +81,7 @@ function PreferencesForm({ me }: { me: Traveller }) {
     <AppShell
       title="Help us plan for your group"
       subtitle={`${step} of 5 · answering as ${me.name}`}
-      back={{ to: "/family", label: "Back to family" }}
+      back={{ to: "/family", label: "Back to group" }}
     >
       <div className="h-2 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
         <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(step / 5) * 100}%` }} />

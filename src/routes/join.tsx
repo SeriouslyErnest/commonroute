@@ -13,12 +13,12 @@ export const Route = createFileRoute("/join")({
       { title: "Join a group trip — CommonRoute" },
       {
         name: "description",
-        content: "Join your family's trip with your name and relationship — no account needed.",
+        content: "Join your group's trip with your name and relationship — no account needed.",
       },
       { property: "og:title", content: "Join a group trip — CommonRoute" },
       {
         property: "og:description",
-        content: "Join your family's trip with your name and relationship — no account needed.",
+        content: "Join your group's trip with your name and relationship — no account needed.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -42,7 +42,7 @@ function JoinTrip() {
 
   if (code && status === "loading") {
     return (
-      <AppShell title="Opening your family's trip…">
+      <AppShell title="Opening your group's trip…">
         <Card className="py-7 text-center text-muted-foreground">One moment while we load the latest plan.</Card>
       </AppShell>
     );
@@ -65,7 +65,7 @@ function JoinTrip() {
 function JoinWithoutInvite() {
   return (
     <AppShell
-      title="Join a family trip"
+      title="Join a group trip"
       subtitle="Your organiser’s invite link connects you to the right trip."
       back={{ to: "/", label: "Back" }}
     >
