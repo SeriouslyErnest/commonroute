@@ -46,7 +46,7 @@ function InvitePage() {
         <p className="rounded-xl bg-muted px-4 py-3 text-sm break-all">{link}</p>
         <div className="flex flex-wrap gap-2">
           <a
-            className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-5 font-semibold text-primary-foreground"
+            className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-collaboration px-5 font-semibold text-collaboration-foreground"
             href={`https://wa.me/?text=${encodeURIComponent(message)}`}
             target="_blank"
             rel="noreferrer"

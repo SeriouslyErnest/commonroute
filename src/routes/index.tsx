@@ -59,8 +59,8 @@ function DemoBanner() {
   if (!demoActive) return null;
   return (
     <div className="flex items-center gap-2 rounded-xl bg-sunny-soft px-4 py-3 text-sm">
-      <span className="inline-flex items-center gap-2 font-semibold">
-        <Sparkles className="size-4" aria-hidden /> Demo trip — sample family and sample places
+        <span className="inline-flex items-center gap-2 font-semibold">
+          <Sparkles className="size-4" aria-hidden /> Demo trip — sample group and sample places
       </span>
     </div>
   );
@@ -77,7 +77,7 @@ function ActiveTrip() {
 
   if (!itinerary) {
     const steps = [
-      { label: "Invite your family", done: joined > 1, to: "/invite", hint: `${joined} joined` },
+      { label: "Invite your group", done: joined > 1, to: "/invite", hint: `${joined} joined` },
       {
         label: "Collect preferences",
         done: withPrefs >= joined,
@@ -109,7 +109,7 @@ function ActiveTrip() {
             <Chip tone="primary">Next step</Chip>
             <h2 className="mt-3 text-2xl">Turn everyone’s choices into one plan</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">Everyone has shared their preferences and votes. See the family picture before building the itinerary.</p>
-            <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review family choices <ArrowRight className="size-5" /></LinkButton>
+        <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review group choices <ArrowRight className="size-5" /></LinkButton>
           </Card>
           <Card className="p-5">
             <p className="text-sm font-bold text-secondary">Planning progress</p>

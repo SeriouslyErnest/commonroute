@@ -29,7 +29,7 @@ export default defineConfig({
           display: "standalone",
           start_url: "/",
           icons: [
-            { src: "/favicon.png", sizes: "64x64", type: "image/png" },
+            { src: "/favicon.png", sizes: "64x64", type: "image/png", purpose: "any maskable" },
           ],
         },
         workbox: {

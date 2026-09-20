@@ -10,10 +10,10 @@ function SyncBadge() {
   const status = useTripSync();
   if (status === "off") return null;
   const map = {
-    saving: { icon: Cloud, text: "Saving for your family…" },
-    synced: { icon: Check, text: "Shared with your family" },
+    saving: { icon: Cloud, text: "Saving for your group…" },
+    synced: { icon: Check, text: "Shared with your group" },
     offline: { icon: CloudOff, text: "Offline — changes save when you reconnect" },
-    error: { icon: CloudOff, text: "Couldn't reach your family's trip — retrying" },
+    error: { icon: CloudOff, text: "Couldn't reach your group's trip — retrying" },
   } as const;
   const entry = map[status];
   const Icon = entry.icon;
@@ -28,7 +28,7 @@ const tabs = [
   { to: "/", label: "Trip", icon: CalendarRange },
   { to: "/discover", label: "Discover", icon: Compass },
   { to: "/itinerary", label: "Itinerary", icon: Map },
-  { to: "/family", label: "Family", icon: Users },
+  { to: "/family", label: "Group", icon: Users },
 ] as const;
 
 export function OfflineBar() {
