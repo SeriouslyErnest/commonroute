@@ -265,6 +265,11 @@ function DiscoverTab() {
             )}
             {provider === "google" ? "Found on Google Maps" : "Found on free map search"}
           </h2>
+          {addNotice ? (
+            <p className="text-sm text-secondary" role="status">
+              {addNotice}
+            </p>
+          ) : null}
           {searchError ? (
             <p className="text-sm text-muted-foreground">{searchError}</p>
           ) : !searching && googleResults.length === 0 ? (
