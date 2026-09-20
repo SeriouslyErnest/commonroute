@@ -167,6 +167,18 @@
   border: 1px solid var(--color-border);
 }
 
+.commonroute-lockup {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  .commonroute-lockup {
+    border-radius: 1rem;
+    background: #ffffff;
+    padding: 0.75rem;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @keyframes kin-rise {
     from { opacity: 0; transform: translateY(10px); }

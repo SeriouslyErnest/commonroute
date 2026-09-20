@@ -8,4 +8,4 @@
 - [x] Match the starting screen to the supplied setup reference and keep Japan exclusively in Demo mode.
 - [x] Link the managed Google Maps Platform connection to the remixed project.
 - [x] Verify Discover search pulls real Google Places results.
-- [ ] Rebrand the complete product as CommonRoute while preserving all existing functionality and local-only Demo mode.
+- [x] Rebrand the complete product as CommonRoute while preserving all existing functionality and local-only Demo mode.

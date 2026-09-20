@@ -108,14 +108,14 @@ function ActiveTrip() {
           <Card className="bg-primary-soft p-5 sm:p-6">
             <Chip tone="primary">Next step</Chip>
             <h2 className="mt-3 text-2xl">Turn everyone’s choices into one plan</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Everyone has shared their preferences and votes. See the family picture before building the itinerary.</p>
-        <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review group choices <ArrowRight className="size-5" /></LinkButton>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Everyone has shared their preferences and votes. See the group picture before building the itinerary.</p>
+            <LinkButton to="/consensus" className="mt-5 w-full sm:w-auto">Review group choices <ArrowRight className="size-5" /></LinkButton>
           </Card>
           <Card className="p-5">
             <p className="text-sm font-bold text-secondary">Planning progress</p>
             <p className="mt-1 text-3xl font-extrabold">3 of 4</p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full w-3/4 rounded-full bg-primary" /></div>
-            <p className="mt-3 text-sm text-muted-foreground">One quick review, then your family itinerary is ready.</p>
+            <p className="mt-3 text-sm text-muted-foreground">One quick review, then your group itinerary is ready.</p>
           </Card>
         </div>
 

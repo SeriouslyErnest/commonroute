@@ -22,7 +22,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
       )}
     >
       <div className="px-6 pt-8 text-center sm:px-9 sm:pt-9">
-        <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="mx-auto h-auto w-full max-w-[330px]" />
+        <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="commonroute-lockup mx-auto h-auto w-full max-w-[330px]" />
         <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Plan a trip that works for everyone.</h1>
         <p className="mt-2 text-base font-semibold text-muted-foreground">Bring every idea and practical need into one shared plan.</p>
       </div>
@@ -136,7 +136,15 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
 
         {!hasDemo ? (
           <div className="mt-5 border-t border-border pt-4 text-center">
-            <Button type="button" variant="ghost" className="mx-auto min-h-11 text-sm" onClick={() => startDemoTrip()}>
+            <Button
+              type="button"
+              variant="ghost"
+              className="mx-auto min-h-11 text-sm"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "instant" });
+                startDemoTrip();
+              }}
+            >
               <Sparkles className="size-4" aria-hidden /> Explore Japan in Demo mode
             </Button>
           </div>
