@@ -107,6 +107,10 @@ export function normalizeState(input: KintripState): KintripState {
           ? (["owner", "organiser"] as TripRole[])
           : (["contributor"] as TripRole[]),
     needs: t.needs ?? [],
+    managementMode: t.managementMode ?? (t.responsibleAdultId ? "assisted" : "self"),
+    assistAccepted: t.assistAccepted ?? (t.responsibleAdultId ? true : undefined),
+    canVote: t.canVote ?? true,
+    consentLog: t.consentLog ?? [],
   }));
 
   const suggestions: Record<string, Suggestion> = { ...(state.suggestions ?? {}) };
@@ -130,7 +134,49 @@ export function normalizeState(input: KintripState): KintripState {
     sponsorApprovals: state.sponsorApprovals ?? [],
     notifications: state.notifications ?? [],
     audit: state.audit ?? [],
+    bookings: state.bookings ?? [],
+    tasks: state.tasks ?? [],
+    packing: state.packing ?? [],
   };
+}
+
+/* ---------------- assisted travellers ---------------- */
+
+/** People whose vote counts. Care-only profiles are left out of the denominators. */
+export function votingTravellers(state: KintripState): Traveller[] {
+  return state.travellers.filter((t) => t.canVote !== false);
+}
+
+export function managerOf(state: KintripState, travellerId: string): Traveller | undefined {
+  const t = state.travellers.find((x) => x.id === travellerId);
+  if (!t?.responsibleAdultId || t.managementMode !== "assisted") return undefined;
+  if (t.assistAccepted === false) return undefined;
+  return state.travellers.find((x) => x.id === t.responsibleAdultId);
+}
+
+/**
+ * Whether the person acting may enter answers for this traveller: for
+ * themselves always, or for someone who has an accepted assistance link.
+ */
+export function canEditFor(state: KintripState, travellerId: string, actorId = state.activeTravellerId) {
+  if (travellerId === actorId) return true;
+  const target = state.travellers.find((t) => t.id === travellerId);
+  if (!target) return false;
+  return (
+    target.managementMode === "assisted" &&
+    target.assistAccepted !== false &&
+    target.responsibleAdultId === actorId
+  );
+}
+
+/** People the person acting may answer for, themselves included. */
+export function editableTravellers(state: KintripState, actorId = state.activeTravellerId): Traveller[] {
+  return state.travellers.filter((t) => canEditFor(state, t.id, actorId));
+}
+
+export function proxyLabel(state: KintripState, travellerId: string, actorId = state.activeTravellerId) {
+  if (travellerId === actorId) return "";
+  return `Entered by ${actorName(state, actorId)} for ${actorName(state, travellerId)}`;
 }
 
 /* ---------------- permissions ---------------- */
