@@ -61,6 +61,7 @@ function PreferencesPage() {
 
 function PreferencesForm({ me }: { me: Traveller }) {
   const state = useKintrip();
+  const { demoActive } = useTripSetupStatus();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState(me.preferences);
