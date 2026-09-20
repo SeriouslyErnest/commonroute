@@ -250,3 +250,485 @@ export function acknowledgeCheck(checkId: string, text: string) {
 export function markNotificationsRead() {
   setState((prev) => ({ ...prev, notifications: prev.notifications.map((n) => ({ ...n, read: true })) }));
 }
+
+/* ================= v2.2 — assisted travellers, bookings, jobs, packing ================= */
+
+/** Add someone who has no account of their own: a child or an assisted relative. */
+export function addAssistedTraveller(input: {
+  name: string;
+  relationship: string;
+  ageGroup: Traveller["ageGroup"];
+  managerId: string;
+  canVote: boolean;
+  responsibilityConfirmed: boolean;
+}) {
+  setState((prev) => {
+    if (!isOrganiser(prev) && prev.activeTravellerId !== input.managerId) return prev;
+    if (!input.responsibilityConfirmed) return prev;
+    const traveller: Traveller = {
+      id: `tr-${uid()}`,
+      name: input.name.trim(),
+      relationship: input.relationship.trim() || "Traveller",
+      ageGroup: input.ageGroup,
+      role: "member",
+      roles: ["viewer"],
+      managed: true,
+      responsibleAdultId: input.managerId,
+      managementMode: "assisted",
+      assistAccepted: true,
+      canVote: input.canVote,
+      consentLog: [
+        {
+          at: new Date().toISOString(),
+          action: "responsibility_confirmed",
+          by: actorName(prev, input.managerId),
+        },
+      ],
+      needs: [],
+      joined: true,
+      prefStatus: "not_started",
+      preferences: { interests: [], pace: "balanced", walking: "moderate", mustDo: "", avoid: "", constraints: "" },
+    };
+    return logAudit(
+      { ...prev, travellers: [...prev.travellers, traveller] },
+      "Traveller added",
+      `${traveller.name} — helped by ${actorName(prev, input.managerId)}`,
+    );
+  });
+}
+
+/** Ask a named adult to help someone, or change who helps them. */
+export function assignHelper(travellerId: string, managerId: string) {
+  setState((prev) => {
+    const target = prev.travellers.find((t) => t.id === travellerId);
+    if (!target) return prev;
+    if (!isOrganiser(prev) && prev.activeTravellerId !== travellerId) return prev;
+    const adult = target.ageGroup === "adult" || target.ageGroup === "senior";
+    const travellers = prev.travellers.map((t) =>
+      t.id !== travellerId
+        ? t
+        : {
+            ...t,
+            managementMode: "assisted" as const,
+            responsibleAdultId: managerId,
+            managed: true,
+            // An adult must accept help; for a dependent the adult confirms responsibility.
+            assistAccepted: adult ? prev.activeTravellerId === travellerId : true,
+            consentLog: [
+              ...(t.consentLog ?? []),
+              {
+                at: new Date().toISOString(),
+                action: adult && prev.activeTravellerId !== travellerId ? ("assigned" as const) : ("accepted" as const),
+                by: actorName(prev),
+              },
+            ],
+          },
+    );
+    return logAudit({ ...prev, travellers }, "Help assigned", `${target.name} — ${actorName(prev, managerId)}`);
+  });
+}
+
+/** The person being helped accepts the arrangement. */
+export function acceptHelp(travellerId: string) {
+  setState((prev) => {
+    if (prev.activeTravellerId !== travellerId) return prev;
+    const travellers = prev.travellers.map((t) =>
+      t.id !== travellerId
+        ? t
+        : {
+            ...t,
+            assistAccepted: true,
+            consentLog: [
+              ...(t.consentLog ?? []),
+              { at: new Date().toISOString(), action: "accepted" as const, by: actorName(prev) },
+            ],
+          },
+    );
+    return logAudit({ ...prev, travellers }, "Help accepted", actorName(prev, travellerId));
+  });
+}
+
+/** Stop further answers being entered on someone's behalf. Past entries stay on record. */
+export function revokeHelp(travellerId: string) {
+  setState((prev) => {
+    const target = prev.travellers.find((t) => t.id === travellerId);
+    if (!target) return prev;
+    if (!isOrganiser(prev) && prev.activeTravellerId !== travellerId) return prev;
+    const travellers = prev.travellers.map((t) =>
+      t.id !== travellerId
+        ? t
+        : {
+            ...t,
+            assistAccepted: false,
+            managementMode: "self" as const,
+            responsibleAdultId: undefined,
+            managed: false,
+            consentLog: [
+              ...(t.consentLog ?? []),
+              { at: new Date().toISOString(), action: "revoked" as const, by: actorName(prev) },
+            ],
+          },
+    );
+    return logAudit({ ...prev, travellers }, "Help withdrawn", target.name);
+  });
+}
+
+export function setVotingEligibility(travellerId: string, canVote: boolean) {
+  setState((prev) => {
+    if (!isOrganiser(prev)) return prev;
+    const travellers = prev.travellers.map((t) => (t.id === travellerId ? { ...t, canVote } : t));
+    return logAudit(
+      { ...prev, travellers },
+      canVote ? "Voting enabled" : "Voting turned off",
+      actorName(prev, travellerId),
+    );
+  });
+}
+
+/** Record a vote for yourself, or for someone you are helping. */
+export function castVote(travellerId: string, attractionId: string, value: VoteValue) {
+  setState((prev) => {
+    if (!canEditFor(prev, travellerId)) return prev;
+    const target = prev.travellers.find((t) => t.id === travellerId);
+    if (!target || target.canVote === false) return prev;
+    const next = {
+      ...prev,
+      votes: { ...prev.votes, [travellerId]: { ...(prev.votes[travellerId] ?? {}), [attractionId]: value } },
+    };
+    if (travellerId === prev.activeTravellerId) return next;
+    return logAudit(next, "Vote entered on behalf", proxyLabel(prev, travellerId));
+  });
+}
+
+/** Add a need for yourself, or for someone you are helping. */
+export function addNeedFor(travellerId: string, need: Omit<TravellerConstraint, "id">) {
+  setState((prev) => {
+    if (!canEditFor(prev, travellerId)) return prev;
+    const proxy = travellerId !== prev.activeTravellerId;
+    const entry: TravellerConstraint = {
+      ...need,
+      id: uid(),
+      enteredBy: proxy ? actorName(prev) : undefined,
+      enteredAt: new Date().toISOString(),
+    };
+    const travellers = prev.travellers.map((t) =>
+      t.id === travellerId ? { ...t, needs: [...(t.needs ?? []), entry] } : t,
+    );
+    const next = { ...prev, travellers };
+    return proxy ? logAudit(next, "Need entered on behalf", `${proxyLabel(prev, travellerId)}: ${need.label}`) : next;
+  });
+}
+
+/* ---------------- bookings ---------------- */
+
+export function addBooking(input: Omit<Booking, "id" | "createdAt" | "version" | "referenceSharedWith"> & {
+  referenceSharedWith?: string[];
+}) {
+  setState((prev) => {
+    if (!isOrganiser(prev) && prev.activeTravellerId !== input.ownerId) return prev;
+    const booking: Booking = {
+      ...input,
+      referenceSharedWith: input.referenceSharedWith ?? [],
+      id: `bk-${uid()}`,
+      createdAt: new Date().toISOString(),
+      version: 1,
+    };
+    return withNotice(logAudit({ ...prev, bookings: [booking, ...prev.bookings] }, "Booking added", booking.title), {
+      text: `${booking.title} was added to the trip's bookings`,
+      audience: "all",
+    });
+  });
+}
+
+export function updateBooking(id: string, patch: Partial<Booking>) {
+  setState((prev) => {
+    const existing = prev.bookings.find((b) => b.id === id);
+    if (!existing) return prev;
+    if (!isOrganiser(prev) && prev.activeTravellerId !== existing.ownerId) return prev;
+    const bookings = prev.bookings.map((b) =>
+      b.id === id ? { ...b, ...patch, version: b.version + 1 } : b,
+    );
+    return logAudit({ ...prev, bookings }, "Booking updated", existing.title);
+  });
+}
+
+/** Cancelling stops a booking counting as confirmed and flags the plan for review. */
+export function cancelBooking(id: string) {
+  setState((prev) => {
+    const existing = prev.bookings.find((b) => b.id === id);
+    if (!existing) return prev;
+    if (!isOrganiser(prev) && prev.activeTravellerId !== existing.ownerId) return prev;
+    const bookings = prev.bookings.map((b) =>
+      b.id === id ? { ...b, status: "cancelled" as const, version: b.version + 1 } : b,
+    );
+    return withNotice(logAudit({ ...prev, bookings }, "Booking cancelled", existing.title), {
+      text: `${existing.title} was cancelled — the plan needs a review`,
+      audience: "all",
+    });
+  });
+}
+
+export function deleteBooking(id: string) {
+  setState((prev) => {
+    const existing = prev.bookings.find((b) => b.id === id);
+    if (!existing) return prev;
+    if (!isOrganiser(prev) && prev.activeTravellerId !== existing.ownerId) return prev;
+    return logAudit({ ...prev, bookings: prev.bookings.filter((b) => b.id !== id) }, "Booking removed", existing.title);
+  });
+}
+
+/** Share a confirmation reference with named travellers. */
+export function shareBookingReference(id: string, travellerIds: string[]) {
+  setState((prev) => {
+    const existing = prev.bookings.find((b) => b.id === id);
+    if (!existing || prev.activeTravellerId !== existing.ownerId) return prev;
+    const bookings = prev.bookings.map((b) =>
+      b.id === id ? { ...b, referenceSharedWith: travellerIds, version: b.version + 1 } : b,
+    );
+    return logAudit({ ...prev, bookings }, "Booking reference shared", existing.title);
+  });
+}
+
+/* ---------------- shared jobs ---------------- */
+
+function taskEvent(prev: KintripState, action: string) {
+  return { at: new Date().toISOString(), actorName: actorName(prev), action };
+}
+
+export function addTask(input: {
+  title: string;
+  detail?: string;
+  assigneeId?: string;
+  helperIds?: string[];
+  deadline?: string;
+  attractionId?: string;
+  visibility?: TripTask["visibility"];
+}) {
+  setState((prev) => {
+    const task: TripTask = {
+      id: `tk-${uid()}`,
+      title: input.title.trim(),
+      detail: input.detail,
+      assigneeId: input.assigneeId,
+      helperIds: input.helperIds ?? [],
+      deadline: input.deadline,
+      timeZone: prev.trip.timeZone,
+      state: input.assigneeId ? "awaiting_acceptance" : "unassigned",
+      attractionId: input.attractionId,
+      visibility: input.visibility ?? "group",
+      version: 1,
+      history: [taskEvent(prev, "Created")],
+    };
+    const next = { ...prev, tasks: [task, ...prev.tasks] };
+    return task.assigneeId
+      ? withNotice(logAudit(next, "Job assigned", `${task.title} → ${actorName(prev, task.assigneeId)}`), {
+          text: `${actorName(prev, task.assigneeId)} was asked to take on "${task.title}"`,
+          audience: "all",
+        })
+      : logAudit(next, "Job added", task.title);
+  });
+}
+
+export function assignTask(taskId: string, assigneeId: string | undefined) {
+  setState((prev) => {
+    if (!isOrganiser(prev)) return prev;
+    const tasks = prev.tasks.map((t) =>
+      t.id !== taskId
+        ? t
+        : {
+            ...t,
+            assigneeId,
+            state: (assigneeId ? "awaiting_acceptance" : "unassigned") as TripTask["state"],
+            version: t.version + 1,
+            history: [taskEvent(prev, assigneeId ? "Assigned" : "Unassigned"), ...t.history],
+          },
+    );
+    return logAudit({ ...prev, tasks }, "Job reassigned", taskId);
+  });
+}
+
+export function respondToTask(taskId: string, accept: boolean) {
+  setState((prev) => {
+    const task = prev.tasks.find((t) => t.id === taskId);
+    if (!task || task.assigneeId !== prev.activeTravellerId) return prev;
+    const tasks = prev.tasks.map((t) =>
+      t.id !== taskId
+        ? t
+        : accept
+          ? { ...t, state: "accepted" as const, version: t.version + 1, history: [taskEvent(prev, "Accepted"), ...t.history] }
+          : {
+              ...t,
+              assigneeId: undefined,
+              state: "unassigned" as const,
+              version: t.version + 1,
+              history: [taskEvent(prev, "Declined"), ...t.history],
+            },
+    );
+    return logAudit({ ...prev, tasks }, accept ? "Job accepted" : "Job declined", task.title);
+  });
+}
+
+/** Completion is reversible and always recorded. Never approves spending. */
+export function setTaskComplete(taskId: string, complete: boolean) {
+  setState((prev) => {
+    const task = prev.tasks.find((t) => t.id === taskId);
+    if (!task) return prev;
+    if (!isOrganiser(prev) && task.assigneeId !== prev.activeTravellerId) return prev;
+    const tasks = prev.tasks.map((t) =>
+      t.id !== taskId
+        ? t
+        : {
+            ...t,
+            state: (complete ? "complete" : t.assigneeId ? "accepted" : "unassigned") as TripTask["state"],
+            version: t.version + 1,
+            history: [taskEvent(prev, complete ? "Marked done" : "Reopened"), ...t.history],
+          },
+    );
+    return logAudit({ ...prev, tasks }, complete ? "Job done" : "Job reopened", task.title);
+  });
+}
+
+export function cancelTask(taskId: string) {
+  setState((prev) => {
+    if (!isOrganiser(prev)) return prev;
+    const tasks = prev.tasks.map((t) =>
+      t.id !== taskId
+        ? t
+        : { ...t, state: "cancelled" as const, version: t.version + 1, history: [taskEvent(prev, "Cancelled"), ...t.history] },
+    );
+    return logAudit({ ...prev, tasks }, "Job cancelled", taskId);
+  });
+}
+
+/* ---------------- packing ---------------- */
+
+export function addPackingItem(input: {
+  label: string;
+  scope: PackingItem["scope"];
+  travellerId?: string;
+  responsibleId?: string;
+  quantityNeeded?: number;
+  visibility?: PackingItem["visibility"];
+}) {
+  setState((prev) => {
+    if (input.scope !== "shared" && input.travellerId && !canEditFor(prev, input.travellerId)) return prev;
+    const item: PackingItem = {
+      id: `pk-${uid()}`,
+      label: input.label.trim(),
+      scope: input.scope,
+      travellerId: input.travellerId,
+      responsibleId: input.responsibleId,
+      quantityNeeded: input.scope === "shared" ? (input.quantityNeeded ?? 1) : undefined,
+      quantityCommitted: input.scope === "shared" ? 0 : undefined,
+      quantityPacked: input.scope === "shared" ? 0 : undefined,
+      packed: false,
+      visibility: input.visibility ?? (input.scope === "shared" ? "group" : "private"),
+      version: 1,
+    };
+    return { ...prev, packing: [...prev.packing, item] };
+  });
+}
+
+/**
+ * Claim part of a shared item. `expectedVersion` guards against two people
+ * quietly claiming the same last one — a mismatch asks for a refresh instead.
+ */
+export function commitPackingQuantity(itemId: string, amount: number, expectedVersion: number): boolean {
+  let ok = true;
+  setState((prev) => {
+    const item = prev.packing.find((p) => p.id === itemId);
+    if (!item) {
+      ok = false;
+      return prev;
+    }
+    if (item.version !== expectedVersion) {
+      ok = false;
+      return prev;
+    }
+    const needed = item.quantityNeeded ?? 0;
+    const committed = Math.max(0, Math.min(needed, (item.quantityCommitted ?? 0) + amount));
+    const packing = prev.packing.map((p) =>
+      p.id === itemId
+        ? { ...p, quantityCommitted: committed, responsibleId: amount > 0 ? prev.activeTravellerId : p.responsibleId, version: p.version + 1 }
+        : p,
+    );
+    return { ...prev, packing };
+  });
+  return ok;
+}
+
+export function setPackingPacked(itemId: string, packed: boolean) {
+  setState((prev) => {
+    const item = prev.packing.find((p) => p.id === itemId);
+    if (!item) return prev;
+    if (item.scope !== "shared" && item.travellerId && !canEditFor(prev, item.travellerId)) return prev;
+    const packing = prev.packing.map((p) =>
+      p.id === itemId
+        ? {
+            ...p,
+            packed,
+            quantityPacked: p.scope === "shared" ? (packed ? (p.quantityCommitted ?? 0) : 0) : p.quantityPacked,
+            version: p.version + 1,
+          }
+        : p,
+    );
+    return { ...prev, packing };
+  });
+}
+
+export function removePackingItem(itemId: string) {
+  setState((prev) => {
+    const item = prev.packing.find((p) => p.id === itemId);
+    if (!item) return prev;
+    if (item.scope === "shared" && !isOrganiser(prev)) return prev;
+    if (item.scope !== "shared" && item.travellerId && !canEditFor(prev, item.travellerId)) return prev;
+    return { ...prev, packing: prev.packing.filter((p) => p.id !== itemId) };
+  });
+}
+
+/** Starting lists people can edit — a convenience, never a complete list. */
+export const PACKING_TEMPLATES: Record<string, { label: string; scope: PackingItem["scope"]; quantityNeeded?: number }[]> = {
+  "Multi-generational trip": [
+    { label: "Folding walking stick", scope: "shared", quantityNeeded: 1 },
+    { label: "Lightweight stroller", scope: "shared", quantityNeeded: 1 },
+    { label: "First aid kit", scope: "shared", quantityNeeded: 1 },
+    { label: "Snacks for the day", scope: "shared", quantityNeeded: 2 },
+    { label: "Passport and travel documents", scope: "personal" },
+    { label: "Comfortable walking shoes", scope: "personal" },
+    { label: "Regular medication", scope: "personal" },
+  ],
+  "Friends trip": [
+    { label: "Portable power bank", scope: "shared", quantityNeeded: 2 },
+    { label: "Travel adapter", scope: "shared", quantityNeeded: 2 },
+    { label: "Card games", scope: "shared", quantityNeeded: 1 },
+    { label: "Passport and travel documents", scope: "personal" },
+    { label: "Rain jacket", scope: "personal" },
+  ],
+};
+
+export function applyPackingTemplate(name: keyof typeof PACKING_TEMPLATES) {
+  setState((prev) => {
+    const rows = PACKING_TEMPLATES[name];
+    if (!rows) return prev;
+    const existing = new Set(prev.packing.map((p) => `${p.scope}:${p.label.toLowerCase()}`));
+    const items: PackingItem[] = [];
+    for (const row of rows) {
+      const key = `${row.scope}:${row.label.toLowerCase()}`;
+      if (existing.has(key)) continue;
+      items.push({
+        id: `pk-${uid()}`,
+        label: row.label,
+        scope: row.scope,
+        travellerId: row.scope === "personal" ? prev.activeTravellerId : undefined,
+        quantityNeeded: row.scope === "shared" ? (row.quantityNeeded ?? 1) : undefined,
+        quantityCommitted: row.scope === "shared" ? 0 : undefined,
+        quantityPacked: row.scope === "shared" ? 0 : undefined,
+        packed: false,
+        visibility: row.scope === "shared" ? "group" : "private",
+        version: 1,
+      });
+    }
+    if (items.length === 0) return prev;
+    return logAudit({ ...prev, packing: [...prev.packing, ...items] }, "Packing template added", String(name));
+  });
+}
