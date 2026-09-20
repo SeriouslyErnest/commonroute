@@ -368,6 +368,7 @@ export function createNewTrip(input: NewTripInput): string {
   persist();
   emit();
   void pushNow(state.trip.id);
+  void registerTripMembership(state.trip.id);
   return state.trip.id;
 }
 
