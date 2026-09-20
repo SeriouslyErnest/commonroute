@@ -83,6 +83,10 @@ function DiscoverTab() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [addNotice, setAddNotice] = useState<string | null>(null);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
+  // You may also record a vote for someone you have been asked to help.
+  const [voteForId, setVoteForId] = useState<string>("");
+  const votableFor = editableTravellers(state).filter((t) => t.canVote !== false);
+  const voter = votableFor.find((t) => t.id === voteForId) ?? me;
 
   useEffect(() => {
     const saved = localStorage.getItem("kintrip.placeProvider");
@@ -225,6 +229,19 @@ function DiscoverTab() {
               </option>
             ))}
           </select>
+        ) : votableFor.length > 1 ? (
+          <select
+            className="min-h-11 rounded-xl bg-muted px-3 text-sm font-semibold"
+            value={voter?.id ?? ""}
+            onChange={(e) => setVoteForId(e.target.value)}
+            aria-label="Record this vote for"
+          >
+            {votableFor.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.id === me?.id ? `Voting as ${t.name}` : `Voting for ${t.name}`}
+              </option>
+            ))}
+          </select>
         ) : (
           <Chip tone="primary">Your votes only · {me.name}</Chip>
         )}
@@ -343,7 +360,7 @@ function DiscoverTab() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         {list.slice(0, visibleCount).map((a) => {
-          const myVote = state.votes[me.id]?.[a.id];
+          const myVote = voter ? state.votes[voter.id]?.[a.id] : undefined;
           return (
             <Card key={a.id} className="space-y-3">
               <div className="flex items-start justify-between gap-2">
@@ -393,15 +410,7 @@ function DiscoverTab() {
                 {VOTE_ORDER.map((v) => (
                   <button
                     key={v}
-                    onClick={() =>
-                      setState((prev) => ({
-                        ...prev,
-                        votes: {
-                          ...prev.votes,
-                          [me.id]: { ...(prev.votes[me.id] ?? {}), [a.id]: v },
-                        },
-                      }))
-                    }
+                    onClick={() => voter && castVote(voter.id, a.id, v)}
                     className={cn(
                       "min-h-12 rounded-xl border text-sm font-semibold",
                       myVote === v
