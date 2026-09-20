@@ -141,7 +141,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
               variant="ghost"
               className="mx-auto min-h-11 text-sm"
               onClick={() => {
-                window.scrollTo({ top: 0, behavior: "instant" });
+                window.scrollTo({ top: 0, behavior: "auto" });
                 startDemoTrip();
               }}
             >
