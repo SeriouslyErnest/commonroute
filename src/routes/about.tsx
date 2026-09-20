@@ -17,6 +17,7 @@ import shotStart from "@/assets/app-start.jpg";
 import shotDiscover from "@/assets/app-discover.jpg";
 import shotItinerary from "@/assets/app-itinerary.jpg";
 import shotReplan from "@/assets/app-replan.jpg";
+import { LanguageToggle } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -121,12 +122,15 @@ function AboutPage() {
           <img src={symbol.url} alt="" className="size-11 object-contain" />
           <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
         </span>
-        <Link
-          to="/"
-          className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm"
-        >
-          Plan a trip <ArrowRight className="size-4" aria-hidden />
-        </Link>
+        <span className="flex items-center gap-2">
+          <LanguageToggle />
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm"
+          >
+            Plan a trip <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </span>
       </header>
 
       <section className="relative mx-auto max-w-5xl overflow-hidden px-0 sm:px-4">

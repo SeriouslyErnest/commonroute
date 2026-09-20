@@ -462,10 +462,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     process(document.documentElement);
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
+        if (mutation.type === "characterData") process(mutation.target);
         for (const node of mutation.addedNodes) process(node);
       }
     });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+    observer.observe(document.documentElement, { childList: true, characterData: true, subtree: true });
     return () => observer.disconnect();
   }, [locale]);
 
