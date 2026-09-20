@@ -130,7 +130,7 @@ export function AppShell({
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.
           </p>
-           <span className="flex items-center gap-2 sm:justify-self-end">
+           <span className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:justify-self-end">
            <LanguageToggle />
           <AccountButton />
           {hasTrips ? <UpdatesBell /> : null}
