@@ -5,17 +5,16 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * KINTRIP design system.
- * Brand: turquoise primary, cobalt secondary, coral / lime / yellow accents,
- * navy text on a light cool background. Friendly rounded headings (Nunito Sans)
- * with clean body text (Inter).
+ * CommonRoute design system.
+ * Blue, teal and green express travel, collaboration and positive progress.
+ * Semantic aliases keep every screen consistent in light and dark themes.
  */
 
 @theme inline {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Nunito Sans", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --radius-sm: calc(var(--radius) - 6px);
-  --radius-md: calc(var(--radius) - 3px);
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 6px);
   --radius-2xl: calc(var(--radius) + 12px);
@@ -32,6 +31,10 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary-soft: var(--secondary-soft);
+  --color-collaboration: var(--collaboration);
+  --color-collaboration-foreground: var(--collaboration-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -47,39 +50,82 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --shadow-card: 0 8px 24px -16px oklch(0.31 0.09 258 / 0.3);
-  --shadow-lift: 0 20px 44px -20px oklch(0.31 0.09 258 / 0.42);
+  --shadow-card: 0 4px 18px oklch(0.35 0.06 240 / 0.08);
+  --shadow-lift: 0 18px 50px oklch(0.26 0.05 235 / 0.18);
 }
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.97 0.012 238);
-  --foreground: oklch(0.31 0.09 258);
+  --background: oklch(0.982 0.006 230);
+  --foreground: oklch(0.30 0.055 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.31 0.09 258);
+  --card-foreground: oklch(0.30 0.055 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.31 0.09 258);
-  --primary: oklch(0.72 0.124 187);
-  --primary-foreground: oklch(0.15 0.03 258);
-  --primary-soft: oklch(0.955 0.035 187);
-  --secondary: oklch(0.55 0.215 264);
-  --secondary-foreground: oklch(0.99 0.005 247);
-  --secondary-soft: oklch(0.955 0.025 264);
-  --muted: oklch(0.955 0.008 247);
-  --muted-foreground: oklch(0.44 0.055 256);
-  --accent: oklch(0.955 0.03 187);
-  --accent-foreground: oklch(0.31 0.09 258);
-  --coral: oklch(0.7 0.17 20);
-  --coral-soft: oklch(0.96 0.03 20);
-  --lime: oklch(0.86 0.19 124);
-  --lime-soft: oklch(0.96 0.06 124);
-  --sunny: oklch(0.85 0.14 83);
-  --sunny-soft: oklch(0.97 0.05 83);
-  --destructive: oklch(0.6 0.2 25);
-  --destructive-foreground: oklch(0.99 0.005 247);
-  --border: oklch(0.915 0.012 250);
-  --input: oklch(0.915 0.012 250);
-  --ring: oklch(0.72 0.124 187);
+  --popover-foreground: oklch(0.30 0.055 240);
+  --primary: oklch(0.57 0.145 250);
+  --primary-foreground: oklch(1 0 0);
+  --primary-soft: oklch(0.96 0.025 238);
+  --secondary: oklch(0.32 0.06 242);
+  --secondary-foreground: oklch(1 0 0);
+  --secondary-soft: oklch(0.95 0.022 223);
+  --collaboration: oklch(0.65 0.115 184);
+  --collaboration-foreground: oklch(0.18 0.035 210);
+  --success: oklch(0.67 0.15 148);
+  --success-foreground: oklch(0.20 0.045 150);
+  --muted: oklch(0.955 0.012 220);
+  --muted-foreground: oklch(0.52 0.035 230);
+  --accent: oklch(0.95 0.028 185);
+  --accent-foreground: oklch(0.30 0.055 240);
+  --coral: oklch(0.55 0.18 25);
+  --coral-soft: oklch(0.96 0.025 25);
+  --lime: oklch(0.67 0.15 148);
+  --lime-soft: oklch(0.96 0.04 148);
+  --sunny: oklch(0.62 0.13 78);
+  --sunny-soft: oklch(0.97 0.045 85);
+  --destructive: oklch(0.55 0.18 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.89 0.025 220);
+  --input: oklch(0.89 0.025 220);
+  --ring: oklch(0.57 0.145 250);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --background: oklch(0.25 0.045 230);
+    --foreground: oklch(0.97 0.01 220);
+    --card: oklch(0.31 0.052 225);
+    --card-foreground: oklch(0.97 0.01 220);
+    --popover: oklch(0.34 0.055 225);
+    --popover-foreground: oklch(0.97 0.01 220);
+    --primary: oklch(0.7 0.125 245);
+    --primary-foreground: oklch(0.18 0.04 235);
+    --primary-soft: oklch(0.37 0.07 240);
+    --secondary: oklch(0.82 0.055 220);
+    --secondary-foreground: oklch(0.20 0.04 230);
+    --secondary-soft: oklch(0.36 0.055 225);
+    --collaboration: oklch(0.75 0.12 184);
+    --collaboration-foreground: oklch(0.18 0.035 210);
+    --success: oklch(0.76 0.145 148);
+    --success-foreground: oklch(0.18 0.04 150);
+    --muted: oklch(0.36 0.045 225);
+    --muted-foreground: oklch(0.76 0.025 220);
+    --accent: oklch(0.38 0.055 190);
+    --accent-foreground: oklch(0.97 0.01 220);
+    --coral: oklch(0.72 0.15 25);
+    --coral-soft: oklch(0.34 0.06 25);
+    --lime: oklch(0.76 0.145 148);
+    --lime-soft: oklch(0.35 0.07 148);
+    --sunny: oklch(0.78 0.13 85);
+    --sunny-soft: oklch(0.36 0.07 85);
+    --destructive: oklch(0.72 0.15 25);
+    --destructive-foreground: oklch(0.18 0.04 230);
+    --border: oklch(0.43 0.045 220);
+    --input: oklch(0.43 0.045 220);
+    --ring: oklch(0.7 0.125 245);
+    --shadow-card: 0 4px 18px oklch(0.1 0.02 230 / 0.28);
+    --shadow-lift: 0 18px 50px oklch(0.08 0.02 230 / 0.42);
+  }
 }
 
 @layer base {
@@ -107,11 +153,16 @@
   a {
     -webkit-tap-highlight-color: transparent;
   }
+
+  :focus-visible {
+    outline: 3px solid color-mix(in oklab, var(--color-ring) 55%, transparent);
+    outline-offset: 2px;
+  }
 }
 
 @utility kin-card {
   background-color: var(--color-card);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--color-border);
 }

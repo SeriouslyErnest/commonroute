@@ -21,11 +21,11 @@ export default defineConfig({
         devOptions: { enabled: false },
         filename: "sw.js",
         manifest: {
-          name: "Kintrip",
-          short_name: "Kintrip",
-          description: "Many generations. One journey. Shared memories.",
-          theme_color: "#00C2B8",
-          background_color: "#F5F7FA",
+          name: "CommonRoute",
+          short_name: "CommonRoute",
+          description: "Plan together. Find your common route.",
+          theme_color: "#23415C",
+          background_color: "#F7FAFC",
           display: "standalone",
           start_url: "/",
           icons: [

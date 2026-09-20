@@ -1,13 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, ChevronDown, MapPin, Sparkles, Users } from "lucide-react";
-import logo from "@/assets/kintrip-logo.png.asset.json";
+import logo from "@/assets/commonroute-logo.png.asset.json";
 import santoriniStart from "@/assets/kintrip-santorini-start.jpg";
 import { Button } from "@/components/kintrip/ui";
 import { cn } from "@/lib/utils";
 import { createNewTrip, startDemoTrip, useTripSetupStatus } from "@/lib/kintrip/store";
 
 /**
- * The "Where's your next family adventure?" setup card.
+ * The CommonRoute setup card.
  * Shown full-screen on the start page, and as an embedded card on /create.
  */
 export function StartTripCard({ embedded = false }: { embedded?: boolean | undefined }) {
@@ -22,9 +22,9 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
       )}
     >
       <div className="px-6 pt-8 text-center sm:px-9 sm:pt-9">
-        <img src={logo.url} alt="Kintrip" className="mx-auto h-16 w-auto" />
-        <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Where’s your next family adventure?</h1>
-        <p className="mt-2 text-base font-semibold text-muted-foreground">Turn travel dreams into shared memories.</p>
+        <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="mx-auto h-auto w-full max-w-[330px]" />
+        <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Plan a trip that works for everyone.</h1>
+        <p className="mt-2 text-base font-semibold text-muted-foreground">Bring every idea and practical need into one shared plan.</p>
       </div>
 
       <div className="relative mt-5 h-48 overflow-hidden sm:h-52">
@@ -46,7 +46,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
             const form = new FormData(event.currentTarget);
             const destination = String(form.get("destination") || "").trim();
             createNewTrip({
-              title: `${destination} family trip`,
+              title: `${destination} group trip`,
               destination,
               startDate: String(form.get("start") || ""),
               endDate: String(form.get("end") || ""),
@@ -117,8 +117,8 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
             </span>
           </label>
 
-          <Button type="submit" className="w-full rounded-full text-lg">
-            Create My Trip <ArrowRight className="size-6" aria-hidden />
+          <Button type="submit" className="w-full text-lg">
+            Start a trip <ArrowRight className="size-6" aria-hidden />
           </Button>
         </form>
 
@@ -129,7 +129,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
           </Link>
           {" · "}
           <Link to="/welcome" className="font-bold text-secondary">
-            Why Kintrip?
+             Why CommonRoute?
           </Link>
         </p>
 
@@ -143,9 +143,7 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
         ) : null}
 
         <p className="mt-4 text-center text-xs font-extrabold leading-5 text-secondary">
-          Many generations.
-          <br />
-          One journey. Shared memories.
+           Plan together. Find your common route.
         </p>
       </div>
     </section>
