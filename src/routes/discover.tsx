@@ -4,7 +4,8 @@ import { Check, ChevronDown, Clock, Footprints, Loader2, MapPin, Plus, Search, W
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
 import { fitNoteFor, mapsUrl, VOTE_LABEL } from "@/lib/kintrip/engine";
-import { newSuggestion, STATUS_LABEL } from "@/lib/kintrip/governance";
+import { editableTravellers, newSuggestion, STATUS_LABEL } from "@/lib/kintrip/governance";
+import { castVote } from "@/lib/kintrip/actions";
 import {
   searchPlaces,
   type PlaceProvider,
