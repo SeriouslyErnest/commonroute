@@ -91,6 +91,13 @@ export interface Attraction {
   opens: string;
   closes: string;
   sourceUrl: string;
+  /* Where this place came from, so duplicates can be spotted and data refreshed. */
+  latitude?: undefined | number;
+  longitude?: undefined | number;
+  provider?: undefined | "free" | "google" | "curated";
+  providerPlaceId?: undefined | string;
+  sourceQuery?: undefined | string;
+  capturedAt?: undefined | string;
 }
 
 export interface SuggestionCost {
