@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      kintrip_memberships: {
+        Row: {
+          destination: string | null
+          share_code: string
+          title: string | null
+          trip_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          destination?: string | null
+          share_code: string
+          title?: string | null
+          trip_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          destination?: string | null
+          share_code?: string
+          title?: string | null
+          trip_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kintrip_trips: {
         Row: {
           share_code: string
@@ -31,6 +58,30 @@ export type Database = {
           share_code?: string
           state?: Json
           trip_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
           updated_at?: string
         }
         Relationships: []

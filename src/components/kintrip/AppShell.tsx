@@ -1,8 +1,9 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
+import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, LogIn, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
+import { useAccount } from "@/lib/kintrip/auth";
 import { unreadCount } from "@/lib/kintrip/governance";
 import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,31 @@ function UpdatesBell() {
           {unread > 9 ? "9+" : unread}
         </span>
       ) : null}
+    </Link>
+  );
+}
+
+function AccountButton() {
+  const { session, email, loading } = useAccount();
+  if (loading) return null;
+  if (!session) {
+    return (
+      <Link
+        to="/auth"
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-3 text-sm font-bold text-secondary shadow-sm"
+      >
+        <LogIn className="size-4" aria-hidden /> Sign in
+      </Link>
+    );
+  }
+  const initial = (email ?? "?").trim().charAt(0).toUpperCase();
+  return (
+    <Link
+      to="/account"
+      aria-label={`Your account (${email ?? "signed in"})`}
+      className="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-secondary-soft text-base font-extrabold text-secondary shadow-sm"
+    >
+      {initial}
     </Link>
   );
 }
@@ -103,6 +129,7 @@ export function AppShell({
             Plan together. Find your common route.
           </p>
           <span className="flex items-center gap-2 sm:justify-self-end">
+          <AccountButton />
           {hasTrips ? <UpdatesBell /> : null}
           {demoActive ? (
             <Button

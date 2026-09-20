@@ -241,7 +241,75 @@ export async function joinTripByCode(code: string): Promise<string | null> {
   persist();
   emit();
   setSyncStatus("synced");
+  void registerTripMembership(remote.tripId);
   return remote.tripId;
+}
+
+/* ---------------- account-linked trips ---------------- */
+
+function membershipPayload(tripId: string) {
+  const state = syncableTrip(tripId);
+  if (!state) return null;
+  return {
+    tripId,
+    shareCode: state.trip.shareCode!,
+    title: state.trip.title,
+    destination: state.trip.destination,
+  };
+}
+
+async function signedIn(): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  const { supabase } = await import("@/integrations/supabase/client");
+  const { data } = await supabase.auth.getSession();
+  return !!data.session;
+}
+
+/** Remember a trip against the signed-in account, if there is one. */
+export async function registerTripMembership(tripId: string) {
+  const payload = membershipPayload(tripId);
+  if (!payload) return;
+  try {
+    if (!(await signedIn())) return;
+    const { saveMemberships } = await import("./account.functions");
+    await saveMemberships({ data: { trips: [payload] } });
+  } catch {
+    /* membership is a convenience — never block planning on it */
+  }
+}
+
+/**
+ * Called when someone signs in: uploads the trips already on this device and
+ * brings down any trips saved against their account from other devices.
+ */
+export async function linkAccountTrips() {
+  hydrate();
+  try {
+    const local = Object.keys(multi.trips)
+      .map(membershipPayload)
+      .filter((t): t is NonNullable<ReturnType<typeof membershipPayload>> => !!t);
+    const { saveMemberships, listMemberships } = await import("./account.functions");
+    if (local.length) await saveMemberships({ data: { trips: local } });
+    const rows = await listMemberships();
+    let added = false;
+    for (const row of rows) {
+      if (multi.trips[row.tripId]) continue;
+      const remote = await pullTrip({ data: { shareCode: row.shareCode } });
+      if (!remote) continue;
+      multi = {
+        ...multi,
+        trips: { ...multi.trips, [remote.tripId]: normalizeState(remote.state) },
+      };
+      if (!multi.activeTripId) multi = { ...multi, activeTripId: remote.tripId };
+      added = true;
+    }
+    if (added) {
+      persist();
+      emit();
+    }
+  } catch {
+    /* offline or not signed in — local trips keep working */
+  }
 }
 
 /** Live sync for the active trip: pushes local edits, polls for family updates. */
@@ -300,6 +368,7 @@ export function createNewTrip(input: NewTripInput): string {
   persist();
   emit();
   void pushNow(state.trip.id);
+  void registerTripMembership(state.trip.id);
   return state.trip.id;
 }
 
