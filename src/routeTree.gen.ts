@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BookingsRouteImport } from './routes/bookings'
+import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as ConsensusRouteImport } from './routes/consensus'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -57,6 +58,11 @@ const AuthRoute = AuthRouteImport.update({
 const BookingsRoute = BookingsRouteImport.update({
   id: '/bookings',
   path: '/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangesRoute = ChangesRouteImport.update({
+  id: '/changes',
+  path: '/changes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsensusRoute = ConsensusRouteImport.update({
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
+  '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
+  '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
+  '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/bookings'
+    | '/changes'
     | '/consensus'
     | '/create'
     | '/discover'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/bookings'
+    | '/changes'
     | '/consensus'
     | '/create'
     | '/discover'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/bookings'
+    | '/changes'
     | '/consensus'
     | '/create'
     | '/discover'
@@ -321,6 +333,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   BookingsRoute: typeof BookingsRoute
+  ChangesRoute: typeof ChangesRoute
   ConsensusRoute: typeof ConsensusRoute
   CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
@@ -377,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/bookings'
       fullPath: '/bookings'
       preLoaderRoute: typeof BookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changes': {
+      id: '/changes'
+      path: '/changes'
+      fullPath: '/changes'
+      preLoaderRoute: typeof ChangesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consensus': {
@@ -521,6 +541,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   BookingsRoute: BookingsRoute,
+  ChangesRoute: ChangesRoute,
   ConsensusRoute: ConsensusRoute,
   CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,

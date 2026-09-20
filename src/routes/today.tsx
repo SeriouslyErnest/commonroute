@@ -10,12 +10,18 @@ import {
   Hotel,
   MapPin,
   Phone,
+  Footprints,
   Ticket,
+  Train,
   Type,
+  UserCheck,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip } from "@/components/kintrip/ui";
+import { acknowledgeChange, attendanceFor, setAttendance, unacknowledgedFor } from "@/lib/kintrip/actions";
+import { editableTravellers } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
+import { travelGaps } from "@/lib/kintrip/travel";
 import type { Booking, ItineraryDay, ItineraryItem } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
 
@@ -104,7 +110,10 @@ function StopCard({
   simple: boolean;
   tone: "next" | "later" | "done";
 }) {
+  const state = useKintrip();
   const address = item.address ?? `${item.title}, ${day.city}`;
+  const mine = editableTravellers(state);
+  const counts = attendanceFor(state, item.id);
   return (
     <Card
       className={cn(
@@ -142,6 +151,42 @@ function StopCard({
             This is your group&apos;s own record. The venue has not confirmed anything here.
           </span>
         </p>
+      ) : null}
+
+      {tone !== "done" ? (
+        <div className="space-y-2">
+          <p className={cn("flex items-center gap-1.5 font-semibold text-secondary", simple ? "text-base" : "text-sm")}>
+            <UserCheck className="size-4" aria-hidden /> {counts.coming} coming
+            {counts.out > 0 ? ` · ${counts.out} sitting this one out` : ""}
+            {counts.unanswered > 0 ? ` · ${counts.unanswered} yet to say` : ""}
+          </p>
+          {mine.map((t) => {
+            const current = counts.records.find((r) => r.travellerId === t.id)?.state;
+            return (
+              <div key={t.id} className="flex flex-wrap items-center gap-2">
+                {mine.length > 1 ? (
+                  <span className="text-xs font-bold text-muted-foreground">{t.name}</span>
+                ) : null}
+                <Button
+                  type="button"
+                  variant={current === "coming" ? "secondary" : "outline"}
+                  className={simple ? "min-h-12 text-base" : "min-h-10 px-3 text-sm"}
+                  onClick={() => setAttendance(t.id, item.id, "coming")}
+                >
+                  Coming
+                </Button>
+                <Button
+                  type="button"
+                  variant={current === "sitting_out" ? "secondary" : "outline"}
+                  className={simple ? "min-h-12 text-base" : "min-h-10 px-3 text-sm"}
+                  onClick={() => setAttendance(t.id, item.id, "sitting_out")}
+                >
+                  Sitting this one out
+                </Button>
+              </div>
+            );
+          })}
+        </div>
       ) : null}
 
       <div className="flex flex-wrap gap-2">
