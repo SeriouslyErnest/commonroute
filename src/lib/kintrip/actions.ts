@@ -813,8 +813,9 @@ export function unacknowledgedFor(state: KintripState, travellerId: string) {
   return (state.publishedChanges ?? []).filter(
     (c) =>
       !c.acknowledged.includes(travellerId) &&
-      (c.affected.length === 0 || c.affected.includes(travellerId)) &&
-      c.changes.some((ch) => ch.material),
+      c.changes.some(
+        (ch) => ch.material && (ch.affected.length === 0 || ch.affected.includes(travellerId)),
+      ),
   );
 }
 
