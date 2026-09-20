@@ -102,6 +102,7 @@ function DiscoverTab() {
     }
     setSearching(true);
     setSearchError(null);
+    setAddNotice(null);
     const timer = setTimeout(() => {
       searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
         .then((results) => setGoogleResults(results))
@@ -280,7 +281,9 @@ function DiscoverTab() {
           ) : (
             <ul className="space-y-2">
               {googleResults.map((p) => {
-                const added = state.attractions.some((a) => a.id === `gp-${p.placeId}`);
+                const added = state.attractions.some(
+                  (a) => a.id === `gp-${p.placeId}` || a.providerPlaceId === p.placeId,
+                );
                 return (
                   <li
                     key={p.placeId}
