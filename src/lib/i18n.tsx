@@ -359,8 +359,6 @@ const ZH: Record<string, string> = {
   Today: "今天",
   "The day at a glance": "今天的安排一览",
   "Later today": "今天稍后",
-  Done: "已完成",
-  Next: "接下来",
   "Open the map": "打开地图",
   "Show on the map": "在地图上查看",
   "Copy the address": "复制地址",
@@ -386,14 +384,11 @@ const ZH: Record<string, string> = {
   "Save booking": "保存预订",
   "Booked and confirmed": "已预订并确认",
   "Planned, not booked yet": "已计划，尚未预订",
-  Booked: "已预订",
   "Not booked yet": "尚未预订",
-  Cancelled: "已取消",
   "Mark as cancelled": "标记为已取消",
   "Share the reference": "分享预订编号",
   "Stop sharing the reference": "停止分享预订编号",
   "Reference kept with whoever booked it": "预订编号仅预订人可见",
-  Remove: "移除",
   "No bookings yet. Add your stay first — it powers the \"Find our stay\" card on Today.":
     "还没有预订。先添加住宿，“找到我们的住宿”卡片就会出现在“今天”页面。",
 
