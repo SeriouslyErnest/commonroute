@@ -1,6 +1,9 @@
 import { defaultCost } from "./governance";
 import type {
   Attraction,
+  Booking,
+  PackingItem,
+  TripTask,
   DecisionSettings,
   KintripState,
   Suggestion,
