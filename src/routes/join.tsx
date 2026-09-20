@@ -85,6 +85,7 @@ function JoinWithoutInvite() {
 function JoinKnownTrip() {
   const state = useKintrip();
   const navigate = useNavigate();
+  const joinedCount = state.travellers.filter((t) => t.joined).length;
 
   return (
     <AppShell
