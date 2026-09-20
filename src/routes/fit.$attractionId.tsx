@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, TriangleAlert } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Card, Chip } from "@/components/kintrip/ui";
-import { VOTE_LABEL, groupFit, tallyFor } from "@/lib/kintrip/governance";
+import { VOTE_LABEL } from "@/lib/kintrip/engine";
+import { groupFit, tallyFor } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
 
 export const Route = createFileRoute("/fit/$attractionId")({

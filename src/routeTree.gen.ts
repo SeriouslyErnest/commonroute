@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConsensusRouteImport } from './routes/consensus'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as FairnessRouteImport } from './routes/fairness'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
@@ -23,7 +24,9 @@ import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as TripsRouteImport } from './routes/trips'
+import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as FitAttractionIdRouteImport } from './routes/fit.$attractionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,6 +46,11 @@ const CreateRoute = CreateRouteImport.update({
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FairnessRoute = FairnessRouteImport.update({
+  id: '/fairness',
+  path: '/fairness',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FamilyRoute = FamilyRouteImport.update({
@@ -95,9 +103,19 @@ const TripsRoute = TripsRouteImport.update({
   path: '/trips',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FitAttractionIdRoute = FitAttractionIdRouteImport.update({
+  id: '/fit/$attractionId',
+  path: '/fit/$attractionId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -106,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
@@ -116,13 +135,16 @@ export interface FileRoutesByFullPath {
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
+  '/updates': typeof UpdatesRoute
   '/welcome': typeof WelcomeRoute
+  '/fit/$attractionId': typeof FitAttractionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
@@ -133,7 +155,9 @@ export interface FileRoutesByTo {
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
+  '/updates': typeof UpdatesRoute
   '/welcome': typeof WelcomeRoute
+  '/fit/$attractionId': typeof FitAttractionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,6 +165,7 @@ export interface FileRoutesById {
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
@@ -151,7 +176,9 @@ export interface FileRoutesById {
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
   '/trips': typeof TripsRoute
+  '/updates': typeof UpdatesRoute
   '/welcome': typeof WelcomeRoute
+  '/fit/$attractionId': typeof FitAttractionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -160,6 +187,7 @@ export interface FileRouteTypes {
     | '/consensus'
     | '/create'
     | '/discover'
+    | '/fairness'
     | '/family'
     | '/invite'
     | '/itinerary'
@@ -170,13 +198,16 @@ export interface FileRouteTypes {
     | '/roles'
     | '/sponsor'
     | '/trips'
+    | '/updates'
     | '/welcome'
+    | '/fit/$attractionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/consensus'
     | '/create'
     | '/discover'
+    | '/fairness'
     | '/family'
     | '/invite'
     | '/itinerary'
@@ -187,13 +218,16 @@ export interface FileRouteTypes {
     | '/roles'
     | '/sponsor'
     | '/trips'
+    | '/updates'
     | '/welcome'
+    | '/fit/$attractionId'
   id:
     | '__root__'
     | '/'
     | '/consensus'
     | '/create'
     | '/discover'
+    | '/fairness'
     | '/family'
     | '/invite'
     | '/itinerary'
@@ -204,7 +238,9 @@ export interface FileRouteTypes {
     | '/roles'
     | '/sponsor'
     | '/trips'
+    | '/updates'
     | '/welcome'
+    | '/fit/$attractionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -212,6 +248,7 @@ export interface RootRouteChildren {
   ConsensusRoute: typeof ConsensusRoute
   CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
+  FairnessRoute: typeof FairnessRoute
   FamilyRoute: typeof FamilyRoute
   InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
@@ -222,7 +259,9 @@ export interface RootRouteChildren {
   RolesRoute: typeof RolesRoute
   SponsorRoute: typeof SponsorRoute
   TripsRoute: typeof TripsRoute
+  UpdatesRoute: typeof UpdatesRoute
   WelcomeRoute: typeof WelcomeRoute
+  FitAttractionIdRoute: typeof FitAttractionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -253,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/discover'
       fullPath: '/discover'
       preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fairness': {
+      id: '/fairness'
+      path: '/fairness'
+      fullPath: '/fairness'
+      preLoaderRoute: typeof FairnessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/family': {
@@ -325,11 +371,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TripsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/welcome': {
       id: '/welcome'
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fit/$attractionId': {
+      id: '/fit/$attractionId'
+      path: '/fit/$attractionId'
+      fullPath: '/fit/$attractionId'
+      preLoaderRoute: typeof FitAttractionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -340,6 +400,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsensusRoute: ConsensusRoute,
   CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,
+  FairnessRoute: FairnessRoute,
   FamilyRoute: FamilyRoute,
   InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
@@ -350,7 +411,9 @@ const rootRouteChildren: RootRouteChildren = {
   RolesRoute: RolesRoute,
   SponsorRoute: SponsorRoute,
   TripsRoute: TripsRoute,
+  UpdatesRoute: UpdatesRoute,
   WelcomeRoute: WelcomeRoute,
+  FitAttractionIdRoute: FitAttractionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
