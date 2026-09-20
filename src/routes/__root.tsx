@@ -1,3 +1,4 @@
+// CommonRoute is a remix of Kintrip — a collaborative trip planner originally built for multi-generational families.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,

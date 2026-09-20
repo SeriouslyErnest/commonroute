@@ -122,16 +122,20 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
           </Button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          Have an invite?{" "}
-          <Link to="/join" className="font-bold text-secondary">
-            Join a trip
+        <div className="mt-4 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-center">
+          <p className="text-sm text-muted-foreground">
+            Have an invite?{" "}
+            <Link to="/join" className="font-bold text-secondary">
+              Join a trip
+            </Link>
+          </p>
+          <Link
+            to="/about"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-input bg-card px-4 text-sm font-bold text-secondary shadow-sm hover:bg-accent"
+          >
+            About CommonRoute
           </Link>
-          {" · "}
-          <Link to="/welcome" className="font-bold text-secondary">
-             Why CommonRoute?
-          </Link>
-        </p>
+        </div>
 
 
         {!hasDemo ? (
