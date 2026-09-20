@@ -15,3 +15,5 @@
 - [x] Passwordless accounts: email-link sign in, profile name, trips saved to your account across devices (PRD v2.1 P0)
 - [x] PRD v2.1 follow-ups: place coordinates + source captured, duplicate shortlist prevention, trip currency choice, better free map search, email change / sign out everywhere / close account
 - [x] English / Simplified Chinese language switch and complete interface translation
+- [x] PRD v2.2 Phase A: helped travellers (F01), Today and simple view (F02), bookings and stay (F03), shared jobs and packing (F04)
+- [ ] PRD v2.2 Phase B (F05–F08): change summaries and acknowledgement, travel buffers, comfort/meal planning, personal attendance
