@@ -238,7 +238,6 @@ const ZH: Record<string, string> = {
   "Use revised plan": "使用调整后的计划",
   "Try another option": "尝试其他方案",
   "Start over": "重新开始",
-  "Review suggestions": "审核建议",
   "Organisers only": "仅限组织者",
   "Back to suggesting places": "返回地点建议",
   "How this works": "运作方式",
@@ -254,7 +253,6 @@ const ZH: Record<string, string> = {
   "How this group decides": "群组如何做决定",
   "Decision style": "决策方式",
   "Currency for costs": "费用币种",
-  "Everyone gets a win": "每个人都有期待",
   Owner: "所有者",
   Organiser: "组织者",
   "Budget sponsor": "费用赞助者",
@@ -288,6 +286,74 @@ const ZH: Record<string, string> = {
   Updates: "动态",
   "Mark all as read": "全部标为已读",
   "No new updates": "暂无新动态",
+  "Where would you like to go?": "你想去哪里？",
+  "Start date": "开始日期",
+  "End date": "结束日期",
+  "CommonRoute — Plan together. Find your common route.": "CommonRoute — 一起规划，找到大家共同的路线。",
+  "Whitewashed Santorini overlooking the Aegean Sea": "俯瞰爱琴海的圣托里尼白色小镇",
+  "Tokyo skyline at dusk": "黄昏时的东京天际线",
+  "Back to group": "返回群组",
+  Food: "美食",
+  Culture: "文化",
+  Shopping: "购物",
+  Nature: "自然",
+  "Theme parks": "主题乐园",
+  Museums: "博物馆",
+  Relaxing: "休闲",
+  Technology: "科技",
+  Photography: "摄影",
+  Temples: "寺庙",
+  Animals: "动物",
+  Sightseeing: "观光",
+  Anime: "动漫",
+  relaxed: "轻松",
+  balanced: "均衡",
+  packed: "充实",
+  low: "少量",
+  moderate: "适中",
+  high: "较多",
+  "Search is unavailable right now. Try the other map source.": "目前无法搜索，请尝试另一个地图来源。",
+  "From Google Maps": "来自 Google 地图",
+  "From map search": "来自地图搜索",
+  Suggested: "已建议",
+  "On hold": "暂缓",
+  "Provisionally approved": "暂定批准",
+  "Waiting on sponsor": "等待赞助者确认",
+  Approved: "已批准",
+  Backup: "备选",
+  "Not included": "未采纳",
+  Booked: "已预订",
+  Cancelled: "已取消",
+  Free: "免费",
+  "Paid by each person": "个人支付",
+  "Shared expense": "共同费用",
+  "Major commitment": "重大支出",
+  "Already booked": "已预订",
+  "Organiser decides": "组织者决定",
+  "Group majority": "多数决定",
+  "Sponsor approval": "赞助者批准",
+  "Full agreement": "全员同意",
+  Strong: "很适合",
+  Workable: "可行",
+  Difficult: "较困难",
+  Comfortable: "轻松",
+  Moderate: "适中",
+  Demanding: "较累",
+  Hide: "收起",
+  Unlock: "解锁",
+  "Lock in": "锁定",
+  Published: "已发布",
+  "Nothing stands out yet — the group hasn't voted much.": "目前还没有明显优势 — 群组投票还不多。",
+  "No concerns recorded for this place.": "此地点暂无注意事项。",
+  "Opening your group's trip…": "正在打开群组旅行…",
+  "One moment while we load the latest plan.": "请稍候，正在加载最新计划。",
+  "We couldn't find that trip": "找不到该旅行",
+  "Loading your details…": "正在加载你的资料…",
+  "Loading your trip…": "正在加载旅行…",
+  "Save": "保存",
+  "Saving…": "正在保存…",
+  "Saved": "已保存",
+  "CommonRoute": "CommonRoute",
 };
 
 const PATTERNS: Array<[RegExp, (...parts: string[]) => string]> = [
@@ -309,6 +375,13 @@ const PATTERNS: Array<[RegExp, (...parts: string[]) => string]> = [
   [/^Demo: view as$/, () => "演示：查看身份"],
   [/^Demo: answering as$/, () => "演示：回答身份"],
   [/^(\d+) days · (\d+) activities · balanced pace$/, (d, a) => `${d} 天 · ${a} 项活动 · 节奏均衡`],
+  [/^(\d+) (person|people)$/, (n) => `${n} 人`],
+  [/^(\d+) (stop|stops)$/, (n) => `${n} 个地点`],
+  [/^(\d+) of 5 · answering as (.+)$/, (n, name) => `第 ${n}/5 步 · 由 ${name} 回答`],
+  [/^(.+) is already on your shortlist\.$/, (name) => `${name} 已在候选清单中。`],
+  [/^(.+) added to the shortlist\.$/, (name) => `${name} 已加入候选清单。`],
+  [/^Published by (.+)$/, (name) => `由 ${name} 发布`],
+  [/^About (\d+) minutes on foot \(estimated\), (\d+) transfers?, (\d+) outdoor stops?\.$/, (walk, transfers, outdoor) => `预计步行约 ${walk} 分钟，换乘 ${transfers} 次，户外活动 ${outdoor} 项。`],
 ];
 
 function translateText(value: string) {
@@ -346,8 +419,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setLocale = useCallback((next: AppLocale) => {
-    setLocaleState(next);
     window.localStorage.setItem(STORAGE_KEY, next);
+    setLocaleState(next);
+    window.location.reload();
   }, []);
 
   useEffect(() => {
@@ -385,13 +459,13 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         }
       }
     };
-    process(document.body);
+    process(document.documentElement);
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         for (const node of mutation.addedNodes) process(node);
       }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, [locale]);
 
