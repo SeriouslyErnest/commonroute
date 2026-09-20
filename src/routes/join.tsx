@@ -89,7 +89,7 @@ function JoinKnownTrip() {
   return (
     <AppShell
       title={`You're joining ${state.trip.title}`}
-      subtitle={`${state.trip.destination} · ${state.travellers.filter((t) => t.joined).length} family members already here`}
+      subtitle={`${state.trip.destination} · ${joinedCount} ${joinedCount === 1 ? "person" : "people"} already here`}
       back={{ to: "/", label: "Back to trip" }}
     >
       <Card>
