@@ -36,6 +36,40 @@ export const Route = createFileRoute("/discover")({
 
 const VOTE_ORDER: VoteValue[] = ["MUST_GO", "WOULD_LIKE", "DONT_MIND", "SKIP"];
 
+const simpleName = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** Metres between two points, so the same place found twice isn't listed twice. */
+function metresApart(a: Attraction, b: Attraction): number | null {
+  if (a.latitude == null || a.longitude == null || b.latitude == null || b.longitude == null) {
+    return null;
+  }
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(b.latitude - a.latitude);
+  const dLon = toRad(b.longitude - a.longitude);
+  const lat1 = toRad(a.latitude);
+  const lat2 = toRad(b.latitude);
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return 6371000 * 2 * Math.asin(Math.sqrt(h));
+}
+
+/** The same place can come back from either map source under a different id. */
+function findDuplicate(list: Attraction[], next: Attraction): Attraction | undefined {
+  return list.find((a) => {
+    if (a.id === next.id) return true;
+    if (next.providerPlaceId && a.providerPlaceId === next.providerPlaceId) return true;
+    const sameName = simpleName(a.name) === simpleName(next.name);
+    if (!sameName) return false;
+    const distance = metresApart(a, next);
+    return distance === null || distance < 200;
+  });
+}
+
 function DiscoverTab() {
   const state = useKintrip();
   const { demoActive } = useTripSetupStatus();
