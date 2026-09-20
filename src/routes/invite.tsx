@@ -9,12 +9,12 @@ import { useKintrip } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/invite")({
   head: () => ({
     meta: [
-      { title: "Invite your family — Kintrip" },
+      { title: "Invite your group — CommonRoute" },
       {
         name: "description",
         content: "Share one link and get everyone's preferences without chasing messages.",
       },
-      { property: "og:title", content: "Invite your family — Kintrip" },
+      { property: "og:title", content: "Invite your group — CommonRoute" },
       {
         property: "og:description",
         content: "Share one link and get everyone's preferences without chasing messages.",
@@ -28,12 +28,12 @@ function InvitePage() {
   const state = useKintrip();
   const [copied, setCopied] = useState(false);
   // Resolved after mount so the server and first client render always match.
-  const [link, setLink] = useState("https://kintrip.app/join");
+  const [link, setLink] = useState("/join");
   const shareCode = state.trip.shareCode;
   useEffect(() => {
     setLink(`${window.location.origin}/join${shareCode ? `?code=${shareCode}` : ""}`);
   }, [shareCode]);
-  const message = `Join our family trip on Kintrip — ${state.trip.title}: ${link}`;
+  const message = `Join our trip on CommonRoute — ${state.trip.title}: ${link}`;
 
 
   return (

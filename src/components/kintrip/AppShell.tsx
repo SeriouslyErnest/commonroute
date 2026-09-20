@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, Map, Users, WifiOff } from "lucide-react";
 import type { ReactNode } from "react";
-import logo from "@/assets/commonroute-logo.png.asset.json";
+import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
 import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
@@ -76,7 +76,8 @@ export function AppShell({
       <header className="sticky top-0 z-20 border-b border-border bg-card/95">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="h-11 w-auto max-w-[190px] object-contain object-left" />
+            <img src={symbol.url} alt="" className="size-11 object-contain" />
+            <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
           </Link>
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.

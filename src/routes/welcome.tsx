@@ -10,7 +10,8 @@ import {
   Users,
   WifiOff,
 } from "lucide-react";
-import logo from "@/assets/kintrip-logo.png.asset.json";
+import logo from "@/assets/commonroute-logo.png.asset.json";
+import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import coast from "@/assets/kintrip-family-coast.jpg";
 import shotStart from "@/assets/app-start.jpg";
 import shotDiscover from "@/assets/app-discover.jpg";
@@ -20,17 +21,17 @@ import shotReplan from "@/assets/app-replan.jpg";
 export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
-      { title: "Kintrip — family trips that work for every generation" },
+      { title: "CommonRoute — Collaborative trip planning for everyone" },
       {
         name: "description",
         content:
-          "Kintrip turns your family's preferences, walking limits and rest needs into one realistic itinerary — and re-plans the day when the weather or the mood changes.",
+          "Plan family and group trips together. Share preferences, vote on places and build one practical itinerary that works for the whole group.",
       },
-      { property: "og:title", content: "Kintrip — family trips that work for every generation" },
+      { property: "og:title", content: "CommonRoute — Collaborative trip planning for everyone" },
       {
         property: "og:description",
         content:
-          "Collect everyone's preferences, vote together, and get one realistic family itinerary you can re-plan on the day.",
+          "Share preferences, vote on places and build one practical itinerary that works for the whole group.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -45,28 +46,28 @@ const STEPS = [
     title: "Start the trip",
     body: "Destination, dates, group size. That's it — no account, no setup call.",
     image: shotStart,
-    alt: "Kintrip start screen asking where your next family adventure is",
+    alt: "CommonRoute trip setup screen",
   },
   {
     icon: Users,
     title: "Invite and gather",
     body: "One link. Everyone answers five short questions about pace, walking and rest.",
     image: shotDiscover,
-    alt: "Kintrip discover screen with places and simple voting buttons",
+    alt: "CommonRoute Discover screen with places and simple voting buttons",
   },
   {
     icon: CalendarCheck,
     title: "Get one clear plan",
     body: "Places grouped by area, meals and rests built in, and a plain-language reason for every choice.",
     image: shotItinerary,
-    alt: "Kintrip itinerary screen showing a recommended family plan",
+    alt: "CommonRoute itinerary screen showing a recommended group plan",
   },
   {
     icon: CloudRain,
     title: "Re-plan on the day",
     body: "Rain, tiredness, running late — say what changed and get one revised plan in seconds.",
     image: shotReplan,
-    alt: "Kintrip re-plan screen offering a revised afternoon",
+    alt: "CommonRoute re-plan screen offering a revised afternoon",
   },
 ];
 
@@ -79,7 +80,7 @@ const FEATURES = [
   {
     icon: Sparkles,
     title: "One plan, not ten options",
-    body: "Kintrip recommends a single realistic itinerary first, then lets you move, replace or remove anything.",
+    body: "CommonRoute recommends a single realistic itinerary first, then lets you move, replace or remove anything.",
   },
   {
     icon: Link2,
@@ -104,7 +105,7 @@ const FAQS = [
   },
   {
     q: "What if plans change mid-trip?",
-    a: "Tell Kintrip what changed and it rebuilds the rest of the day while keeping what still works.",
+    a: "Tell CommonRoute what changed and it rebuilds the rest of the day while keeping what still works.",
   },
   {
     q: "Can I plan more than one trip?",
@@ -116,7 +117,10 @@ function WelcomePage() {
   return (
     <main className="min-h-screen bg-background pb-16">
       <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
-        <img src={logo.url} alt="Kintrip" className="h-10 w-auto" />
+        <span className="flex items-center gap-2">
+          <img src={symbol.url} alt="" className="size-11 object-contain" />
+          <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
+        </span>
         <Link
           to="/"
           className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm"
@@ -135,14 +139,14 @@ function WelcomePage() {
           <div className="absolute inset-0 bg-foreground/55" />
           <div className="relative px-5 py-12 text-card sm:px-10 sm:py-16">
             <span className="inline-flex items-center gap-2 rounded-full bg-card/20 px-3 py-1 text-xs font-bold">
-              <Sparkles className="size-4" aria-hidden /> For multi-generational families
+              <Sparkles className="size-4" aria-hidden /> For families and friends
             </span>
             <h1 className="mt-4 max-w-2xl text-4xl leading-tight sm:text-5xl">
-              Planning the family trip shouldn&apos;t fall on one person.
+              Plan a trip that works for everyone.
             </h1>
             <p className="mt-4 max-w-xl text-lg font-semibold">
-              Kintrip listens to grandparents, parents and kids, then builds one realistic day-by-day
-              plan everyone can actually keep up with.
+              CommonRoute brings everyone&apos;s ideas, preferences and practical needs into one shared
+              plan that the whole group can enjoy.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
@@ -159,7 +163,7 @@ function WelcomePage() {
               </a>
             </div>
             <p className="mt-4 text-sm font-semibold opacity-90">
-              No account needed · Try the ready-made Japan demo trip
+               Plan together. Find your common route.
             </p>
           </div>
         </div>
@@ -179,7 +183,7 @@ function WelcomePage() {
           ))}
         </div>
         <p className="mt-5 text-lg text-muted-foreground">
-          Group chats, spreadsheets and screenshots don&apos;t solve that. Kintrip does — quietly, and
+          Group chats, spreadsheets and screenshots don&apos;t solve that. CommonRoute does — clearly, and
           without anyone feeling like the difficult one.
         </p>
       </section>
@@ -243,7 +247,7 @@ function WelcomePage() {
         <div className="kin-card bg-primary-soft p-8 text-center">
           <h2 className="text-2xl sm:text-3xl">Your next family trip starts with one destination</h2>
           <p className="mt-3 text-base text-muted-foreground">
-            Add where you&apos;re going and the dates. Kintrip takes it from there.
+            Add where you&apos;re going and the dates. CommonRoute takes it from there.
           </p>
           <Link
             to="/"
@@ -255,9 +259,9 @@ function WelcomePage() {
       </section>
 
       <footer className="mx-auto mt-14 max-w-4xl px-4 text-center">
-        <img src={logo.url} alt="Kintrip" className="mx-auto h-9 w-auto" />
+        <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="mx-auto h-auto w-full max-w-[360px]" />
         <p className="mt-3 text-sm font-semibold text-muted-foreground">
-          Many generations. One journey. Shared memories.
+          Plan together. Find your common route.
         </p>
       </footer>
     </main>

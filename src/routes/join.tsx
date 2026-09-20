@@ -10,12 +10,12 @@ export const Route = createFileRoute("/join")({
     typeof search["code"] === "string" && search["code"] ? { code: search["code"] } : {},
   head: () => ({
     meta: [
-      { title: "Join a family trip — Kintrip" },
+      { title: "Join a group trip — CommonRoute" },
       {
         name: "description",
         content: "Join your family's trip with your name and relationship — no account needed.",
       },
-      { property: "og:title", content: "Join a family trip — Kintrip" },
+      { property: "og:title", content: "Join a group trip — CommonRoute" },
       {
         property: "og:description",
         content: "Join your family's trip with your name and relationship — no account needed.",
@@ -68,7 +68,7 @@ function JoinWithoutInvite() {
       back={{ to: "/", label: "Back" }}
     >
       <Card className="py-7 text-center">
-        <h2 className="text-xl">Open your Kintrip invite</h2>
+        <h2 className="text-xl">Open your CommonRoute invite</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           Ask the trip organiser to send you their shareable link, then open it on this device. You won’t need an account.
         </p>

@@ -21,17 +21,17 @@ import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Kintrip — Plan a trip that works for every generation" },
+      { title: "CommonRoute — Collaborative trip planning for everyone" },
       {
         name: "description",
         content:
-          "Kintrip turns your family's different preferences and needs into one realistic itinerary — and helps you re-plan the day when things change.",
+          "CommonRoute turns different preferences and practical needs into one realistic group itinerary — and helps you re-plan when things change.",
       },
-      { property: "og:title", content: "Kintrip — family travel planning" },
+      { property: "og:title", content: "CommonRoute — Collaborative trip planning for everyone" },
       {
         property: "og:description",
         content:
-          "Many generations. One journey. Shared memories. Collect preferences, vote together and get a realistic family itinerary.",
+          "Plan together. Share preferences, vote on places and build one practical itinerary for the whole group.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

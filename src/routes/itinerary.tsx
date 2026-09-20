@@ -9,13 +9,13 @@ import { setState, useKintrip } from "@/lib/kintrip/store";
 export const Route = createFileRoute("/itinerary")({
   head: () => ({
     meta: [
-      { title: "Your family itinerary — Kintrip" },
+      { title: "Your group itinerary — CommonRoute" },
       {
         name: "description",
         content:
           "One recommended family itinerary, with a plain-language explanation of why it works for everyone.",
       },
-      { property: "og:title", content: "Your family itinerary — Kintrip" },
+      { property: "og:title", content: "Your group itinerary — CommonRoute" },
       {
         property: "og:description",
         content: "One recommended plan, grouped geographically, with meals, rests and must-dos kept in.",
@@ -36,7 +36,7 @@ function ItineraryTab() {
       <AppShell title="Your itinerary" subtitle="Nothing generated yet">
         <Card className="space-y-3">
           <p>
-            Once the family has voted, Kintrip builds one recommended plan that balances everyone's
+            Once the group has voted, CommonRoute builds one recommended plan that balances everyone's
             must-dos with walking limits, meals and rest.
           </p>
           <LinkButton to="/consensus">Review and build our itinerary</LinkButton>
