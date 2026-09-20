@@ -498,7 +498,7 @@ export function withNotice(
 
 /** Updates this person is allowed to see, newest first. */
 export function visibleNotifications(state: KintripState): Notification[] {
-  const roles = roleOf(state);
+  const roles = roleOf(state, state.activeTravellerId);
   return state.notifications.filter((n) => {
     if (n.audience === "all") return true;
     if (n.audience === "organisers") return roles.includes("organiser") || roles.includes("owner");
