@@ -17,6 +17,20 @@ function isValidCode(code: unknown): code is string {
   return typeof code === "string" && /^[A-Za-z0-9-]{6,40}$/.test(code);
 }
 
+/** Guards the shared table against oversized or malformed trip payloads. */
+const MAX_STATE_BYTES = 512 * 1024;
+
+function safeState(state: unknown): Record<string, unknown> {
+  if (!state || typeof state !== "object" || Array.isArray(state)) {
+    throw new Error("Invalid trip data");
+  }
+  const json = JSON.stringify(state);
+  if (!json || json.length > MAX_STATE_BYTES) {
+    throw new Error("This trip is too large to share");
+  }
+  return JSON.parse(json) as Record<string, unknown>;
+}
+
 export const pushTrip = createServerFn({ method: "POST" })
   .inputValidator((input: PushInput) => {
     if (!input || typeof input.tripId !== "string" || !isValidCode(input.shareCode)) {
