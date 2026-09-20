@@ -115,7 +115,19 @@ function DiscoverTab() {
     return () => clearTimeout(timer);
   }, [query, state.trip.destination, provider]);
 
-  if (!me) return null;
+  if (!me) {
+    return (
+      <AppShell title="Discover & vote">
+        <Card className="space-y-3">
+          <p className="text-muted-foreground">
+            You don't have a trip open yet. Start one, or open an invite, and you can shortlist
+            places and vote here.
+          </p>
+          <LinkButton to="/create">Start a trip</LinkButton>
+        </Card>
+      </AppShell>
+    );
+  }
 
   const addPlace = (p: PlaceResult) => {
     const id = `gp-${p.placeId}`;
