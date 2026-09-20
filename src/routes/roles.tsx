@@ -67,8 +67,24 @@ function RolesPage() {
             </option>
           ))}
         </select>
+        <label className="block text-sm font-semibold" htmlFor="currency">
+          Currency for costs
+        </label>
+        <select
+          id="currency"
+          className={inputClass}
+          value={state.decisions.currency}
+          disabled={!organiser}
+          onChange={(e) => updateDecisionSettings({ currency: e.target.value })}
+        >
+          {CURRENCIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
         <label className="block text-sm font-semibold" htmlFor="budget">
-          Shared budget for the whole group (optional)
+          Shared budget for the whole group (optional), in {state.decisions.currency}
         </label>
         <input
           id="budget"
