@@ -98,7 +98,8 @@ async function searchGoogle(query: string, destination: string): Promise<PlaceRe
  * OpenStreetMap Nominatim (no key required).
  */
 async function searchFree(query: string, destination: string): Promise<PlaceResult[]> {
-  const text = `${query} in ${destination}`;
+  // Comma form matches far more places than "X in Y" on the open providers.
+  const text = `${query}, ${destination}`;
   const geoapifyKey = process.env["GEOAPIFY_API_KEY"];
 
   if (geoapifyKey) {
