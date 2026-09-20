@@ -92,7 +92,7 @@ function DiscoverTab() {
       name: p.name,
       city,
       area: addressParts[1] || city,
-      category: "From Google Maps",
+      category: p.provider === "google" ? "From Google Maps" : "From map search",
       description: p.address,
       durationMin: 120,
       walking: "moderate",
