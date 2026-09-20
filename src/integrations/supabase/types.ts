@@ -14,6 +14,147 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_status: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          reason: string | null
+          state: Database["public"]["Enums"]["account_state"]
+          user_id: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          reason?: string | null
+          state?: Database["public"]["Enums"]["account_state"]
+          user_id: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          reason?: string | null
+          state?: Database["public"]["Enums"]["account_state"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      admin_audit_log: {
+        Row: {
+          action_type: string
+          admin_email: string | null
+          admin_user_id: string | null
+          after_json: Json | null
+          before_json: Json | null
+          created_at: string
+          id: string
+          reason: string | null
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_email?: string | null
+          admin_user_id?: string | null
+          after_json?: Json | null
+          before_json?: Json | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_email?: string | null
+          admin_user_id?: string | null
+          after_json?: Json | null
+          before_json?: Json | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
+      app_admins: {
+        Row: {
+          admin_role: Database["public"]["Enums"]["admin_role"]
+          created_at: string
+          created_by: string | null
+          disabled_at: string | null
+          status: Database["public"]["Enums"]["admin_status"]
+          user_id: string
+        }
+        Insert: {
+          admin_role?: Database["public"]["Enums"]["admin_role"]
+          created_at?: string
+          created_by?: string | null
+          disabled_at?: string | null
+          status?: Database["public"]["Enums"]["admin_status"]
+          user_id: string
+        }
+        Update: {
+          admin_role?: Database["public"]["Enums"]["admin_role"]
+          created_at?: string
+          created_by?: string | null
+          disabled_at?: string | null
+          status?: Database["public"]["Enums"]["admin_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      entitlement_grants: {
+        Row: {
+          bundle: string
+          created_at: string
+          ends_at: string | null
+          granted_by: string | null
+          id: string
+          reason: string
+          revoke_reason: string | null
+          revoked_at: string | null
+          revoked_by: string | null
+          source_id: string | null
+          source_type: Database["public"]["Enums"]["grant_source"]
+          starts_at: string
+          status: Database["public"]["Enums"]["grant_status"]
+          user_id: string
+        }
+        Insert: {
+          bundle: string
+          created_at?: string
+          ends_at?: string | null
+          granted_by?: string | null
+          id?: string
+          reason: string
+          revoke_reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          source_id?: string | null
+          source_type?: Database["public"]["Enums"]["grant_source"]
+          starts_at?: string
+          status?: Database["public"]["Enums"]["grant_status"]
+          user_id: string
+        }
+        Update: {
+          bundle?: string
+          created_at?: string
+          ends_at?: string | null
+          granted_by?: string | null
+          id?: string
+          reason?: string
+          revoke_reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          source_id?: string | null
+          source_type?: Database["public"]["Enums"]["grant_source"]
+          starts_at?: string
+          status?: Database["public"]["Enums"]["grant_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       kintrip_memberships: {
         Row: {
           destination: string | null
@@ -86,15 +227,135 @@ export type Database = {
         }
         Relationships: []
       }
+      promotion_redemptions: {
+        Row: {
+          grant_id: string | null
+          id: string
+          promotion_id: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          grant_id?: string | null
+          id?: string
+          promotion_id: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          grant_id?: string | null
+          id?: string
+          promotion_id?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotion_redemptions_grant_id_fkey"
+            columns: ["grant_id"]
+            isOneToOne: false
+            referencedRelation: "entitlement_grants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotion_redemptions_promotion_id_fkey"
+            columns: ["promotion_id"]
+            isOneToOne: false
+            referencedRelation: "promotions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      promotions: {
+        Row: {
+          benefit_type: Database["public"]["Enums"]["benefit_type"]
+          bundle: string | null
+          campaign_name: string
+          code: string
+          created_at: string
+          created_by: string | null
+          duration_days: number | null
+          ends_at: string | null
+          id: string
+          internal_notes: string | null
+          max_redemptions: number | null
+          new_accounts_only: boolean
+          per_account_limit: number
+          starts_at: string
+          status: Database["public"]["Enums"]["promotion_status"]
+        }
+        Insert: {
+          benefit_type?: Database["public"]["Enums"]["benefit_type"]
+          bundle?: string | null
+          campaign_name: string
+          code: string
+          created_at?: string
+          created_by?: string | null
+          duration_days?: number | null
+          ends_at?: string | null
+          id?: string
+          internal_notes?: string | null
+          max_redemptions?: number | null
+          new_accounts_only?: boolean
+          per_account_limit?: number
+          starts_at?: string
+          status?: Database["public"]["Enums"]["promotion_status"]
+        }
+        Update: {
+          benefit_type?: Database["public"]["Enums"]["benefit_type"]
+          bundle?: string | null
+          campaign_name?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          duration_days?: number | null
+          ends_at?: string | null
+          id?: string
+          internal_notes?: string | null
+          max_redemptions?: number | null
+          new_accounts_only?: boolean
+          per_account_limit?: number
+          starts_at?: string
+          status?: Database["public"]["Enums"]["promotion_status"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_role_of: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["admin_role"]
+      }
     }
     Enums: {
-      [_ in never]: never
+      account_state: "active" | "suspended"
+      admin_role:
+        | "super_admin"
+        | "billing_admin"
+        | "support_admin"
+        | "read_only_admin"
+      admin_status: "active" | "disabled"
+      benefit_type:
+        | "free_plan_access"
+        | "percent_discount"
+        | "fixed_discount"
+        | "trial_extension"
+      grant_source:
+        | "complimentary"
+        | "trial"
+        | "promotion"
+        | "paid_subscription"
+      grant_status: "active" | "revoked"
+      promotion_status:
+        | "draft"
+        | "scheduled"
+        | "active"
+        | "paused"
+        | "expired"
+        | "exhausted"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -221,6 +482,36 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      account_state: ["active", "suspended"],
+      admin_role: [
+        "super_admin",
+        "billing_admin",
+        "support_admin",
+        "read_only_admin",
+      ],
+      admin_status: ["active", "disabled"],
+      benefit_type: [
+        "free_plan_access",
+        "percent_discount",
+        "fixed_discount",
+        "trial_extension",
+      ],
+      grant_source: [
+        "complimentary",
+        "trial",
+        "promotion",
+        "paid_subscription",
+      ],
+      grant_status: ["active", "revoked"],
+      promotion_status: [
+        "draft",
+        "scheduled",
+        "active",
+        "paused",
+        "expired",
+        "exhausted",
+      ],
+    },
   },
 } as const
