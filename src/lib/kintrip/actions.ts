@@ -505,12 +505,12 @@ function taskEvent(prev: KintripState, action: string) {
 
 export function addTask(input: {
   title: string;
-  detail?: string;
-  assigneeId?: string;
-  helperIds?: string[];
-  deadline?: string;
-  attractionId?: string;
-  visibility?: TripTask["visibility"];
+  detail?: string | undefined;
+  assigneeId?: string | undefined;
+  helperIds?: string[] | undefined;
+  deadline?: string | undefined;
+  attractionId?: string | undefined;
+  visibility?: TripTask["visibility"] | undefined;
 }) {
   setState((prev) => {
     const task: TripTask = {
@@ -613,10 +613,10 @@ export function cancelTask(taskId: string) {
 export function addPackingItem(input: {
   label: string;
   scope: PackingItem["scope"];
-  travellerId?: string;
-  responsibleId?: string;
-  quantityNeeded?: number;
-  visibility?: PackingItem["visibility"];
+  travellerId?: string | undefined;
+  responsibleId?: string | undefined;
+  quantityNeeded?: number | undefined;
+  visibility?: PackingItem["visibility"] | undefined;
 }) {
   setState((prev) => {
     if (input.scope !== "shared" && input.travellerId && !canEditFor(prev, input.travellerId)) return prev;

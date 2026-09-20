@@ -273,7 +273,7 @@ function TodayScreen() {
   const later = remaining.slice(1);
 
   return (
-    <AppShell title="Today" subtitle={day ? `Day ${day.day} · ${day.city}` : undefined}>
+    <AppShell title="Today" subtitle={day ? `Day ${day.day} · ${day.city}` : ""}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Button
