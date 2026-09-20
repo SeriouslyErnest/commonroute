@@ -206,6 +206,24 @@ function StopCard({
   );
 }
 
+function TravelLine({ minutes, mode, tight, assumed, simple }: { minutes: number; mode: "walk" | "transport"; tight: boolean; assumed: boolean; simple: boolean }) {
+  const Icon = mode === "walk" ? Footprints : Train;
+  return (
+    <p
+      className={cn(
+        "flex items-center gap-1.5 px-2 font-semibold",
+        simple ? "text-base" : "text-sm",
+        tight ? "text-coral-foreground" : "text-muted-foreground",
+      )}
+    >
+      <Icon className="size-4 shrink-0" aria-hidden />
+      About {minutes} min to get there{mode === "walk" ? " on foot" : ""}
+      {assumed ? " (rough guess)" : ""}
+      {tight ? " — that is tight, leave early" : ""}
+    </p>
+  );
+}
+
 function StayCard({ booking, simple }: { booking: Booking; simple: boolean }) {
   const [copied, setCopied] = useState(false);
   const address = booking.addressLocal ?? booking.addressTranslated ?? booking.location ?? booking.title;
@@ -286,6 +304,8 @@ function TodayScreen() {
   const isRealToday = !!day && day.date === todayKey;
   const nowMin = nowMinutesIn(tz);
 
+  const pending = unacknowledgedFor(state, state.activeTravellerId);
+
   const stay = useMemo(
     () => state.bookings.find((b) => b.type === "stay" && b.status !== "cancelled"),
     [state.bookings],
@@ -311,6 +331,8 @@ function TodayScreen() {
     );
   }
 
+  const gaps = day ? travelGaps(state, day) : [];
+  const gapAfter = (id: string) => gaps.find((g) => g.afterItemId === id);
   const items = [...(day?.items ?? [])].sort((a, b) => toMinutes(a.start) - toMinutes(b.start));
   const done = isRealToday ? items.filter((i) => toMinutes(i.start) + i.durationMin <= nowMin) : [];
   const remaining = items.filter((i) => !done.includes(i));
@@ -353,6 +375,25 @@ function TodayScreen() {
         {tz ? ` · times shown in ${tz}` : " · times are local to the destination"}
       </p>
 
+      {pending.length > 0 ? (
+        <Card className="space-y-2 border-sunny bg-sunny-soft">
+          <p className="text-sm font-bold">The plan changed since you last looked.</p>
+          <ul className="space-y-1 text-sm">
+            {pending[0]!.changes.slice(0, 4).map((ch, i) => (
+              <li key={i}>· {ch.text}</li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" onClick={() => acknowledgeChange(pending[0]!.id)}>
+              Got it
+            </Button>
+            <Link to="/changes" className="inline-flex items-center font-semibold text-secondary">
+              See every change →
+            </Link>
+          </div>
+        </Card>
+      ) : null}
+
       {items.length === 0 ? (
         <Card>
           <p className="text-sm">Nothing is planned for this day. It is a free day — enjoy it.</p>
@@ -360,7 +401,18 @@ function TodayScreen() {
       ) : (
         <div className="space-y-3">
           {next ? (
-            <StopCard item={next} day={day!} booking={bookingFor(next)} simple={simple} tone="next" />
+            <>
+              <StopCard item={next} day={day!} booking={bookingFor(next)} simple={simple} tone="next" />
+              {gapAfter(next.id) ? (
+                <TravelLine
+                  minutes={gapAfter(next.id)!.estimate.minutes}
+                  mode={gapAfter(next.id)!.estimate.mode}
+                  assumed={gapAfter(next.id)!.estimate.assumed}
+                  tight={gapAfter(next.id)!.tight}
+                  simple={simple}
+                />
+              ) : null}
+            </>
           ) : (
             <Card>
               <p className="text-sm">That is everything for today. Rest well.</p>
@@ -371,7 +423,18 @@ function TodayScreen() {
             <div className="space-y-2">
               <h2 className={simple ? "text-2xl" : "text-lg"}>Later today</h2>
               {later.map((i) => (
-                <StopCard key={i.id} item={i} day={day!} booking={bookingFor(i)} simple={simple} tone="later" />
+                <div key={i.id} className="space-y-2">
+                  <StopCard item={i} day={day!} booking={bookingFor(i)} simple={simple} tone="later" />
+                  {gapAfter(i.id) ? (
+                    <TravelLine
+                      minutes={gapAfter(i.id)!.estimate.minutes}
+                      mode={gapAfter(i.id)!.estimate.mode}
+                      assumed={gapAfter(i.id)!.estimate.assumed}
+                      tight={gapAfter(i.id)!.tight}
+                      simple={simple}
+                    />
+                  ) : null}
+                </div>
               ))}
             </div>
           ) : null}
