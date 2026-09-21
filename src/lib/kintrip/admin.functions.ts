@@ -28,6 +28,30 @@ async function adminClient() {
   return supabaseAdmin;
 }
 
+/**
+ * Audit rows never store an operator's address in readable form. We keep a
+ * one-way salted fingerprint so the same operator can be correlated across
+ * entries, while nobody with database (or code) access can read the address
+ * back out of the table. Display names are resolved live from the account id.
+ */
+async function emailFingerprint(email: string | null): Promise<string | null> {
+  if (!email) return null;
+  const salt = process.env["ADMIN_EMAIL_HASH_SALT"] ?? "";
+  const bytes = new TextEncoder().encode(`${salt}:${email.trim().toLowerCase()}`);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return `sha256:${Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
+/** Resolves readable operator addresses for display only, keyed by account id. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function operatorEmails(admin: any): Promise<Map<string, string | null>> {
+  const { data } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return new Map((data?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]));
+}
+
 /** Resolves the caller's admin role, creating the first super admin when the configured owner signs in. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function resolveRole(context: any): Promise<{ role: AdminRole | null; email: string | null }> {
