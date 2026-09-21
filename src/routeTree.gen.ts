@@ -35,6 +35,7 @@ import { Route as ReplanRouteImport } from './routes/replan'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RolesRouteImport } from './routes/roles'
 import { Route as SponsorRouteImport } from './routes/sponsor'
+import { Route as StaysRouteImport } from './routes/stays'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
@@ -172,6 +173,11 @@ const SponsorRoute = SponsorRouteImport.update({
   path: '/sponsor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StaysRoute = StaysRouteImport.update({
+  id: '/stays',
+  path: '/stays',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
@@ -230,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
+  '/stays': typeof StaysRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -264,6 +271,7 @@ export interface FileRoutesByTo {
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
+  '/stays': typeof StaysRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -299,6 +307,7 @@ export interface FileRoutesById {
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
   '/sponsor': typeof SponsorRoute
+  '/stays': typeof StaysRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -335,6 +344,7 @@ export interface FileRouteTypes {
     | '/review'
     | '/roles'
     | '/sponsor'
+    | '/stays'
     | '/today'
     | '/trips'
     | '/updates'
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/review'
     | '/roles'
     | '/sponsor'
+    | '/stays'
     | '/today'
     | '/trips'
     | '/updates'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/review'
     | '/roles'
     | '/sponsor'
+    | '/stays'
     | '/today'
     | '/trips'
     | '/updates'
@@ -438,6 +450,7 @@ export interface RootRouteChildren {
   ReviewRoute: typeof ReviewRoute
   RolesRoute: typeof RolesRoute
   SponsorRoute: typeof SponsorRoute
+  StaysRoute: typeof StaysRoute
   TodayRoute: typeof TodayRoute
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
@@ -630,6 +643,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SponsorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stays': {
+      id: '/stays'
+      path: '/stays'
+      fullPath: '/stays'
+      preLoaderRoute: typeof StaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/today': {
       id: '/today'
       path: '/today'
@@ -702,6 +722,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewRoute: ReviewRoute,
   RolesRoute: RolesRoute,
   SponsorRoute: SponsorRoute,
+  StaysRoute: StaysRoute,
   TodayRoute: TodayRoute,
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,
