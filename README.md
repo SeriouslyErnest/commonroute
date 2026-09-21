@@ -29,3 +29,27 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+
+## Internal admin console (forks)
+
+This project ships an internal operations console for reviewing accounts,
+pausing or restoring access, and managing access grants. It is never linked
+from the app and is excluded from search engines.
+
+The console is served at the path set in the `ADMIN_CONSOLE_PATH` environment
+variable (for example `/ops/console`). If the variable is not set, the console
+is served at the documented default:
+
+```
+/admin/admin
+```
+
+**If you fork or remix this project, set `ADMIN_CONSOLE_PATH` to your own
+unlisted path before going live.** Both `/admin/admin` and `/ops/console`
+exist in the code, but only the configured path answers with the console —
+every other path returns a plain "page not found".
+
+The address is only an extra layer of obscurity, not the protection itself:
+every console action requires a signed-in operator account, and the first
+operator is bootstrapped by the `ADMIN_BOOTSTRAP_EMAIL` environment variable
+(the first person who signs in with that email becomes the super admin).
