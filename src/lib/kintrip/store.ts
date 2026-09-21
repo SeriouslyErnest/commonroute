@@ -2,6 +2,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { createEmptyTripState, createSeedState } from "./seed";
 import { pullTrip, pushTrip } from "./sync.functions";
 import { normalizeState } from "./governance";
+import { backfillPlaceData } from "./backfill";
 import type { KintripState } from "./types";
 
 const KEY_V1 = "kintrip.state.v1";
@@ -77,7 +78,7 @@ function loadFromStorage() {
         return;
       }
       const trips: Record<string, KintripState> = {};
-      for (const [id, trip] of Object.entries(parsed.trips)) trips[id] = normalizeState(trip);
+      for (const [id, trip] of Object.entries(parsed.trips)) trips[id] = backfillPlaceData(normalizeState(trip));
       multi = { ...parsed, trips, demoTripId: parsed.demoTripId };
       return;
     }
@@ -216,7 +217,7 @@ export async function pullActiveTrip() {
     const remoteAt = remote.state?.cachedAt ?? "";
     const localAt = local?.cachedAt ?? "";
     if (local && remoteAt && remoteAt > localAt) {
-      multi = { ...multi, trips: { ...multi.trips, [tripId]: normalizeState(remote.state) } };
+      multi = { ...multi, trips: { ...multi.trips, [tripId]: backfillPlaceData(normalizeState(remote.state)) } };
       persist();
       emit();
     } else if (local && localAt > remoteAt) {
@@ -236,7 +237,7 @@ export async function joinTripByCode(code: string): Promise<string | null> {
   multi = {
     ...multi,
     activeTripId: remote.tripId,
-    trips: { ...multi.trips, [remote.tripId]: normalizeState(remote.state) },
+    trips: { ...multi.trips, [remote.tripId]: backfillPlaceData(normalizeState(remote.state)) },
   };
   persist();
   emit();
@@ -298,7 +299,7 @@ export async function linkAccountTrips() {
       if (!remote) continue;
       multi = {
         ...multi,
-        trips: { ...multi.trips, [remote.tripId]: normalizeState(remote.state) },
+        trips: { ...multi.trips, [remote.tripId]: backfillPlaceData(normalizeState(remote.state)) },
       };
       if (!multi.activeTripId) multi = { ...multi, activeTripId: remote.tripId };
       added = true;
