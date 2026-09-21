@@ -29,11 +29,17 @@ export function useAccount(): AccountState {
         if (next) void linkAccountTrips();
       }
     });
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!active) return;
-      setSession(data.session);
-      setLoading(false);
-    });
+    void supabase.auth.getSession()
+      .then(({ data }) => {
+        if (!active) return;
+        setSession(data.session);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setSession(null);
+        setLoading(false);
+      });
     return () => {
       active = false;
       sub.subscription.unsubscribe();

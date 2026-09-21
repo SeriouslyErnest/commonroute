@@ -267,6 +267,9 @@ function ItineraryTab() {
         <LinkButton to="/print" variant="outline">
           Print or save as PDF
         </LinkButton>
+        <LinkButton to="/export" variant="outline">
+          Export plan
+        </LinkButton>
         <LinkButton to="/fairness" variant="ghost">
           Everyone gets a win
         </LinkButton>
