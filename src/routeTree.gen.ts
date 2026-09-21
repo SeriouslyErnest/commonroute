@@ -34,6 +34,7 @@ import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
+import { Route as AdminAdminRouteImport } from './routes/admin/admin'
 import { Route as FitAttractionIdRouteImport } from './routes/fit.$attractionId'
 import { Route as OpsConsoleRouteImport } from './routes/ops.console'
 
@@ -162,6 +163,11 @@ const UpdatesRoute = UpdatesRouteImport.update({
   path: '/updates',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAdminRoute = AdminAdminRouteImport.update({
+  id: '/admin/admin',
+  path: '/admin/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FitAttractionIdRoute = FitAttractionIdRouteImport.update({
   id: '/fit/$attractionId',
   path: '/fit/$attractionId',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
+  '/admin/admin': typeof AdminAdminRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
   '/ops/console': typeof OpsConsoleRoute
 }
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
+  '/admin/admin': typeof AdminAdminRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
   '/ops/console': typeof OpsConsoleRoute
 }
@@ -258,6 +266,7 @@ export interface FileRoutesById {
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
+  '/admin/admin': typeof AdminAdminRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
   '/ops/console': typeof OpsConsoleRoute
 }
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/today'
     | '/trips'
     | '/updates'
+    | '/admin/admin'
     | '/fit/$attractionId'
     | '/ops/console'
   fileRoutesByTo: FileRoutesByTo
@@ -318,6 +328,7 @@ export interface FileRouteTypes {
     | '/today'
     | '/trips'
     | '/updates'
+    | '/admin/admin'
     | '/fit/$attractionId'
     | '/ops/console'
   id:
@@ -347,6 +358,7 @@ export interface FileRouteTypes {
     | '/today'
     | '/trips'
     | '/updates'
+    | '/admin/admin'
     | '/fit/$attractionId'
     | '/ops/console'
   fileRoutesById: FileRoutesById
@@ -377,6 +389,7 @@ export interface RootRouteChildren {
   TodayRoute: typeof TodayRoute
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
+  AdminAdminRoute: typeof AdminAdminRoute
   FitAttractionIdRoute: typeof FitAttractionIdRoute
   OpsConsoleRoute: typeof OpsConsoleRoute
 }
@@ -558,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpdatesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/admin': {
+      id: '/admin/admin'
+      path: '/admin/admin'
+      fullPath: '/admin/admin'
+      preLoaderRoute: typeof AdminAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fit/$attractionId': {
       id: '/fit/$attractionId'
       path: '/fit/$attractionId'
@@ -601,6 +621,7 @@ const rootRouteChildren: RootRouteChildren = {
   TodayRoute: TodayRoute,
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,
+  AdminAdminRoute: AdminAdminRoute,
   FitAttractionIdRoute: FitAttractionIdRoute,
   OpsConsoleRoute: OpsConsoleRoute,
 }
