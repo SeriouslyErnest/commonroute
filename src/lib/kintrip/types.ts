@@ -530,6 +530,8 @@ export interface KintripState {
   attendance: AttendanceRecord[];
   /** Snapshot of the last published days, so changes can be described plainly. */
   publishedSnapshot: { version: number; days: ItineraryDay[] } | null;
+  /** Saved geographic groupings of shortlisted places. */
+  clusters?: undefined | PlaceCluster[];
   activeTravellerId: string;
   currentDay: number;
   replanLog: { day: number; at: string; reason: string; changes: string[] }[];
