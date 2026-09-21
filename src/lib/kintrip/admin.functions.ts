@@ -71,13 +71,18 @@ async function emailFingerprint(email: string | null): Promise<string | null> {
 async function operatorEmails(admin: any): Promise<Map<string, string | null>> {
   const { data } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return new Map((data?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]));
+  return new Map(
+    (data?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]),
+  );
 }
 
 /** Resolves the caller's admin role, creating the first super admin when the configured owner signs in. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function resolveRole(context: any): Promise<{ role: AdminRole | null; email: string | null }> {
-  const email = typeof context.claims["email"] === "string" ? (context.claims["email"] as string) : null;
+async function resolveRole(
+  context: any,
+): Promise<{ role: AdminRole | null; email: string | null }> {
+  const email =
+    typeof context.claims["email"] === "string" ? (context.claims["email"] as string) : null;
   // Role lookup runs server-side with the privileged client so the operator
   // table is never queryable (or probe-able) from a browser session.
   const lookup = await adminClient();
@@ -92,10 +97,12 @@ async function resolveRole(context: any): Promise<{ role: AdminRole | null; emai
   const bootstrap = process.env["ADMIN_BOOTSTRAP_EMAIL"];
   if (bootstrap && email && bootstrap.trim().toLowerCase() === email.toLowerCase()) {
     const admin = await adminClient();
-    await admin.from("app_admins").upsert(
-      { user_id: context.userId, admin_role: "super_admin", status: "active" },
-      { onConflict: "user_id" },
-    );
+    await admin
+      .from("app_admins")
+      .upsert(
+        { user_id: context.userId, admin_role: "super_admin", status: "active" },
+        { onConflict: "user_id" },
+      );
     await admin.from("admin_audit_log").insert({
       admin_user_id: context.userId,
       admin_email: await emailFingerprint(email),
@@ -151,13 +158,16 @@ export const adminDashboard = createServerFn({ method: "GET" })
     ]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const emailOf = new Map((users?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]));
+    const emailOf = new Map(
+      (users?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]),
+    );
     const active = grants.data ?? [];
     return {
       accounts: users?.users?.length ?? 0,
       suspended: suspended.data?.length ?? 0,
       activeGrants: active.filter((g) => !g.ends_at || g.ends_at > nowIso).length,
-      expiringSoon: active.filter((g) => g.ends_at && g.ends_at > nowIso && g.ends_at < soon).length,
+      expiringSoon: active.filter((g) => g.ends_at && g.ends_at > nowIso && g.ends_at < soon)
+        .length,
       trials: active.filter((g) => g.source_type === "trial").length,
       activePromotions: (promos.data ?? []).filter((p) => p.status === "active").length,
       recent: (recent.data ?? []).map((r) => ({
@@ -183,8 +193,14 @@ export const adminSearchAccounts = createServerFn({ method: "POST" })
       .slice(0, 50);
     const ids = users.map((u) => u.id);
     const [{ data: states }, { data: profiles }] = await Promise.all([
-      admin.from("account_status").select("user_id, state").in("user_id", ids.length ? ids : ["-"]),
-      admin.from("profiles").select("id, display_name").in("id", ids.length ? ids : ["-"]),
+      admin
+        .from("account_status")
+        .select("user_id, state")
+        .in("user_id", ids.length ? ids : ["-"]),
+      admin
+        .from("profiles")
+        .select("id, display_name")
+        .in("id", ids.length ? ids : ["-"]),
     ]);
     const stateOf = new Map((states ?? []).map((s) => [s.user_id, s.state]));
     const nameOf = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
@@ -208,19 +224,28 @@ export const adminAccountDetail = createServerFn({ method: "POST" })
     const { admin } = await requireAdmin(context, [...WRITE_ROLES, "read_only_admin"]);
     const [{ data: user }, status, profile, grants, trips] = await Promise.all([
       admin.auth.admin.getUserById(data.userId),
-      admin.from("account_status").select("state, reason, changed_at").eq("user_id", data.userId).maybeSingle(),
+      admin
+        .from("account_status")
+        .select("state, reason, changed_at")
+        .eq("user_id", data.userId)
+        .maybeSingle(),
       admin.from("profiles").select("display_name, email").eq("id", data.userId).maybeSingle(),
       admin
         .from("entitlement_grants")
         .select("id, bundle, source_type, starts_at, ends_at, status, reason, created_at")
         .eq("user_id", data.userId)
         .order("created_at", { ascending: false }),
-      admin.from("kintrip_memberships").select("trip_id, title, destination, updated_at").eq("user_id", data.userId),
+      admin
+        .from("kintrip_memberships")
+        .select("trip_id, title, destination, updated_at")
+        .eq("user_id", data.userId),
     ]);
     if (!user?.user) throw new Error("Account not found");
     const now = new Date().toISOString();
     const rows = grants.data ?? [];
-    const effective = rows.filter((g) => g.status === "active" && g.starts_at <= now && (!g.ends_at || g.ends_at > now));
+    const effective = rows.filter(
+      (g) => g.status === "active" && g.starts_at <= now && (!g.ends_at || g.ends_at > now),
+    );
     const order = ["paid_subscription", "complimentary", "promotion", "trial"];
     effective.sort((a, b) => order.indexOf(a.source_type) - order.indexOf(b.source_type));
     return {
@@ -281,7 +306,8 @@ export const adminSetAccountState = createServerFn({ method: "POST" })
       { onConflict: "user_id" },
     );
     if (error) throw new Error(error.message);
-    if (data.state === "suspended") await admin.auth.admin.signOut(data.userId, "global").catch(() => undefined);
+    if (data.state === "suspended")
+      await admin.auth.admin.signOut(data.userId, "global").catch(() => undefined);
     await audit(admin, {
       admin_user_id: context.userId,
       admin_email: await emailFingerprint(email),
@@ -298,15 +324,23 @@ export const adminSetAccountState = createServerFn({ method: "POST" })
 export const adminCreateGrant = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
-    (input: { userId: string; bundle: string; source: "complimentary" | "trial"; days: number; reason: string }) => {
+    (input: {
+      userId: string;
+      bundle: string;
+      source: "complimentary" | "trial";
+      days: number;
+      reason: string;
+    }) => {
       if (!UUID.test(String(input?.userId))) throw new Error("Invalid account");
       const bundle = text(input?.bundle, 40);
       if (!bundle) throw new Error("Choose what to grant");
       const reason = text(input?.reason);
       if (!reason) throw new Error("Please give a reason — it is recorded in the audit log");
       const days = Number(input?.days);
-      if (!Number.isFinite(days) || days < 1 || days > 3650) throw new Error("Choose a length between 1 and 3650 days");
-      const source: "complimentary" | "trial" = input?.source === "trial" ? "trial" : "complimentary";
+      if (!Number.isFinite(days) || days < 1 || days > 3650)
+        throw new Error("Choose a length between 1 and 3650 days");
+      const source: "complimentary" | "trial" =
+        input?.source === "trial" ? "trial" : "complimentary";
       return { userId: input.userId, bundle, source, days: Math.round(days), reason };
     },
   )
@@ -384,7 +418,9 @@ export const adminListPromotions = createServerFn({ method: "GET" })
     const [{ data: rows }, { data: reds }] = await Promise.all([
       admin
         .from("promotions")
-        .select("id, code, campaign_name, benefit_type, bundle, duration_days, starts_at, ends_at, max_redemptions, status")
+        .select(
+          "id, code, campaign_name, benefit_type, bundle, duration_days, starts_at, ends_at, max_redemptions, status",
+        )
         .order("created_at", { ascending: false }),
       admin.from("promotion_redemptions").select("promotion_id"),
     ]);
@@ -407,25 +443,36 @@ export const adminListPromotions = createServerFn({ method: "GET" })
 
 export const adminCreatePromotion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { code: string; campaign: string; bundle: string; durationDays: number; cap?: number; notes?: string }) => {
-    const code = text(input?.code, 40)?.toUpperCase().replace(/\s+/g, "");
-    const campaign = text(input?.campaign, 80);
-    const bundle = text(input?.bundle, 40);
-    if (!code || !/^[A-Z0-9-]{4,40}$/.test(code)) throw new Error("Codes use 4-40 letters, numbers or dashes");
-    if (!campaign) throw new Error("Give the campaign a name");
-    if (!bundle) throw new Error("Choose what the code grants");
-    const days = Number(input?.durationDays);
-    if (!Number.isFinite(days) || days < 1 || days > 3650) throw new Error("Choose a length between 1 and 3650 days");
-    const cap = Number(input?.cap);
-    return {
-      code,
-      campaign,
-      bundle,
-      durationDays: Math.round(days),
-      cap: Number.isFinite(cap) && cap > 0 ? Math.round(cap) : null,
-      notes: text(input?.notes, 400),
-    };
-  })
+  .inputValidator(
+    (input: {
+      code: string;
+      campaign: string;
+      bundle: string;
+      durationDays: number;
+      cap?: number;
+      notes?: string;
+    }) => {
+      const code = text(input?.code, 40)?.toUpperCase().replace(/\s+/g, "");
+      const campaign = text(input?.campaign, 80);
+      const bundle = text(input?.bundle, 40);
+      if (!code || !/^[A-Z0-9-]{4,40}$/.test(code))
+        throw new Error("Codes use 4-40 letters, numbers or dashes");
+      if (!campaign) throw new Error("Give the campaign a name");
+      if (!bundle) throw new Error("Choose what the code grants");
+      const days = Number(input?.durationDays);
+      if (!Number.isFinite(days) || days < 1 || days > 3650)
+        throw new Error("Choose a length between 1 and 3650 days");
+      const cap = Number(input?.cap);
+      return {
+        code,
+        campaign,
+        bundle,
+        durationDays: Math.round(days),
+        cap: Number.isFinite(cap) && cap > 0 ? Math.round(cap) : null,
+        notes: text(input?.notes, 400),
+      };
+    },
+  )
   .handler(async ({ data, context }) => {
     const { admin, email } = await requireAdmin(context, COMMERCIAL_ROLES);
     const { data: row, error } = await admin
@@ -442,7 +489,10 @@ export const adminCreatePromotion = createServerFn({ method: "POST" })
       })
       .select("id")
       .single();
-    if (error) throw new Error(error.message.includes("duplicate") ? "That code already exists" : error.message);
+    if (error)
+      throw new Error(
+        error.message.includes("duplicate") ? "That code already exists" : error.message,
+      );
     await audit(admin, {
       admin_user_id: context.userId,
       admin_email: await emailFingerprint(email),
@@ -464,8 +514,15 @@ export const adminSetPromotionStatus = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     const { admin, email } = await requireAdmin(context, COMMERCIAL_ROLES);
-    const { data: before } = await admin.from("promotions").select("status").eq("id", data.id).maybeSingle();
-    const { error } = await admin.from("promotions").update({ status: data.status }).eq("id", data.id);
+    const { data: before } = await admin
+      .from("promotions")
+      .select("status")
+      .eq("id", data.id)
+      .maybeSingle();
+    const { error } = await admin
+      .from("promotions")
+      .update({ status: data.status })
+      .eq("id", data.id);
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
@@ -484,16 +541,38 @@ export const adminAuditLog = createServerFn({ method: "POST" })
   .inputValidator((input: { query?: string }) => ({ query: text(input?.query, 80) ?? "" }))
   .handler(async ({ data, context }) => {
     const { admin } = await requireAdmin(context, [...WRITE_ROLES, "read_only_admin"]);
-    let request = admin
-      .from("admin_audit_log")
-      .select("id, admin_user_id, action_type, target_type, target_id, before_json, after_json, reason, created_at")
-      .order("created_at", { ascending: false })
-      .limit(200);
-    if (data.query) request = request.or(`action_type.ilike.%${data.query}%,target_id.ilike.%${data.query}%`);
-    const { data: rows, error } = await request;
-    if (error) throw new Error(error.message);
+    const columns =
+      "id, admin_user_id, action_type, target_type, target_id, before_json, after_json, reason, created_at";
+    const auditQuery = () =>
+      admin
+        .from("admin_audit_log")
+        .select(columns)
+        .order("created_at", { ascending: false })
+        .limit(200);
+    let rows;
+    if (data.query) {
+      // Keep user input in parameterized filter values rather than interpolating
+      // it into PostgREST's `.or()` expression grammar.
+      const pattern = `%${data.query}%`;
+      const [actions, targets] = await Promise.all([
+        auditQuery().ilike("action_type", pattern),
+        auditQuery().ilike("target_id", pattern),
+      ]);
+      if (actions.error) throw new Error(actions.error.message);
+      if (targets.error) throw new Error(targets.error.message);
+      rows = [...(actions.data ?? []), ...(targets.data ?? [])]
+        .filter(
+          (row, index, all) => all.findIndex((candidate) => candidate.id === row.id) === index,
+        )
+        .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))
+        .slice(0, 200);
+    } else {
+      const result = await auditQuery();
+      if (result.error) throw new Error(result.error.message);
+      rows = result.data ?? [];
+    }
     const emailOf = await operatorEmails(admin);
-    return (rows ?? []).map((r) => ({
+    return rows.map((r) => ({
       id: r.id,
       actor: (r.admin_user_id ? emailOf.get(r.admin_user_id) : null) ?? "Removed operator",
       action: r.action_type,
@@ -510,7 +589,9 @@ export const adminListAdmins = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { admin } = await requireAdmin(context, OWNER_ROLES);
-    const { data: rows } = await admin.from("app_admins").select("user_id, admin_role, status, created_at");
+    const { data: rows } = await admin
+      .from("app_admins")
+      .select("user_id, admin_role, status, created_at");
     const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
     const emailOf = new Map((list?.users ?? []).map((u) => [u.id, u.email ?? null]));
     return (rows ?? []).map((r) => ({
@@ -527,7 +608,13 @@ export const adminSetAdminRole = createServerFn({ method: "POST" })
   .inputValidator((input: { email: string; role: AdminRole | "none" }) => {
     const email = text(input?.email, 160)?.toLowerCase();
     if (!email || !email.includes("@")) throw new Error("Enter the person's sign-in email");
-    const roles: string[] = ["super_admin", "billing_admin", "support_admin", "read_only_admin", "none"];
+    const roles: string[] = [
+      "super_admin",
+      "billing_admin",
+      "support_admin",
+      "read_only_admin",
+      "none",
+    ];
     if (!roles.includes(input?.role)) throw new Error("Invalid role");
     return { email, role: input.role };
   })
@@ -545,7 +632,13 @@ export const adminSetAdminRole = createServerFn({ method: "POST" })
       await admin.auth.admin.signOut(target.id, "global").catch(() => undefined);
     } else {
       await admin.from("app_admins").upsert(
-        { user_id: target.id, admin_role: data.role, status: "active", created_by: context.userId, disabled_at: null },
+        {
+          user_id: target.id,
+          admin_role: data.role,
+          status: "active",
+          created_by: context.userId,
+          disabled_at: null,
+        },
         { onConflict: "user_id" },
       );
     }

@@ -62,8 +62,8 @@ const ZH: Record<string, string> = {
   "The plan changed since you last looked.": "自你上次查看后，行程有变动。",
   "I've seen this": "我已看过",
   "Not seen yet": "尚未查看",
-  "Seen": "已查看",
-  "Coming": "参加",
+  Seen: "已查看",
+  Coming: "参加",
   "Sitting this one out": "这次不参加",
   "Comfort, meals and travel time": "舒适度、用餐与路上时间",
   "Open the plan →": "打开行程 →",
@@ -71,14 +71,15 @@ const ZH: Record<string, string> = {
   "Your account": "你的账户",
   "My trips": "我的旅行",
   "Group updates": "群组动态",
-  "Trip": "旅行",
-  "Discover": "探索",
-  "Itinerary": "行程",
-  "Group": "群组",
+  Trip: "旅行",
+  Discover: "探索",
+  Itinerary: "行程",
+  Group: "群组",
   "Back to start": "返回首页",
   "Plan together. Find your common route.": "一起规划，找到大家共同的路线。",
   "Plan a trip that works for everyone.": "规划一趟适合每个人的旅行。",
-  "Bring every idea and practical need into one shared plan.": "把每个人的想法和实际需求汇集成一份共享计划。",
+  "Bring every idea and practical need into one shared plan.":
+    "把每个人的想法和实际需求汇集成一份共享计划。",
   Destination: "目的地",
   Dates: "日期",
   START: "开始",
@@ -95,7 +96,8 @@ const ZH: Record<string, string> = {
   "Demo journey": "演示旅程",
   "Next step": "下一步",
   "Turn everyone’s choices into one plan": "把每个人的选择变成一份计划",
-  "Everyone has shared their preferences and votes. See the group picture before building the itinerary.": "大家都已分享偏好并完成投票。生成行程前，先查看群组的整体选择。",
+  "Everyone has shared their preferences and votes. See the group picture before building the itinerary.":
+    "大家都已分享偏好并完成投票。生成行程前，先查看群组的整体选择。",
   "Review group choices": "查看群组选择",
   "Planning progress": "规划进度",
   "One quick review, then your group itinerary is ready.": "快速确认一次，群组行程就准备好了。",
@@ -121,7 +123,8 @@ const ZH: Record<string, string> = {
   "The page you're looking for doesn't exist or has been moved.": "你要找的页面不存在或已被移动。",
   "Go home": "返回首页",
   "This page didn't load": "页面未能加载",
-  "Something went wrong on our end. You can try refreshing or head back home.": "页面出现问题。请重试或返回首页。",
+  "Something went wrong on our end. You can try refreshing or head back home.":
+    "页面出现问题。请重试或返回首页。",
   "Try again": "重试",
   "Offline — showing your latest saved itinerary.": "离线状态 — 正在显示最近保存的行程。",
   "Connect to the internet to refresh live information.": "连接网络后即可刷新最新信息。",
@@ -129,64 +132,86 @@ const ZH: Record<string, string> = {
   "Shared with your group": "已与群组共享",
   "Offline — changes save when you reconnect": "离线状态 — 重新连接后会保存更改",
   "Couldn't reach your group's trip — retrying": "暂时无法连接群组旅行 — 正在重试",
-  "About CommonRoute — Collaborative trip planning for everyone": "关于 CommonRoute — 适合每个人的协作旅行规划",
+  "About CommonRoute — Collaborative trip planning for everyone":
+    "关于 CommonRoute — 适合每个人的协作旅行规划",
   "For families and friends": "适合家人和朋友",
-  "CommonRoute brings everyone's ideas, preferences and practical needs into one shared plan that the whole group can enjoy.": "CommonRoute 把每个人的想法、偏好和实际需求汇集到一份大家都能享受的共享计划中。",
+  "CommonRoute brings everyone's ideas, preferences and practical needs into one shared plan that the whole group can enjoy.":
+    "CommonRoute 把每个人的想法、偏好和实际需求汇集到一份大家都能享受的共享计划中。",
   "Start planning — it's free": "免费开始规划",
   "See how it works": "了解使用方式",
   "Different ages, different needs, one trip": "不同年龄，不同需求，同一趟旅行",
   "Grandpa can walk, but not for hours without a rest.": "长辈可以步行，但不能连续几小时不休息。",
   "The 12-year-old fades by mid-afternoon.": "孩子到了下午容易疲惫。",
   "Everyone has a place they'd hate to miss.": "每个人都有一个不想错过的地方。",
-  "Group chats, spreadsheets and screenshots don't solve that. CommonRoute does — clearly, and without anyone feeling like the difficult one.": "群聊、表格和截图无法解决这些问题。CommonRoute 能清楚地兼顾大家，而不会让任何人觉得自己在添麻烦。",
+  "Group chats, spreadsheets and screenshots don't solve that. CommonRoute does — clearly, and without anyone feeling like the difficult one.":
+    "群聊、表格和截图无法解决这些问题。CommonRoute 能清楚地兼顾大家，而不会让任何人觉得自己在添麻烦。",
   "From scattered wishes to one workable plan": "把零散愿望变成一份可行计划",
   "Start the trip": "创建旅行",
-  "Destination, dates, group size. That's it — no account, no setup call.": "填写目的地、日期和人数即可，无需账户或筹备会议。",
+  "Destination, dates, group size. That's it — no account, no setup call.":
+    "填写目的地、日期和人数即可，无需账户或筹备会议。",
   "Invite and gather": "邀请并收集需求",
-  "One link. Everyone answers five short questions about pace, walking and rest.": "分享一个链接，每个人回答五个关于节奏、步行和休息的简短问题。",
+  "One link. Everyone answers five short questions about pace, walking and rest.":
+    "分享一个链接，每个人回答五个关于节奏、步行和休息的简短问题。",
   "Get one clear plan": "获得一份清晰计划",
-  "Places grouped by area, meals and rests built in, and a plain-language reason for every choice.": "地点按区域编排，并安排用餐和休息；每个选择都有清楚说明。",
+  "Places grouped by area, meals and rests built in, and a plain-language reason for every choice.":
+    "地点按区域编排，并安排用餐和休息；每个选择都有清楚说明。",
   "Re-plan on the day": "当天灵活重排",
-  "Rain, tiredness, running late — say what changed and get one revised plan in seconds.": "下雨、疲累或迟到时，只需说明变化，几秒内即可获得调整后的计划。",
+  "Rain, tiredness, running late — say what changed and get one revised plan in seconds.":
+    "下雨、疲累或迟到时，只需说明变化，几秒内即可获得调整后的计划。",
   "Why families stick with it": "大家为什么持续使用",
   "Care comes before votes": "实际需求优先于票数",
-  "Walking limits, rest needs and opening hours outrank a popular vote — so nobody is quietly left behind.": "步行限制、休息需求和开放时间比热门投票更重要，因此不会有人被忽略。",
+  "Walking limits, rest needs and opening hours outrank a popular vote — so nobody is quietly left behind.":
+    "步行限制、休息需求和开放时间比热门投票更重要，因此不会有人被忽略。",
   "One plan, not ten options": "一份计划，而不是十个选项",
-  "CommonRoute recommends a single realistic itinerary first, then lets you move, replace or remove anything.": "CommonRoute 会先推荐一份现实可行的行程，你可以再移动、替换或删除内容。",
+  "CommonRoute recommends a single realistic itinerary first, then lets you move, replace or remove anything.":
+    "CommonRoute 会先推荐一份现实可行的行程，你可以再移动、替换或删除内容。",
   "Share one living link": "共享一个实时更新的链接",
-  "The plan everyone opens is always the current one. No screenshots, no version confusion.": "大家打开的始终是最新计划，不必发送截图，也不会混淆版本。",
+  "The plan everyone opens is always the current one. No screenshots, no version confusion.":
+    "大家打开的始终是最新计划，不必发送截图，也不会混淆版本。",
   "Works without signal": "没有网络也能使用",
-  "Today's stops, times, addresses and notes stay readable offline while you're out.": "旅途中即使离线，也能查看今天的地点、时间、地址和备注。",
+  "Today's stops, times, addresses and notes stay readable offline while you're out.":
+    "旅途中即使离线，也能查看今天的地点、时间、地址和备注。",
   "Questions families ask": "常见问题",
   "Does everyone need an account?": "每个人都需要账户吗？",
-  "No. Family members open your invite link, add their name and preferences, and start voting.": "不需要。同行者打开邀请链接，填写姓名和偏好后即可开始投票。",
+  "No. Family members open your invite link, add their name and preferences, and start voting.":
+    "不需要。同行者打开邀请链接，填写姓名和偏好后即可开始投票。",
   "Can grandparents use it?": "长辈也能使用吗？",
-  "Yes — large buttons, plain wording, and only five short questions to answer.": "可以。按钮清晰、文字简单，而且只需回答五个简短问题。",
+  "Yes — large buttons, plain wording, and only five short questions to answer.":
+    "可以。按钮清晰、文字简单，而且只需回答五个简短问题。",
   "What if plans change mid-trip?": "旅途中计划有变怎么办？",
-  "Tell CommonRoute what changed and it rebuilds the rest of the day while keeping what still works.": "告诉 CommonRoute 发生了什么变化，它会保留仍然适用的安排并重排当天剩余行程。",
+  "Tell CommonRoute what changed and it rebuilds the rest of the day while keeping what still works.":
+    "告诉 CommonRoute 发生了什么变化，它会保留仍然适用的安排并重排当天剩余行程。",
   "Can I plan more than one trip?": "可以规划多趟旅行吗？",
-  "Yes. Every trip lives in My trips, and you can switch between them anytime.": "可以。所有旅行都保存在“我的旅行”中，你可以随时切换。",
+  "Yes. Every trip lives in My trips, and you can switch between them anytime.":
+    "可以。所有旅行都保存在“我的旅行”中，你可以随时切换。",
   "Your next family trip starts with one destination": "下一趟群组旅行，从一个目的地开始",
-  "Add where you're going and the dates. CommonRoute takes it from there.": "填写目的地和日期，接下来交给 CommonRoute。",
+  "Add where you're going and the dates. CommonRoute takes it from there.":
+    "填写目的地和日期，接下来交给 CommonRoute。",
   "Last updated: 20 September 2026.": "最后更新：2026年9月20日。",
   "Sign in to CommonRoute": "登录 CommonRoute",
-  "We'll email you a link that signs you straight in. No password, no code to type.": "我们会通过邮件发送一键登录链接，无需密码，也无需输入验证码。",
+  "We'll email you a link that signs you straight in. No password, no code to type.":
+    "我们会通过邮件发送一键登录链接，无需密码，也无需输入验证码。",
   "Check your email": "请查看邮件",
   "Use a different email": "使用其他邮箱",
   "Your email": "你的邮箱",
   "Email me a sign-in link": "发送登录链接",
   "Sending…": "正在发送…",
-  "Signing in keeps your trips on your account, so they're there on your phone and your laptop. You can still join a trip with an invite code without signing in.": "登录后，旅行会保存到你的账户，并可在手机和电脑上查看。无需登录也能通过邀请码加入旅行。",
+  "Signing in keeps your trips on your account, so they're there on your phone and your laptop. You can still join a trip with an invite code without signing in.":
+    "登录后，旅行会保存到你的账户，并可在手机和电脑上查看。无需登录也能通过邀请码加入旅行。",
   "← Back to CommonRoute": "← 返回 CommonRoute",
   "Loading…": "正在加载…",
-  "Sign in with an email link to keep your trips on every device.": "使用邮件链接登录，即可在所有设备上查看旅行。",
-  "You're not signed in. Trips you create stay on this device until you sign in.": "你尚未登录。登录前，创建的旅行只会保存在此设备上。",
+  "Sign in with an email link to keep your trips on every device.":
+    "使用邮件链接登录，即可在所有设备上查看旅行。",
+  "You're not signed in. Trips you create stay on this device until you sign in.":
+    "你尚未登录。登录前，创建的旅行只会保存在此设备上。",
   "Sign in with an email link": "使用邮件链接登录",
   "The name your group sees": "群组看到的姓名",
   "Trips on your account": "账户中的旅行",
-  "No shared trips yet. Create one or join with an invite code and it will be saved here.": "还没有共享旅行。创建旅行或用邀请码加入后，它会保存在这里。",
+  "No shared trips yet. Create one or join with an invite code and it will be saved here.":
+    "还没有共享旅行。创建旅行或用邀请码加入后，它会保存在这里。",
   "Refresh from my account": "从账户刷新",
-  "Demo mode stays on this device only and is never saved to your account.": "演示模式只保存在此设备上，不会存入账户。",
+  "Demo mode stays on this device only and is never saved to your account.":
+    "演示模式只保存在此设备上，不会存入账户。",
   "Sign-in email": "登录邮箱",
   "New email address": "新邮箱地址",
   "Send confirmation link": "发送确认链接",
@@ -202,7 +227,8 @@ const ZH: Record<string, string> = {
   "Who's on board": "已有谁加入",
   "Share my preferences": "填写我的偏好",
   "Join a group trip": "加入群组旅行",
-  "Your organiser’s invite link connects you to the right trip.": "组织者的邀请链接会带你加入正确的旅行。",
+  "Your organiser’s invite link connects you to the right trip.":
+    "组织者的邀请链接会带你加入正确的旅行。",
   "Open your CommonRoute invite": "打开 CommonRoute 邀请",
   "Create your own trip instead": "改为创建自己的旅行",
   "Your name": "你的姓名",
@@ -222,7 +248,8 @@ const ZH: Record<string, string> = {
   "Must-dos (optional)": "必做项目（可选）",
   "Prefer to avoid (optional)": "希望避开（可选）",
   "Anything important we should plan around?": "还有哪些重要需求需要纳入规划？",
-  "For example accessibility, dietary needs, rest needs or fixed timings.": "例如无障碍、饮食、休息需求或固定时间。",
+  "For example accessibility, dietary needs, rest needs or fixed timings.":
+    "例如无障碍、饮食、休息需求或固定时间。",
   Back: "返回",
   Next: "下一步",
   "Skip optional questions": "跳过可选问题",
@@ -342,7 +369,8 @@ const ZH: Record<string, string> = {
   "Where would you like to go?": "你想去哪里？",
   "Start date": "开始日期",
   "End date": "结束日期",
-  "CommonRoute — Plan together. Find your common route.": "CommonRoute — 一起规划，找到大家共同的路线。",
+  "CommonRoute — Plan together. Find your common route.":
+    "CommonRoute — 一起规划，找到大家共同的路线。",
   "Whitewashed Santorini overlooking the Aegean Sea": "俯瞰爱琴海的圣托里尼白色小镇",
   "Tokyo skyline at dusk": "黄昏时的东京天际线",
   "Back to group": "返回群组",
@@ -365,7 +393,8 @@ const ZH: Record<string, string> = {
   low: "少量",
   moderate: "适中",
   high: "较多",
-  "Search is unavailable right now. Try the other map source.": "目前无法搜索，请尝试另一个地图来源。",
+  "Search is unavailable right now. Try the other map source.":
+    "目前无法搜索，请尝试另一个地图来源。",
   "From Google Maps": "来自 Google 地图",
   "From map search": "来自地图搜索",
   Suggested: "已建议",
@@ -403,10 +432,11 @@ const ZH: Record<string, string> = {
   "We couldn't find that trip": "找不到该旅行",
   "Loading your details…": "正在加载你的资料…",
   "Loading your trip…": "正在加载旅行…",
-  "Save": "保存",
+  Save: "保存",
   "Saving…": "正在保存…",
-  "Saved": "已保存",
-  "CommonRoute": "CommonRoute",
+  Saved: "已保存",
+  CommonRoute: "CommonRoute",
+  "404": "404",
 
   /* v2.2 — Today, bookings, getting ready, helped travellers */
   Today: "今天",
@@ -442,7 +472,7 @@ const ZH: Record<string, string> = {
   "Share the reference": "分享预订编号",
   "Stop sharing the reference": "停止分享预订编号",
   "Reference kept with whoever booked it": "预订编号仅预订人可见",
-  "No bookings yet. Add your stay first — it powers the \"Find our stay\" card on Today.":
+  'No bookings yet. Add your stay first — it powers the "Find our stay" card on Today.':
     "还没有预订。先添加住宿，“找到我们的住宿”卡片就会出现在“今天”页面。",
 
   "Getting ready": "出发准备",
@@ -489,7 +519,10 @@ const PATTERNS: Array<[RegExp, (...parts: string[]) => string]> = [
   [/^(\d+) min$/, (n) => `${n} 分钟`],
   [/^(\d+) places reviewed$/, (n) => `已查看 ${n} 个地点`],
   [/^(\d+) waiting for a decision$/, (n) => `${n} 项等待决定`],
-  [/^(\d+) of (\d+) people have something they asked for$/, (a, b) => `${a}/${b} 人的心愿已纳入计划`],
+  [
+    /^(\d+) of (\d+) people have something they asked for$/,
+    (a, b) => `${a}/${b} 人的心愿已纳入计划`,
+  ],
   [/^Step (\d+)$/, (n) => `第 ${n} 步`],
   [/^Saved (.+)$/, (date) => `保存于 ${date}`],
   [/^Search places in (.+)$/, (place) => `搜索 ${place} 的地点`],
@@ -503,10 +536,18 @@ const PATTERNS: Array<[RegExp, (...parts: string[]) => string]> = [
   [/^(.+) is already on your shortlist\.$/, (name) => `${name} 已在候选清单中。`],
   [/^(.+) added to the shortlist\.$/, (name) => `${name} 已加入候选清单。`],
   [/^Published by (.+)$/, (name) => `由 ${name} 发布`],
-  [/^About (\d+) minutes on foot \(estimated\), (\d+) transfers?, (\d+) outdoor stops?\.$/, (walk, transfers, outdoor) => `预计步行约 ${walk} 分钟，换乘 ${transfers} 次，户外活动 ${outdoor} 项。`],
+  [
+    /^About (\d+) minutes on foot \(estimated\), (\d+) transfers?, (\d+) outdoor stops?\.$/,
+    (walk, transfers, outdoor) =>
+      `预计步行约 ${walk} 分钟，换乘 ${transfers} 次，户外活动 ${outdoor} 项。`,
+  ],
 ];
 
-function translateText(value: string) {
+export function translateText(value: string, forceLocale?: AppLocale) {
+  const locale =
+    forceLocale ||
+    (typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : "en");
+  if (locale !== "zh-CN") return value;
   const leading = value.match(/^\s*/)?.[0] ?? "";
   const trailing = value.match(/\s*$/)?.[0] ?? "";
   const clean = value.trim();
@@ -563,7 +604,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) continue;
         const source = originals.get(node) ?? node.data;
         originals.set(node, source);
-        const translated = translateText(source);
+        const translated = translateText(source, locale);
         if (node.data !== translated) node.data = translated;
       }
       const elements = root instanceof Element ? [root, ...root.querySelectorAll("*")] : [];
@@ -578,7 +619,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
           if (!current) continue;
           const source = stored.get(attribute) ?? current;
           stored.set(attribute, source);
-          const translated = translateText(source);
+          const translated = translateText(source, locale);
           if (current !== translated) element.setAttribute(attribute, translated);
         }
       }
@@ -590,11 +631,18 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         for (const node of mutation.addedNodes) process(node);
       }
     });
-    observer.observe(document.documentElement, { childList: true, characterData: true, subtree: true });
+    observer.observe(document.documentElement, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
     return () => observer.disconnect();
   }, [locale]);
 
-  const t = useCallback((english: string) => (locale === "zh-CN" ? translateText(english).trim() : english), [locale]);
+  const t = useCallback(
+    (english: string) => (locale === "zh-CN" ? translateText(english, locale).trim() : english),
+    [locale],
+  );
   const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }
@@ -606,7 +654,10 @@ export function useLocale() {
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLocale();
   return (
-    <div className={`inline-flex min-h-11 items-center rounded-xl border border-border bg-card p-1 shadow-sm ${className}`} aria-label="Language">
+    <div
+      className={`inline-flex min-h-11 items-center rounded-xl border border-border bg-card p-1 shadow-sm ${className}`}
+      aria-label="Language"
+    >
       <Languages className="mx-2 size-4 text-secondary" aria-hidden />
       <button
         type="button"

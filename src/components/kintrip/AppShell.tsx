@@ -1,11 +1,31 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Bell, CalendarRange, Check, Cloud, CloudOff, Compass, Layers, LogIn, Map, Sun, Users, WifiOff } from "lucide-react";
+import {
+  ArrowLeft,
+  Bell,
+  CalendarRange,
+  Check,
+  Cloud,
+  CloudOff,
+  Compass,
+  Layers,
+  LogIn,
+  Map,
+  Sun,
+  Users,
+  WifiOff,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { Button } from "@/components/kintrip/ui";
 import { useAccount } from "@/lib/kintrip/auth";
 import { unreadCount } from "@/lib/kintrip/governance";
-import { exitDemoTrip, useKintrip, useOnline, useTripSetupStatus, useTripSync } from "@/lib/kintrip/store";
+import {
+  exitDemoTrip,
+  useKintrip,
+  useOnline,
+  useTripSetupStatus,
+  useTripSync,
+} from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
 import { LanguageToggle } from "@/lib/i18n";
 
@@ -123,37 +143,39 @@ export function AppShell({
     <div className="min-h-screen bg-background pb-40 sm:pb-32">
       <header className="sticky top-0 z-20 border-b border-border bg-card/95">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" aria-label="CommonRoute home" className="flex items-center gap-2">
             <img src={symbol.url} alt="" className="size-11 object-contain" />
-            <span className="hidden font-display text-xl font-extrabold text-secondary min-[420px]:inline">CommonRoute</span>
+            <span className="hidden font-display text-xl font-extrabold text-secondary min-[420px]:inline">
+              CommonRoute
+            </span>
           </Link>
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.
           </p>
-           <span className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:justify-self-end">
-           <LanguageToggle />
-          <AccountButton />
-          {hasTrips ? <UpdatesBell /> : null}
-          {demoActive ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11 shrink-0 px-3 text-sm sm:justify-self-end"
-              onClick={() => {
-                exitDemoTrip();
-                void navigate({ to: "/" });
-              }}
-            >
-              <ArrowLeft className="size-4" aria-hidden /> Back to start
-            </Button>
-          ) : (
-            <Link
-              to="/trips"
-              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm sm:justify-self-end"
-            >
-              <Layers className="size-4" aria-hidden /> My trips
-            </Link>
-          )}
+          <span className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:justify-self-end">
+            <LanguageToggle />
+            <AccountButton />
+            {hasTrips ? <UpdatesBell /> : null}
+            {demoActive ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11 shrink-0 px-3 text-sm sm:justify-self-end"
+                onClick={() => {
+                  exitDemoTrip();
+                  void navigate({ to: "/" });
+                }}
+              >
+                <ArrowLeft className="size-4" aria-hidden /> Back to start
+              </Button>
+            ) : (
+              <Link
+                to="/trips"
+                className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm sm:justify-self-end"
+              >
+                <Layers className="size-4" aria-hidden /> My trips
+              </Link>
+            )}
           </span>
         </div>
       </header>
@@ -188,7 +210,9 @@ export function AppShell({
                     to={to}
                     className={cn(
                       "flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[11px] font-bold transition-colors",
-                       active ? "bg-card/10 text-success" : "text-secondary-foreground/70 hover:text-secondary-foreground",
+                      active
+                        ? "bg-card/10 text-success"
+                        : "text-secondary-foreground/70 hover:text-secondary-foreground",
                     )}
                   >
                     <Icon className="size-6" aria-hidden />

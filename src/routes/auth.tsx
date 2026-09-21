@@ -20,6 +20,8 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "One-tap email link sign-in for your CommonRoute trips.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   validateSearch: (search: Record<string, unknown>): { next?: string } =>
@@ -65,7 +67,7 @@ function AuthPage() {
       <div className="w-full max-w-md space-y-5">
         <div className="flex justify-end"><LanguageToggle /></div>
         <div className="flex flex-col items-center gap-2 text-center">
-          <img src={symbol.url} alt="" className="size-14 object-contain" />
+          <img src={symbol.url} alt="CommonRoute symbol" className="size-14 object-contain" />
           <h1 className="text-2xl font-extrabold text-secondary">Sign in to CommonRoute</h1>
           <p className="text-sm text-muted-foreground">
             We'll email you a link that signs you straight in. No password, no code to type.

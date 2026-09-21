@@ -10,9 +10,13 @@ export const Route = createFileRoute("/admin/admin")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Console" },
+      { title: "CommonRoute operations console" },
       { name: "robots", content: "noindex, nofollow" },
       { name: "description", content: "Internal operations." },
+      { property: "og:title", content: "CommonRoute operations console" },
+      { property: "og:description", content: "Internal CommonRoute operations." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: function AdminAdminRoute() {
