@@ -26,6 +26,8 @@ export const Route = createFileRoute("/account")({
         property: "og:description",
         content: "Manage your CommonRoute profile and the trips saved to your account.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AccountPage,

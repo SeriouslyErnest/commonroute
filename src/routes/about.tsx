@@ -119,7 +119,7 @@ function AboutPage() {
     <main className="min-h-screen bg-background pb-16">
       <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
         <span className="flex items-center gap-2">
-          <img src={symbol.url} alt="" className="size-11 object-contain" />
+          <img src={symbol.url} alt="CommonRoute symbol" className="size-11 object-contain" />
           <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
         </span>
         <span className="flex items-center gap-2">

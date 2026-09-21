@@ -7,6 +7,7 @@ import {
   MODE_LABEL,
   ROLE_LABEL,
   SEVERITY_LABEL,
+  canEditFor,
   fairness,
   isOrganiser,
 } from "@/lib/kintrip/governance";
@@ -14,7 +15,24 @@ import { addNeed, removeNeed, setRoles, updateDecisionSettings } from "@/lib/kin
 import { useKintrip } from "@/lib/kintrip/store";
 import type { DecisionMode, Severity, TripRole } from "@/lib/kintrip/types";
 
-const CURRENCIES = ["SGD", "USD", "EUR", "GBP", "AUD", "JPY", "MYR", "IDR", "THB", "INR", "CNY", "HKD", "KRW", "NZD", "CAD", "CHF"];
+const CURRENCIES = [
+  "SGD",
+  "USD",
+  "EUR",
+  "GBP",
+  "AUD",
+  "JPY",
+  "MYR",
+  "IDR",
+  "THB",
+  "INR",
+  "CNY",
+  "HKD",
+  "KRW",
+  "NZD",
+  "CAD",
+  "CHF",
+];
 
 export const Route = createFileRoute("/roles")({
   head: () => ({
@@ -48,7 +66,10 @@ function RolesPage() {
   const [needSeverity, setNeedSeverity] = useState<Severity>("comfort_need");
 
   return (
-    <AppShell title="Roles and decisions" subtitle="Who decides what, and what the plan must respect">
+    <AppShell
+      title="Roles and decisions"
+      subtitle="Who decides what, and what the plan must respect"
+    >
       <Card className="bg-primary-soft space-y-2">
         <h2 className="flex items-center gap-2 text-lg">
           <Scale className="size-5 text-primary" aria-hidden /> How this group decides
@@ -95,7 +116,9 @@ function RolesPage() {
           className={inputClass}
           value={state.decisions.sharedBudget ?? ""}
           disabled={!organiser}
-          onChange={(e) => updateDecisionSettings({ sharedBudget: Number(e.target.value) || undefined })}
+          onChange={(e) =>
+            updateDecisionSettings({ sharedBudget: Number(e.target.value) || undefined })
+          }
         />
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -103,7 +126,9 @@ function RolesPage() {
             className="size-5"
             checked={state.decisions.publication === "owner"}
             disabled={!organiser}
-            onChange={(e) => updateDecisionSettings({ publication: e.target.checked ? "owner" : "organisers" })}
+            onChange={(e) =>
+              updateDecisionSettings({ publication: e.target.checked ? "owner" : "organisers" })
+            }
           />
           Only the trip owner can publish the final plan
         </label>
@@ -118,105 +143,113 @@ function RolesPage() {
         </p>
       </Card>
 
-      {state.travellers.map((t) => (
-        <Card key={t.id} className="space-y-3">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h2 className="flex items-center gap-2 text-lg">
-                <UserCog className="size-5 text-secondary" aria-hidden /> {t.name}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {t.relationship} · {t.ageGroup}
-                {t.managed ? " · profile managed by an adult" : ""}
-              </p>
+      {state.travellers.map((t) => {
+        const canManageNeeds = organiser || canEditFor(state, t.id);
+        return (
+          <Card key={t.id} className="space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h2 className="flex items-center gap-2 text-lg">
+                  <UserCog className="size-5 text-secondary" aria-hidden /> {t.name}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {t.relationship} · {t.ageGroup}
+                  {t.managed ? " · profile managed by an adult" : ""}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-wrap gap-2">
-            {ALL_ROLES.map((role) => {
-              const on = t.roles.includes(role);
-              return (
-                <button
-                  key={role}
-                  type="button"
-                  disabled={!organiser}
-                  onClick={() =>
-                    setRoles(t.id, on ? t.roles.filter((r) => r !== role) : [...t.roles, role])
-                  }
-                  className="min-h-11 rounded-xl border border-border px-3 text-sm font-semibold disabled:opacity-60 aria-pressed:border-primary aria-pressed:bg-primary-soft"
-                  aria-pressed={on}
-                >
-                  {ROLE_LABEL[role]}
-                </button>
-              );
-            })}
-          </div>
+            <div className="flex flex-wrap gap-2">
+              {ALL_ROLES.map((role) => {
+                const on = t.roles.includes(role);
+                return (
+                  <button
+                    key={role}
+                    type="button"
+                    disabled={!organiser}
+                    onClick={() =>
+                      setRoles(t.id, on ? t.roles.filter((r) => r !== role) : [...t.roles, role])
+                    }
+                    className="min-h-11 rounded-xl border border-border px-3 text-sm font-semibold disabled:opacity-60 aria-pressed:border-primary aria-pressed:bg-primary-soft"
+                    aria-pressed={on}
+                  >
+                    {ROLE_LABEL[role]}
+                  </button>
+                );
+              })}
+            </div>
 
-          <div className="space-y-1">
-            {(t.needs ?? []).map((n) => (
-              <div key={n.id} className="flex items-center justify-between gap-2 text-sm">
-                <span>
-                  <Chip tone={n.severity === "hard_limit" ? "coral" : "sunny"}>{SEVERITY_LABEL[n.severity]}</Chip>{" "}
-                  {n.label}
-                </span>
+            <div className="space-y-1">
+              {(t.needs ?? []).map((n) => (
+                <div key={n.id} className="flex items-center justify-between gap-2 text-sm">
+                  <span>
+                    <Chip tone={n.severity === "hard_limit" ? "coral" : "sunny"}>
+                      {SEVERITY_LABEL[n.severity]}
+                    </Chip>{" "}
+                    {n.label}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    className="min-h-10 px-2 text-sm"
+                    disabled={!canManageNeeds}
+                    onClick={() => removeNeed(t.id, n.id)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              {needFor === t.id ? (
+                <div className="space-y-2 rounded-2xl bg-muted p-3">
+                  <input
+                    className={inputClass}
+                    placeholder="What should the plan respect?"
+                    value={needLabel}
+                    onChange={(e) => setNeedLabel(e.target.value)}
+                  />
+                  <select
+                    className={inputClass}
+                    value={needSeverity}
+                    onChange={(e) => setNeedSeverity(e.target.value as Severity)}
+                  >
+                    {Object.entries(SEVERITY_LABEL).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  <Button
+                    className="min-h-11 px-3 text-sm"
+                    disabled={!canManageNeeds}
+                    onClick={() => {
+                      if (needLabel.trim()) {
+                        addNeed(t.id, {
+                          type: "other",
+                          severity: needSeverity,
+                          label: needLabel.trim(),
+                          visibility: "group",
+                        });
+                      }
+                      setNeedLabel("");
+                      setNeedFor(null);
+                    }}
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
                 <Button
                   variant="ghost"
                   className="min-h-10 px-2 text-sm"
-                  onClick={() => removeNeed(t.id, n.id)}
+                  disabled={!canManageNeeds}
+                  onClick={() => setNeedFor(t.id)}
                 >
-                  Remove
+                  Add something to plan around
                 </Button>
-              </div>
-            ))}
-            {needFor === t.id ? (
-              <div className="space-y-2 rounded-2xl bg-muted p-3">
-                <input
-                  className={inputClass}
-                  placeholder="What should the plan respect?"
-                  value={needLabel}
-                  onChange={(e) => setNeedLabel(e.target.value)}
-                />
-                <select
-                  className={inputClass}
-                  value={needSeverity}
-                  onChange={(e) => setNeedSeverity(e.target.value as Severity)}
-                >
-                  {Object.entries(SEVERITY_LABEL).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-                <Button
-                  className="min-h-11 px-3 text-sm"
-                  onClick={() => {
-                    if (needLabel.trim()) {
-                      addNeed(t.id, {
-                        type: "other",
-                        severity: needSeverity,
-                        label: needLabel.trim(),
-                        visibility: "group",
-                      });
-                    }
-                    setNeedLabel("");
-                    setNeedFor(null);
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="ghost"
-                className="min-h-10 px-2 text-sm"
-                onClick={() => setNeedFor(t.id)}
-              >
-                Add something to plan around
-              </Button>
-            )}
-          </div>
-        </Card>
-      ))}
+              )}
+            </div>
+          </Card>
+        );
+      })}
 
       <div className="flex flex-wrap gap-2 pb-4">
         <LinkButton to="/review" variant="secondary">
