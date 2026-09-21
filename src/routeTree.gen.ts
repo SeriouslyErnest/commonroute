@@ -26,6 +26,7 @@ import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as PlacesRouteImport } from './routes/places'
+import { Route as PollsRouteImport } from './routes/polls'
 import { Route as PreferencesRouteImport } from './routes/preferences'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrintRouteImport } from './routes/print'
@@ -125,6 +126,11 @@ const PlacesRoute = PlacesRouteImport.update({
   path: '/places',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PollsRoute = PollsRouteImport.update({
+  id: '/polls',
+  path: '/polls',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreferencesRoute = PreferencesRouteImport.update({
   id: '/preferences',
   path: '/preferences',
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
   '/places': typeof PlacesRoute
+  '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
   '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
@@ -241,6 +248,7 @@ export interface FileRoutesByTo {
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
   '/places': typeof PlacesRoute
+  '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
   '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
@@ -274,6 +282,7 @@ export interface FileRoutesById {
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
   '/places': typeof PlacesRoute
+  '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
   '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
@@ -308,6 +317,7 @@ export interface FileRouteTypes {
     | '/itinerary'
     | '/join'
     | '/places'
+    | '/polls'
     | '/preferences'
     | '/pricing'
     | '/print'
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/itinerary'
     | '/join'
     | '/places'
+    | '/polls'
     | '/preferences'
     | '/pricing'
     | '/print'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/itinerary'
     | '/join'
     | '/places'
+    | '/polls'
     | '/preferences'
     | '/pricing'
     | '/print'
@@ -405,6 +417,7 @@ export interface RootRouteChildren {
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
   PlacesRoute: typeof PlacesRoute
+  PollsRoute: typeof PollsRoute
   PreferencesRoute: typeof PreferencesRoute
   PricingRoute: typeof PricingRoute
   PrintRoute: typeof PrintRoute
@@ -541,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlacesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/polls': {
+      id: '/polls'
+      path: '/polls'
+      fullPath: '/polls'
+      preLoaderRoute: typeof PollsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preferences': {
       id: '/preferences'
       path: '/preferences'
@@ -653,6 +673,7 @@ const rootRouteChildren: RootRouteChildren = {
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,
   PlacesRoute: PlacesRoute,
+  PollsRoute: PollsRoute,
   PreferencesRoute: PreferencesRoute,
   PricingRoute: PricingRoute,
   PrintRoute: PrintRoute,
