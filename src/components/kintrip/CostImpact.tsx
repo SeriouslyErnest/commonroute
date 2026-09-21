@@ -22,7 +22,9 @@ export function CostImpact({
   revised: ItineraryDay;
 }) {
   const dropped = useMemo(() => {
-    const kept = new Set(revised.items.map((i) => i.attractionId).filter(Boolean) as string[]);
+    const kept = new Set(
+      revised.items.map((i) => i.attractionId).filter((id): id is string => Boolean(id)),
+    );
     return original.items
       .map((i) => i.attractionId)
       .filter((id): id is string => Boolean(id) && !kept.has(id));
