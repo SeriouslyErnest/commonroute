@@ -24,6 +24,7 @@ import { Route as GettingReadyRouteImport } from './routes/getting-ready'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
+import { Route as PlacesRouteImport } from './routes/places'
 import { Route as PreferencesRouteImport } from './routes/preferences'
 import { Route as PrintRouteImport } from './routes/print'
 import { Route as ReplanRouteImport } from './routes/replan'
@@ -111,6 +112,11 @@ const JoinRoute = JoinRouteImport.update({
   path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlacesRoute = PlacesRouteImport.update({
+  id: '/places',
+  path: '/places',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreferencesRoute = PreferencesRouteImport.update({
   id: '/preferences',
   path: '/preferences',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/places': typeof PlacesRoute
   '/preferences': typeof PreferencesRoute
   '/print': typeof PrintRoute
   '/replan': typeof ReplanRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/places': typeof PlacesRoute
   '/preferences': typeof PreferencesRoute
   '/print': typeof PrintRoute
   '/replan': typeof ReplanRoute
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/places': typeof PlacesRoute
   '/preferences': typeof PreferencesRoute
   '/print': typeof PrintRoute
   '/replan': typeof ReplanRoute
@@ -270,6 +279,7 @@ export interface FileRouteTypes {
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/places'
     | '/preferences'
     | '/print'
     | '/replan'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/places'
     | '/preferences'
     | '/print'
     | '/replan'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/places'
     | '/preferences'
     | '/print'
     | '/replan'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
+  PlacesRoute: typeof PlacesRoute
   PreferencesRoute: typeof PreferencesRoute
   PrintRoute: typeof PrintRoute
   ReplanRoute: typeof ReplanRoute
@@ -475,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/places': {
+      id: '/places'
+      path: '/places'
+      fullPath: '/places'
+      preLoaderRoute: typeof PlacesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preferences': {
       id: '/preferences'
       path: '/preferences'
@@ -571,6 +591,7 @@ const rootRouteChildren: RootRouteChildren = {
   InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,
+  PlacesRoute: PlacesRoute,
   PreferencesRoute: PreferencesRoute,
   PrintRoute: PrintRoute,
   ReplanRoute: ReplanRoute,
