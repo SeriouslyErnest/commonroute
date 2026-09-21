@@ -76,7 +76,7 @@ async function resolveRole(context: any): Promise<{ role: AdminRole | null; emai
     );
     await admin.from("admin_audit_log").insert({
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "admin.bootstrap",
       target_type: "admin",
       target_id: context.userId,
@@ -260,7 +260,7 @@ export const adminSetAccountState = createServerFn({ method: "POST" })
     if (data.state === "suspended") await admin.auth.admin.signOut(data.userId, "global").catch(() => undefined);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: data.state === "suspended" ? "account.suspend" : "account.reactivate",
       target_type: "account",
       target_id: data.userId,
@@ -304,7 +304,7 @@ export const adminCreateGrant = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: data.source === "trial" ? "grant.trial" : "grant.complimentary",
       target_type: "account",
       target_id: data.userId,
@@ -342,7 +342,7 @@ export const adminRevokeGrant = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "grant.revoke",
       target_type: "grant",
       target_id: data.grantId,
@@ -421,7 +421,7 @@ export const adminCreatePromotion = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message.includes("duplicate") ? "That code already exists" : error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "promotion.create",
       target_type: "promotion",
       target_id: row?.id,
@@ -445,7 +445,7 @@ export const adminSetPromotionStatus = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "promotion.status",
       target_type: "promotion",
       target_id: data.id,
@@ -526,11 +526,11 @@ export const adminSetAdminRole = createServerFn({ method: "POST" })
     }
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "admin.role",
       target_type: "admin",
       target_id: target.id,
-      after_json: { role: data.role, email: data.email },
+      after_json: { role: data.role },
     });
     return { ok: true };
   });
