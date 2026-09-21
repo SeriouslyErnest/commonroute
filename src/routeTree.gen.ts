@@ -30,6 +30,7 @@ import { Route as PollsRouteImport } from './routes/polls'
 import { Route as PreferencesRouteImport } from './routes/preferences'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrintRouteImport } from './routes/print'
+import { Route as ReadinessRouteImport } from './routes/readiness'
 import { Route as ReplanRouteImport } from './routes/replan'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RolesRouteImport } from './routes/roles'
@@ -146,6 +147,11 @@ const PrintRoute = PrintRouteImport.update({
   path: '/print',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReadinessRoute = ReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReplanRoute = ReplanRouteImport.update({
   id: '/replan',
   path: '/replan',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/preferences': typeof PreferencesRoute
   '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
+  '/readiness': typeof ReadinessRoute
   '/replan': typeof ReplanRoute
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/preferences': typeof PreferencesRoute
   '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
+  '/readiness': typeof ReadinessRoute
   '/replan': typeof ReplanRoute
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/preferences': typeof PreferencesRoute
   '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
+  '/readiness': typeof ReadinessRoute
   '/replan': typeof ReplanRoute
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
@@ -321,6 +330,7 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/pricing'
     | '/print'
+    | '/readiness'
     | '/replan'
     | '/review'
     | '/roles'
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/pricing'
     | '/print'
+    | '/readiness'
     | '/replan'
     | '/review'
     | '/roles'
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/pricing'
     | '/print'
+    | '/readiness'
     | '/replan'
     | '/review'
     | '/roles'
@@ -421,6 +433,7 @@ export interface RootRouteChildren {
   PreferencesRoute: typeof PreferencesRoute
   PricingRoute: typeof PricingRoute
   PrintRoute: typeof PrintRoute
+  ReadinessRoute: typeof ReadinessRoute
   ReplanRoute: typeof ReplanRoute
   ReviewRoute: typeof ReviewRoute
   RolesRoute: typeof RolesRoute
@@ -582,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrintRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/readiness': {
+      id: '/readiness'
+      path: '/readiness'
+      fullPath: '/readiness'
+      preLoaderRoute: typeof ReadinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/replan': {
       id: '/replan'
       path: '/replan'
@@ -677,6 +697,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreferencesRoute: PreferencesRoute,
   PricingRoute: PricingRoute,
   PrintRoute: PrintRoute,
+  ReadinessRoute: ReadinessRoute,
   ReplanRoute: ReplanRoute,
   ReviewRoute: ReviewRoute,
   RolesRoute: RolesRoute,
