@@ -100,20 +100,6 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 /** Bring older saved trips up to the governance data model. */
 export function normalizeState(input: KintripState): KintripState {
   const state = { ...input } as KintripState;
-  // Older saved trips predate locations and hours; fill the blanks from the
-  // sample data for the places that came from it, and never overwrite entries.
-  state.attractions = (state.attractions ?? []).map((a) => {
-    const sample = seedAttractions.find((s) => s.id === a.id);
-    if (!sample) return a;
-    return {
-      ...a,
-      latitude: a.latitude ?? sample.latitude,
-      longitude: a.longitude ?? sample.longitude,
-      timeZone: a.timeZone ?? sample.timeZone,
-      hours: a.hours ?? sample.hours,
-      access: a.access ?? sample.access,
-    };
-  });
   const travellers: Traveller[] = (state.travellers ?? []).map((t) => ({
     ...t,
     roles:
