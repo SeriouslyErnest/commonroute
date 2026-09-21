@@ -153,8 +153,8 @@ export function addMilestone(input: {
   title: string;
   dueDate: string;
   kind: MilestoneKind;
-  ownerId?: string;
-  bookingId?: string;
+  ownerId?: string | undefined;
+  bookingId?: string | undefined;
 }) {
   setState((prev) => {
     if (!isOrganiser(prev)) return prev;
