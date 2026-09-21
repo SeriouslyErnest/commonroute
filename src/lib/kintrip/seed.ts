@@ -427,6 +427,106 @@ export const seedAttractions: Attraction[] = [
   },
 ];
 
+/* Locations, opening hours and car access for the demo places, so the map,
+   grouping and day checks have something real to work with. */
+const DEMO_GEO: Record<string, [number, number]> = {
+  sensoji: [35.7148, 139.7967],
+  skytree: [35.7101, 139.8107],
+  akihabara: [35.6984, 139.7731],
+  shibuya: [35.6595, 139.7005],
+  meiji: [35.6764, 139.6993],
+  teamlab: [35.6494, 139.7866],
+  tsukiji: [35.6654, 139.7707],
+  imperial: [35.6852, 139.7578],
+  ginza: [35.6717, 139.765],
+  fushimi: [34.9671, 135.7727],
+  kiyomizu: [34.9949, 135.785],
+  gion: [35.0037, 135.7751],
+  nishiki: [35.005, 135.7649],
+  arashiyama: [35.0094, 135.6667],
+  kinkakuji: [35.0394, 135.7292],
+};
+
+const everyDay = (open: string, close: string) =>
+  [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({ weekday, open, close }));
+
+for (const place of seedAttractions) {
+  const coords = DEMO_GEO[place.id];
+  if (coords) {
+    place.latitude = coords[0];
+    place.longitude = coords[1];
+  }
+  place.timeZone = "Asia/Tokyo";
+  place.kind = /market|shopping/i.test(place.name) ? "attraction" : "attraction";
+  place.hours = {
+    intervals: everyDay(place.opens, place.closes),
+    exceptions: [],
+    verification: "reported",
+    sourceName: "Venue website",
+    sourceUrl: place.sourceUrl,
+  };
+}
+
+const kinkakuji = seedAttractions.find((a) => a.id === "kinkakuji");
+if (kinkakuji) {
+  kinkakuji.hours = {
+    intervals: everyDay("09:00", "17:00"),
+    exceptions: [],
+    lastAdmissionMin: 30,
+    verification: "confirmed",
+    sourceName: "Venue website",
+    sourceUrl: kinkakuji.sourceUrl,
+  };
+}
+
+const arashiyama = seedAttractions.find((a) => a.id === "arashiyama");
+if (arashiyama) {
+  // A park-and-transfer example: the car stops short and a train finishes the trip.
+  arashiyama.access = {
+    carStatus: "park_and_transfer",
+    gatewayName: "Saga-Arashiyama station car park",
+    parkingNote: "Paid car park, fills early at weekends.",
+    transferBufferMin: 15,
+    outbound: [
+      {
+        id: "ar-out-1",
+        mode: "park",
+        from: "Saga-Arashiyama car park",
+        to: "Saga-Arashiyama station",
+        durationMin: 8,
+        stepFree: "reported",
+        wheelchair: "unknown",
+        stroller: "reported",
+        bookingRequired: "no",
+      },
+      {
+        id: "ar-out-2",
+        mode: "walk",
+        from: "Saga-Arashiyama station",
+        to: "Bamboo grove",
+        durationMin: 12,
+        walkMetres: 900,
+        stepFree: "unknown",
+        wheelchair: "unknown",
+        stroller: "unknown",
+      },
+    ],
+    inbound: [
+      {
+        id: "ar-in-1",
+        mode: "walk",
+        from: "Bamboo grove",
+        to: "Saga-Arashiyama station",
+        durationMin: 12,
+        stepFree: "unknown",
+        wheelchair: "unknown",
+        stroller: "unknown",
+      },
+    ],
+    sourceName: "Entered by the organiser",
+  };
+}
+
 const V = (
   dad: VoteValue,
   mum: VoteValue,
