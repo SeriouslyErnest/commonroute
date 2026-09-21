@@ -32,8 +32,16 @@ async function adminClient() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function resolveRole(context: any): Promise<{ role: AdminRole | null; email: string | null }> {
   const email = typeof context.claims["email"] === "string" ? (context.claims["email"] as string) : null;
-  const { data } = await context.supabase.rpc("admin_role_of", { _user_id: context.userId });
-  if (data) return { role: data as AdminRole, email };
+  // Role lookup runs server-side with the privileged client so the operator
+  // table is never queryable (or probe-able) from a browser session.
+  const lookup = await adminClient();
+  const { data } = await lookup
+    .from("app_admins")
+    .select("admin_role")
+    .eq("user_id", context.userId)
+    .eq("status", "active")
+    .maybeSingle();
+  if (data?.admin_role) return { role: data.admin_role as AdminRole, email };
 
   const bootstrap = process.env["ADMIN_BOOTSTRAP_EMAIL"];
   if (bootstrap && email && bootstrap.trim().toLowerCase() === email.toLowerCase()) {
