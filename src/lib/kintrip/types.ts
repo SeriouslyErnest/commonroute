@@ -511,6 +511,97 @@ export interface AttendanceRecord {
   at: string;
 }
 
+/* ---------------- early decisions, deadlines, comparisons ---------------- */
+
+export type PollKind = "dates" | "destination" | "budget" | "other";
+export type PollAnswer = "yes" | "maybe" | "no";
+
+export interface PollOption {
+  id: string;
+  label: string;
+  detail?: undefined | string;
+  /** Date polls carry the window being proposed. */
+  start?: undefined | string;
+  end?: undefined | string;
+}
+
+/** A group question asked before the plan exists: dates, place, budget shape. */
+export interface Poll {
+  id: string;
+  kind: PollKind;
+  question: string;
+  options: PollOption[];
+  /** travellerId -> optionId -> answer. People answer only for themselves. */
+  responses: Record<string, Record<string, PollAnswer>>;
+  closesAt?: undefined | string;
+  closed: boolean;
+  decidedOptionId?: undefined | string;
+  createdBy: string;
+  createdAt: string;
+}
+
+export type MilestoneKind = "booking" | "payment" | "document" | "other";
+
+/** A dated thing that has to happen before the trip works. */
+export interface Milestone {
+  id: string;
+  title: string;
+  dueDate: string;
+  kind: MilestoneKind;
+  ownerId?: undefined | string;
+  bookingId?: undefined | string;
+  done: boolean;
+  createdAt: string;
+}
+
+/** A candidate place to stay, compared against the real plan. */
+export interface StayOption {
+  id: string;
+  name: string;
+  nightlyCostMinor?: undefined | number;
+  currency?: undefined | string;
+  lat?: undefined | number;
+  lon?: undefined | number;
+  link?: undefined | string;
+  note?: undefined | string;
+  /** Result of the last comparison run, if any. */
+  result?:
+    | undefined
+    | {
+        at: string;
+        revision: number;
+        medianMinutes: number | null;
+        reachable: number;
+        unknown: number;
+        nightsCostMinor: number | null;
+      };
+}
+
+/** A whole-plan alternative, generated from an unchanged baseline. */
+export interface Scenario {
+  id: string;
+  label: string;
+  summary: string;
+  baselineRevision: number;
+  createdAt: string;
+  createdBy: string;
+  changes: string[];
+  travelMinutesDelta: number | null;
+  costDeltaMinor: number | null;
+  warnings: string[];
+  outdated: boolean;
+  accepted: boolean;
+}
+
+/** A disclosed outside link. Never affects rankings or approvals. */
+export interface PartnerLink {
+  id: string;
+  label: string;
+  url: string;
+  kind: "booking" | "template" | "creator";
+  disclosure: string;
+}
+
 export interface KintripState {
   trip: Trip;
   travellers: Traveller[];
