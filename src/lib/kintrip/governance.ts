@@ -440,6 +440,15 @@ export function publicationChecks(state: KintripState): PublishCheck[] {
       if (note.severity !== "watch") continue;
       checks.push({ id: `comfort-${note.id}`, text: `Day ${day.day}: ${note.text}`, blocking: false });
     }
+    // Known closures, missed last admission and impossible return journeys block
+    // publication; anything merely unverified is surfaced as an open question.
+    for (const check of validateDay(state, day).checks) {
+      checks.push({
+        id: `sched-${check.id}`,
+        text: `Day ${day.day}: ${check.text}`,
+        blocking: check.severity === "block",
+      });
+    }
   }
 
   const f = fairness(state);
