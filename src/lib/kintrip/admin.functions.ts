@@ -28,6 +28,30 @@ async function adminClient() {
   return supabaseAdmin;
 }
 
+/**
+ * Audit rows never store an operator's address in readable form. We keep a
+ * one-way salted fingerprint so the same operator can be correlated across
+ * entries, while nobody with database (or code) access can read the address
+ * back out of the table. Display names are resolved live from the account id.
+ */
+async function emailFingerprint(email: string | null): Promise<string | null> {
+  if (!email) return null;
+  const salt = process.env["ADMIN_EMAIL_HASH_SALT"] ?? "";
+  const bytes = new TextEncoder().encode(`${salt}:${email.trim().toLowerCase()}`);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return `sha256:${Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
+/** Resolves readable operator addresses for display only, keyed by account id. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function operatorEmails(admin: any): Promise<Map<string, string | null>> {
+  const { data } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return new Map((data?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]));
+}
+
 /** Resolves the caller's admin role, creating the first super admin when the configured owner signs in. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function resolveRole(context: any): Promise<{ role: AdminRole | null; email: string | null }> {
@@ -52,7 +76,7 @@ async function resolveRole(context: any): Promise<{ role: AdminRole | null; emai
     );
     await admin.from("admin_audit_log").insert({
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "admin.bootstrap",
       target_type: "admin",
       target_id: context.userId,
@@ -99,11 +123,13 @@ export const adminDashboard = createServerFn({ method: "GET" })
       admin.from("promotions").select("id, status"),
       admin
         .from("admin_audit_log")
-        .select("id, admin_email, action_type, target_type, target_id, reason, created_at")
+        .select("id, admin_user_id, action_type, target_type, target_id, reason, created_at")
         .order("created_at", { ascending: false })
         .limit(10),
     ]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emailOf = new Map((users?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]));
     const active = grants.data ?? [];
     return {
       accounts: users?.users?.length ?? 0,
@@ -114,7 +140,7 @@ export const adminDashboard = createServerFn({ method: "GET" })
       activePromotions: (promos.data ?? []).filter((p) => p.status === "active").length,
       recent: (recent.data ?? []).map((r) => ({
         id: r.id,
-        actor: r.admin_email,
+        actor: (r.admin_user_id ? emailOf.get(r.admin_user_id) : null) ?? "Removed operator",
         action: r.action_type,
         target: r.target_id,
         reason: r.reason,
@@ -236,7 +262,7 @@ export const adminSetAccountState = createServerFn({ method: "POST" })
     if (data.state === "suspended") await admin.auth.admin.signOut(data.userId, "global").catch(() => undefined);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: data.state === "suspended" ? "account.suspend" : "account.reactivate",
       target_type: "account",
       target_id: data.userId,
@@ -280,7 +306,7 @@ export const adminCreateGrant = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: data.source === "trial" ? "grant.trial" : "grant.complimentary",
       target_type: "account",
       target_id: data.userId,
@@ -318,7 +344,7 @@ export const adminRevokeGrant = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "grant.revoke",
       target_type: "grant",
       target_id: data.grantId,
@@ -397,7 +423,7 @@ export const adminCreatePromotion = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message.includes("duplicate") ? "That code already exists" : error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "promotion.create",
       target_type: "promotion",
       target_id: row?.id,
@@ -421,7 +447,7 @@ export const adminSetPromotionStatus = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "promotion.status",
       target_type: "promotion",
       target_id: data.id,
@@ -438,15 +464,16 @@ export const adminAuditLog = createServerFn({ method: "POST" })
     const { admin } = await requireAdmin(context, [...WRITE_ROLES, "read_only_admin"]);
     let request = admin
       .from("admin_audit_log")
-      .select("id, admin_email, action_type, target_type, target_id, before_json, after_json, reason, created_at")
+      .select("id, admin_user_id, action_type, target_type, target_id, before_json, after_json, reason, created_at")
       .order("created_at", { ascending: false })
       .limit(200);
     if (data.query) request = request.or(`action_type.ilike.%${data.query}%,target_id.ilike.%${data.query}%`);
     const { data: rows, error } = await request;
     if (error) throw new Error(error.message);
+    const emailOf = await operatorEmails(admin);
     return (rows ?? []).map((r) => ({
       id: r.id,
-      actor: r.admin_email,
+      actor: (r.admin_user_id ? emailOf.get(r.admin_user_id) : null) ?? "Removed operator",
       action: r.action_type,
       targetType: r.target_type,
       targetId: r.target_id,
@@ -502,11 +529,11 @@ export const adminSetAdminRole = createServerFn({ method: "POST" })
     }
     await audit(admin, {
       admin_user_id: context.userId,
-      admin_email: email,
+      admin_email: await emailFingerprint(email),
       action_type: "admin.role",
       target_type: "admin",
       target_id: target.id,
-      after_json: { role: data.role, email: data.email },
+      after_json: { role: data.role },
     });
     return { ok: true };
   });
