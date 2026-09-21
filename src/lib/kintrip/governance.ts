@@ -1,4 +1,5 @@
 import { comfortReview } from "./travel";
+import { validateDay } from "./schedule";
 import type {
   Attraction,
   DecisionEvent,
