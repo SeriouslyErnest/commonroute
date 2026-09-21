@@ -70,6 +70,12 @@ function ReplanPage() {
           </ul>
         </Card>
 
+        <CostImpact
+          state={state}
+          original={state.itinerary.days.find((d) => d.day === day) ?? revisedDay}
+          revised={revisedDay}
+        />
+
         <Card>
           <h2 className="text-lg">Revised timeline</h2>
           <ol className="mt-3 space-y-3">
