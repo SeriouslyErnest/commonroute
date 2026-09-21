@@ -17,6 +17,28 @@ const OWNER_ROLES: AdminRole[] = ["super_admin"];
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/**
+ * The console lives at a configurable, unlisted path. Forks set
+ * ADMIN_CONSOLE_PATH to their own address; without it the console is served
+ * at the documented default /admin/admin. The path itself is not the
+ * protection — every action still requires an authenticated operator — it is
+ * only an extra layer of obscurity.
+ */
+export function configuredAdminPath(): string {
+  const raw = process.env.ADMIN_CONSOLE_PATH ?? "/admin/admin";
+  const cleaned = `/${raw.replace(/^\/+|\/+$/g, "")}`;
+  return cleaned === "/" ? "/admin/admin" : cleaned;
+}
+
+export const adminConsoleAccess = createServerFn({ method: "GET" })
+  .inputValidator((path: unknown) => {
+    if (typeof path !== "string" || !path.startsWith("/") || path.length > 120) {
+      throw new Error("Invalid path");
+    }
+    return `/${path.replace(/^\/+|\/+$/g, "")}`;
+  })
+  .handler(({ data }) => ({ allowed: data === configuredAdminPath() }));
+
 function text(value: unknown, max = 300): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim().slice(0, max);
