@@ -25,7 +25,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
  * only an extra layer of obscurity.
  */
 export function configuredAdminPath(): string {
-  const raw = process.env.ADMIN_CONSOLE_PATH ?? "/admin/admin";
+  const raw = process.env["ADMIN_CONSOLE_PATH"] ?? "/admin/admin";
   const cleaned = `/${raw.replace(/^\/+|\/+$/g, "")}`;
   return cleaned === "/" ? "/admin/admin" : cleaned;
 }
