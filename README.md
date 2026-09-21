@@ -1,112 +1,132 @@
 # CommonRoute
 
-CommonRoute is a remix of [Kintrip](https://github.com/ernestsee/kintrip), a collaborative trip planner originally built for multi-generational families. It helps groups plan a trip together, vote on places, and produce one fair, shareable itinerary.
+**Plan together. Find your common route.**
 
-This project was built with [Lovable](https://lovable.dev).
+CommonRoute is a mobile-first collaborative trip planner for families and friends. A group can collect preferences and practical needs, shortlist and vote on places, review costs and trade-offs, and publish one shared itinerary that remains useful during the trip.
 
-## Build with Lovable
+CommonRoute is a remix of [Kintrip](https://github.com/ernestsee/kintrip), originally created for multi-generational family travel. The product now supports broader groups, assisted travellers, organiser governance, bookings, preparation lists, day-of travel views, maps, scheduling checks, and account-linked trips.
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Built with [Lovable](https://lovable.dev), TanStack Start, React, TypeScript, Tailwind CSS, and a PostgreSQL-backed authentication service.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+## What is included
 
-## Running your own copy
+- Passwordless email-link accounts and cross-device trip lists
+- Invite links and shared-trip synchronization
+- Personal preferences, accessibility and comfort needs, place voting, and group-fit summaries
+- Owner, organiser, sponsor, contributor, and viewer roles
+- Suggestion review, spending decisions, publication checks, and an audit history
+- Assisted traveller profiles for children or people who want help participating
+- Recommended itineraries, locked stops, day splitting, attendance, change acknowledgement, and re-planning
+- Today and Simple views, bookings and stay details, shared jobs, and packing lists
+- English and Simplified Chinese interfaces
+- Place search, category maps, nearby grouping, driving-time checks, date-aware opening hours, and onward-access journeys
+- Installable app behavior and offline access to saved trip information
+- An internal operations console for account review, suspension, operator roles, grants, promotions, and audit records
+- A local-only Japan demo that never syncs to the backend
 
-These instructions are for anyone forking or remixing the code outside the original project.
+See [Product guide](docs/PRODUCT.md) for the complete user journey, product rules, and current limitations.
 
-### 1. Clone and install
+## Documentation
+
+| Guide | Purpose |
+| --- | --- |
+| [Product guide](docs/PRODUCT.md) | Users, workflows, shipped capabilities, and limitations |
+| [Fork and deployment setup](docs/SETUP.md) | Local setup, backend, authentication, integrations, admin bootstrap, and deployment |
+| [Architecture](docs/ARCHITECTURE.md) | Application structure, data flow, storage, security boundaries, maps, and offline behavior |
+| [Security](docs/SECURITY.md) | Trust model, secrets, authorization, known trade-offs, and reporting |
+| [Contributing](docs/CONTRIBUTING.md) | Change workflow, checks, migrations, translations, accessibility, and metadata |
+| [Roadmap](roadmap.md) | Implemented product milestones |
+
+## Quick start
+
+The fastest way to make your own copy is to fork the repository, connect it to a new backend, and provide your own environment variables.
+
+### Prerequisites
+
+- Node.js 20 or later
+- Bun 1.2 or later (recommended), or npm
+- A PostgreSQL backend with compatible authentication and row-level security; Lovable Cloud is the easiest supported path
+
+### Install and run
 
 ```sh
-git clone <your-forked-repository-url>
-cd <repository-name>
+git clone https://github.com/<your-account>/<your-repository>.git
+cd <your-repository>
+cp .env.example .env.local  # if you create an example file for your deployment
+bun install
+bun run dev
+```
+
+If you use npm instead:
+
+```sh
 npm install
 npm run dev
 ```
 
-The app expects a Lovable Cloud / Supabase backend. If you are using a fresh backend instance, run the migrations in `drizzle/migrations/` in order and regenerate types before starting the dev server.
+Then open the local address printed by Vite.
 
-### 2. Required environment variables
+The application will not be fully functional until authentication, the database migrations, and the required environment variables are configured. Follow [docs/SETUP.md](docs/SETUP.md) before deploying.
 
-Create a `.env` file in the project root with at least these values:
+## Essential configuration
 
-```env
-VITE_SUPABASE_URL=https://<your-project>.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=<your-anon-key>
-SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
-```
-
-The service-role key is used only by server functions (never in the browser) for privileged operations such as admin account lookup and account deletion.
-
-### 3. Configure passwordless sign-in
-
-The app uses passwordless email-link sign-in only. In your Supabase project:
-
-1. Go to **Authentication > Providers** and enable **Email**.
-2. Disable **Confirm email** if you want a smooth magic-link flow, or keep it enabled and configure your email templates.
-3. Add your preview and production domains to **Authentication > URL Configuration > Redirect URLs**.
-4. Set **Site URL** to the root of your deployed app (for example `https://commonroute.lovable.app`).
-
-When a new user signs in, a `profiles` row is created automatically by the `handle_new_user` database trigger.
-
-### 4. Configure the admin console
-
-The app ships an internal operations console for reviewing accounts, pausing or restoring access, and managing complimentary access or trials.
-
-#### Set the console path
-
-Choose an unlisted path and set it in your environment:
+At minimum, a self-hosted copy needs public browser credentials and separate server credentials:
 
 ```env
-ADMIN_CONSOLE_PATH=/ops/console
+# Browser-safe public configuration
+VITE_SUPABASE_URL=https://<your-backend-host>
+VITE_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
+
+# Server-only configuration
+SUPABASE_URL=https://<your-backend-host>
+SUPABASE_PUBLISHABLE_KEY=<publishable-key>
+SUPABASE_SERVICE_ROLE_KEY=<server-secret-key>
+
+# First operator for a new installation
+ADMIN_BOOTSTRAP_EMAIL=owner@example.com
+ADMIN_EMAIL_HASH_SALT=<long-random-secret>
+
+# Optional; defaults to /admin/admin
+ADMIN_CONSOLE_PATH=/admin/admin
 ```
 
-If `ADMIN_CONSOLE_PATH` is not set, the console defaults to `/admin/admin`. The other built-in route (`/admin/admin` or `/ops/console`, whichever is **not** configured) will return a plain "page not found".
+Never commit `.env`, `.env.local`, server keys, database URLs, connector keys, real operator email addresses, or audit salts.
 
-> **Important:** the path is only an extra layer of obscurity, not the protection itself. Every console action still requires a signed-in operator account.
+The admin path is only an unlisted address, not an authorization control. Every operation is still checked against the signed-in operator account on the server. Forks default to `/admin/admin`; choose another path with `ADMIN_CONSOLE_PATH` if desired.
 
-#### Bootstrap the first operator
+## Backend migrations
 
-Set the email address that should become the first super admin:
+The SQL migrations are in `drizzle/migrations/`. A fresh fork should apply the production schema migrations in this order:
 
-```env
-ADMIN_BOOTSTRAP_EMAIL=you@yourdomain.com
-```
+1. `0000_accounts_profiles_memberships.sql`
+2. `0001_admin_console_entitlements.sql`
+3. `0003_lock_down_security_definer_functions.sql`
+4. `0004_hash_admin_audit_emails.sql`
 
-The first person who signs in with that exact email address is automatically promoted to `super_admin`. After that, you can add other operators from the **Operators** tab in the console.
+Do **not** apply `0002_seed_test_super_admin.sql` to a new backend. It is a development-only historical seed tied to the original test environment. New installations bootstrap their first operator with `ADMIN_BOOTSTRAP_EMAIL` instead.
 
-#### Optional: hash salt for the audit log
+See [Fork and deployment setup](docs/SETUP.md#4-create-the-database) for the complete procedure.
 
-Admin actions are written to a permanent audit log. Operator emails are stored as a one-way salted hash rather than plain text. If you want a different salt from the default, set:
-
-```env
-ADMIN_EMAIL_HASH_SALT=<a-long-random-string>
-```
-
-If this is not set, the app generates and uses a stable fallback value. Changing the salt later will break the ability to correlate historical audit entries with current operators.
-
-### 5. Promotions (optional)
-
-If you want to offer promo codes or trials, create promotions from the admin console. Customer redemption is not wired up by default — add the public redemption flow only when you are ready to sell or give away access.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Development commands
 
 ```sh
-npm i
-npm run dev
+bun run dev       # development server
+bun run build     # production build
+bun run lint      # lint the project
+bun run format    # format supported files
+bun run preview   # preview a production build locally
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
-- Lovable Cloud
 
 ## Demo mode
 
-The Japan "Tan Family" sample trip is local-only. It never syncs to the cloud and never requires sign-in, so anyone can preview the features without affecting real trips.
+The Japan sample trip is intentionally local-only. It does not require sign-in, does not upload to the shared backend, and must remain excluded from every current or future synchronization feature.
+
+## Project status and limits
+
+CommonRoute is a working product prototype with a broad planning workflow. Before operating a public service, review the security model, configure provider quotas and email delivery, run the full test checklist, and establish privacy, retention, support, and incident-response policies.
+
+Not currently included: booking transactions, payment processing, customer promo redemption, in-app chat, live location tracking, live transport disruption alerts, guaranteed accessibility certification, worldwide transit schedules, turn-by-turn navigation, or offline map tiles.
+
+## Licensing
+
+This repository does not currently include an open-source license file. A public GitHub repository can be viewed and forked through GitHub, but reuse and redistribution rights are not granted automatically. Repository owners should add an appropriate license before inviting third-party reuse.
