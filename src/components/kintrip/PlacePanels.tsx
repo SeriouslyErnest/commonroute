@@ -84,7 +84,7 @@ export function LocationPanel({ place }: { place: Attraction }) {
 
 /* ---------------- opening hours ---------------- */
 
-export function HoursPanel({ place, visitDate }: { place: Attraction; visitDate?: string }) {
+export function HoursPanel({ place, visitDate }: { place: Attraction; visitDate?: undefined | string }) {
   const record: HoursRecord = place.hours ?? emptyHours();
   const today = new Date().toISOString().slice(0, 10);
   const checkDate = visitDate ?? today;
@@ -278,7 +278,7 @@ export function HoursPanel({ place, visitDate }: { place: Attraction; visitDate?
 const MODES: LegMode[] = ["drive", "park", "walk", "bus", "shuttle", "rail", "cable_car", "ferry", "taxi"];
 const EVIDENCE: EvidenceState[] = ["unknown", "reported", "confirmed", "unsuitable"];
 
-export function AccessPanel({ place, finishTime }: { place: Attraction; finishTime?: string }) {
+export function AccessPanel({ place, finishTime }: { place: Attraction; finishTime?: undefined | string }) {
   const access: AccessProfile = place.access ?? emptyAccess();
   const issues = reviewAccess({ ...place, access }, finishTime);
   const headline = accessHeadline(access);

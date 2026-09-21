@@ -24,7 +24,7 @@ export interface DrivingRouteResult {
   legs: RouteLegResult[];
   provider: string;
   /** Set when the whole request failed, so the caller can show unknown travel. */
-  error?: string;
+  error?: undefined | string;
 }
 
 const ROUTER = "https://router.project-osrm.org";
