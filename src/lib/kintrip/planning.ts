@@ -217,11 +217,11 @@ export function milestoneBuckets(state: KintripState, today = new Date()) {
 
 export function addStayOption(input: {
   name: string;
-  nightlyCostMinor?: number;
-  lat?: number;
-  lon?: number;
-  link?: string;
-  note?: string;
+  nightlyCostMinor?: number | undefined;
+  lat?: number | undefined;
+  lon?: number | undefined;
+  link?: string | undefined;
+  note?: string | undefined;
 }) {
   setState((prev) => {
     if (!isOrganiser(prev)) return prev;
