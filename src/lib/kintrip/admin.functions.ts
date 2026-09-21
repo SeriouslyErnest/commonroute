@@ -464,15 +464,16 @@ export const adminAuditLog = createServerFn({ method: "POST" })
     const { admin } = await requireAdmin(context, [...WRITE_ROLES, "read_only_admin"]);
     let request = admin
       .from("admin_audit_log")
-      .select("id, admin_email, action_type, target_type, target_id, before_json, after_json, reason, created_at")
+      .select("id, admin_user_id, action_type, target_type, target_id, before_json, after_json, reason, created_at")
       .order("created_at", { ascending: false })
       .limit(200);
     if (data.query) request = request.or(`action_type.ilike.%${data.query}%,target_id.ilike.%${data.query}%`);
     const { data: rows, error } = await request;
     if (error) throw new Error(error.message);
+    const emailOf = await operatorEmails(admin);
     return (rows ?? []).map((r) => ({
       id: r.id,
-      actor: r.admin_email,
+      actor: (r.admin_user_id ? emailOf.get(r.admin_user_id) : null) ?? "Removed operator",
       action: r.action_type,
       targetType: r.target_type,
       targetId: r.target_id,
