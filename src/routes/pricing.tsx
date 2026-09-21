@@ -109,7 +109,7 @@ function PricingScreen() {
           <Card key={offer.code} className="flex flex-col p-5">
             <div className="flex items-center justify-between">
               <h2 className="text-xl">{offer.name}</h2>
-              {offer.available ? null : <Chip tone="muted">Planned</Chip>}
+              {offer.available ? null : <Chip tone="neutral">Planned</Chip>}
             </div>
             <p className="mt-1 text-2xl font-extrabold">{offer.priceLabel}</p>
             <p className="mt-2 text-sm text-muted-foreground">{offer.summary}</p>

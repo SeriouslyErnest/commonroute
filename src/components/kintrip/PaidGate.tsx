@@ -25,7 +25,7 @@ export function PaidGate({
 
   return (
     <Card className="p-5">
-      <Chip tone="muted">
+      <Chip tone="neutral">
         <Lock className="size-4" aria-hidden /> Trip Plus
       </Chip>
       <h2 className="mt-2 text-lg">{FEATURE_LABEL[feature]}</h2>
