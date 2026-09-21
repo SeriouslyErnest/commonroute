@@ -123,11 +123,13 @@ export const adminDashboard = createServerFn({ method: "GET" })
       admin.from("promotions").select("id, status"),
       admin
         .from("admin_audit_log")
-        .select("id, admin_email, action_type, target_type, target_id, reason, created_at")
+        .select("id, admin_user_id, action_type, target_type, target_id, reason, created_at")
         .order("created_at", { ascending: false })
         .limit(10),
     ]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emailOf = new Map((users?.users ?? []).map((u: any) => [u.id as string, (u.email as string | null) ?? null]));
     const active = grants.data ?? [];
     return {
       accounts: users?.users?.length ?? 0,
