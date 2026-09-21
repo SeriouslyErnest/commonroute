@@ -140,7 +140,7 @@ export const adminDashboard = createServerFn({ method: "GET" })
       activePromotions: (promos.data ?? []).filter((p) => p.status === "active").length,
       recent: (recent.data ?? []).map((r) => ({
         id: r.id,
-        actor: r.admin_email,
+        actor: (r.admin_user_id ? emailOf.get(r.admin_user_id) : null) ?? "Removed operator",
         action: r.action_type,
         target: r.target_id,
         reason: r.reason,
