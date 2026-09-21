@@ -1,6 +1,7 @@
 # Roadmap
 
-- [ ] CSV/ICS export: per-trip and per-day CSV, calendar (.ics) export, share-sheet friendly output (PRD v1.0)
+- [x] CSV/ICS export: per-trip and per-day CSV, calendar (.ics) export, share-sheet friendly output (PRD v1.0)
+
 
 - [x] Redesign Kintrip as a phone-first experience matching the supplied visual reference; adapt cleanly to larger screens.
 - [x] Apply the approved UI/UX refinements across navigation, readability, Discover, Consensus, Family, and desktop layouts.

@@ -18,6 +18,7 @@ import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as ConsensusRouteImport } from './routes/consensus'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as ExportRouteImport } from './routes/export'
 import { Route as FairnessRouteImport } from './routes/fairness'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as GettingReadyRouteImport } from './routes/getting-ready'
@@ -81,6 +82,11 @@ const CreateRoute = CreateRouteImport.update({
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExportRoute = ExportRouteImport.update({
+  id: '/export',
+  path: '/export',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FairnessRoute = FairnessRouteImport.update({
@@ -189,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/export': typeof ExportRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
   '/getting-ready': typeof GettingReadyRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/export': typeof ExportRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
   '/getting-ready': typeof GettingReadyRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/export': typeof ExportRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
   '/getting-ready': typeof GettingReadyRoute
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/consensus'
     | '/create'
     | '/discover'
+    | '/export'
     | '/fairness'
     | '/family'
     | '/getting-ready'
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/consensus'
     | '/create'
     | '/discover'
+    | '/export'
     | '/fairness'
     | '/family'
     | '/getting-ready'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/consensus'
     | '/create'
     | '/discover'
+    | '/export'
     | '/fairness'
     | '/family'
     | '/getting-ready'
@@ -373,6 +385,7 @@ export interface RootRouteChildren {
   ConsensusRoute: typeof ConsensusRoute
   CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
+  ExportRoute: typeof ExportRoute
   FairnessRoute: typeof FairnessRoute
   FamilyRoute: typeof FamilyRoute
   GettingReadyRoute: typeof GettingReadyRoute
@@ -457,6 +470,13 @@ declare module '@tanstack/react-router' {
       path: '/discover'
       fullPath: '/discover'
       preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/export': {
+      id: '/export'
+      path: '/export'
+      fullPath: '/export'
+      preLoaderRoute: typeof ExportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fairness': {
@@ -605,6 +625,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsensusRoute: ConsensusRoute,
   CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,
+  ExportRoute: ExportRoute,
   FairnessRoute: FairnessRoute,
   FamilyRoute: FamilyRoute,
   GettingReadyRoute: GettingReadyRoute,
