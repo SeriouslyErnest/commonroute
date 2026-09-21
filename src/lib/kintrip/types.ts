@@ -623,6 +623,14 @@ export interface KintripState {
   publishedSnapshot: { version: number; days: ItineraryDay[] } | null;
   /** Saved geographic groupings of shortlisted places. */
   clusters?: undefined | PlaceCluster[];
+  /** Group questions asked before the plan exists. */
+  polls: Poll[];
+  /** Dated things that must happen before the trip works. */
+  milestones: Milestone[];
+  /** Candidate places to stay, for comparison. */
+  stayOptions: StayOption[];
+  /** Whole-plan alternatives generated from an unchanged baseline. */
+  scenarios: Scenario[];
   activeTravellerId: string;
   currentDay: number;
   replanLog: { day: number; at: string; reason: string; changes: string[] }[];
