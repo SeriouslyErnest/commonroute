@@ -457,7 +457,7 @@ for (const place of seedAttractions) {
     place.longitude = coords[1];
   }
   place.timeZone = "Asia/Tokyo";
-  place.kind = /market|shopping/i.test(place.name) ? "attraction" : "attraction";
+  place.kind = /food|market/i.test(place.category) || /market/i.test(place.name) ? "eatery" : "attraction";
   place.hours = {
     intervals: everyDay(place.opens, place.closes),
     exceptions: [],
