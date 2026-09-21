@@ -66,7 +66,11 @@ export function compareStays(state: KintripState, options: StayOption[]): StayCo
         unknown += 1;
         continue;
       }
-      const metres = metresBetween(o.lat, o.lon, p.latitude, p.longitude);
+      const metres = metresBetween({ latitude: o.lat, longitude: o.lon }, p);
+      if (metres == null) {
+        unknown += 1;
+        continue;
+      }
       minutes.push({ title: p.name, minutes: Math.round(metres / WALK_METRES_PER_MIN) });
     }
     minutes.sort((a, b) => a.minutes - b.minutes);
@@ -97,12 +101,8 @@ function dayTravelMinutes(state: KintripState, day: ItineraryDay): number {
   for (const item of day.items) {
     const place = item.attractionId ? byId.get(item.attractionId) : undefined;
     if (place?.latitude != null && place.longitude != null) {
-      if (previous?.latitude != null && previous.longitude != null) {
-        total += Math.round(
-          metresBetween(previous.latitude, previous.longitude, place.latitude, place.longitude) /
-            WALK_METRES_PER_MIN,
-        );
-      }
+      const metres = previous ? metresBetween(previous, place) : null;
+      if (metres != null) total += Math.round(metres / WALK_METRES_PER_MIN);
       previous = place;
     }
   }
