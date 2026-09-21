@@ -52,7 +52,6 @@ The fastest way to make your own copy is to fork the repository, connect it to a
 ```sh
 git clone https://github.com/<your-account>/<your-repository>.git
 cd <your-repository>
-cp .env.example .env.local  # if you create an example file for your deployment
 bun install
 bun run dev
 ```
