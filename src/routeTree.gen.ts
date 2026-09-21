@@ -26,12 +26,17 @@ import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as PlacesRouteImport } from './routes/places'
+import { Route as PollsRouteImport } from './routes/polls'
 import { Route as PreferencesRouteImport } from './routes/preferences'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrintRouteImport } from './routes/print'
+import { Route as ReadinessRouteImport } from './routes/readiness'
 import { Route as ReplanRouteImport } from './routes/replan'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RolesRouteImport } from './routes/roles'
+import { Route as ScenariosRouteImport } from './routes/scenarios'
 import { Route as SponsorRouteImport } from './routes/sponsor'
+import { Route as StaysRouteImport } from './routes/stays'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
@@ -124,14 +129,29 @@ const PlacesRoute = PlacesRouteImport.update({
   path: '/places',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PollsRoute = PollsRouteImport.update({
+  id: '/polls',
+  path: '/polls',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreferencesRoute = PreferencesRouteImport.update({
   id: '/preferences',
   path: '/preferences',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrintRoute = PrintRouteImport.update({
   id: '/print',
   path: '/print',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadinessRoute = ReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReplanRoute = ReplanRouteImport.update({
@@ -149,9 +169,19 @@ const RolesRoute = RolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScenariosRoute = ScenariosRouteImport.update({
+  id: '/scenarios',
+  path: '/scenarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SponsorRoute = SponsorRouteImport.update({
   id: '/sponsor',
   path: '/sponsor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaysRoute = StaysRouteImport.update({
+  id: '/stays',
+  path: '/stays',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TodayRoute = TodayRouteImport.update({
@@ -203,12 +233,17 @@ export interface FileRoutesByFullPath {
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
   '/places': typeof PlacesRoute
+  '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
+  '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
+  '/readiness': typeof ReadinessRoute
   '/replan': typeof ReplanRoute
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
+  '/scenarios': typeof ScenariosRoute
   '/sponsor': typeof SponsorRoute
+  '/stays': typeof StaysRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -234,12 +269,17 @@ export interface FileRoutesByTo {
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
   '/places': typeof PlacesRoute
+  '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
+  '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
+  '/readiness': typeof ReadinessRoute
   '/replan': typeof ReplanRoute
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
+  '/scenarios': typeof ScenariosRoute
   '/sponsor': typeof SponsorRoute
+  '/stays': typeof StaysRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -266,12 +306,17 @@ export interface FileRoutesById {
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
   '/places': typeof PlacesRoute
+  '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
+  '/pricing': typeof PricingRoute
   '/print': typeof PrintRoute
+  '/readiness': typeof ReadinessRoute
   '/replan': typeof ReplanRoute
   '/review': typeof ReviewRoute
   '/roles': typeof RolesRoute
+  '/scenarios': typeof ScenariosRoute
   '/sponsor': typeof SponsorRoute
+  '/stays': typeof StaysRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -299,12 +344,17 @@ export interface FileRouteTypes {
     | '/itinerary'
     | '/join'
     | '/places'
+    | '/polls'
     | '/preferences'
+    | '/pricing'
     | '/print'
+    | '/readiness'
     | '/replan'
     | '/review'
     | '/roles'
+    | '/scenarios'
     | '/sponsor'
+    | '/stays'
     | '/today'
     | '/trips'
     | '/updates'
@@ -330,12 +380,17 @@ export interface FileRouteTypes {
     | '/itinerary'
     | '/join'
     | '/places'
+    | '/polls'
     | '/preferences'
+    | '/pricing'
     | '/print'
+    | '/readiness'
     | '/replan'
     | '/review'
     | '/roles'
+    | '/scenarios'
     | '/sponsor'
+    | '/stays'
     | '/today'
     | '/trips'
     | '/updates'
@@ -361,12 +416,17 @@ export interface FileRouteTypes {
     | '/itinerary'
     | '/join'
     | '/places'
+    | '/polls'
     | '/preferences'
+    | '/pricing'
     | '/print'
+    | '/readiness'
     | '/replan'
     | '/review'
     | '/roles'
+    | '/scenarios'
     | '/sponsor'
+    | '/stays'
     | '/today'
     | '/trips'
     | '/updates'
@@ -393,12 +453,17 @@ export interface RootRouteChildren {
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
   PlacesRoute: typeof PlacesRoute
+  PollsRoute: typeof PollsRoute
   PreferencesRoute: typeof PreferencesRoute
+  PricingRoute: typeof PricingRoute
   PrintRoute: typeof PrintRoute
+  ReadinessRoute: typeof ReadinessRoute
   ReplanRoute: typeof ReplanRoute
   ReviewRoute: typeof ReviewRoute
   RolesRoute: typeof RolesRoute
+  ScenariosRoute: typeof ScenariosRoute
   SponsorRoute: typeof SponsorRoute
+  StaysRoute: typeof StaysRoute
   TodayRoute: typeof TodayRoute
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
@@ -528,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlacesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/polls': {
+      id: '/polls'
+      path: '/polls'
+      fullPath: '/polls'
+      preLoaderRoute: typeof PollsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preferences': {
       id: '/preferences'
       path: '/preferences'
@@ -535,11 +607,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreferencesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/print': {
       id: '/print'
       path: '/print'
       fullPath: '/print'
       preLoaderRoute: typeof PrintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/readiness': {
+      id: '/readiness'
+      path: '/readiness'
+      fullPath: '/readiness'
+      preLoaderRoute: typeof ReadinessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/replan': {
@@ -563,11 +649,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RolesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scenarios': {
+      id: '/scenarios'
+      path: '/scenarios'
+      fullPath: '/scenarios'
+      preLoaderRoute: typeof ScenariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sponsor': {
       id: '/sponsor'
       path: '/sponsor'
       fullPath: '/sponsor'
       preLoaderRoute: typeof SponsorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stays': {
+      id: '/stays'
+      path: '/stays'
+      fullPath: '/stays'
+      preLoaderRoute: typeof StaysRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/today': {
@@ -633,12 +733,17 @@ const rootRouteChildren: RootRouteChildren = {
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,
   PlacesRoute: PlacesRoute,
+  PollsRoute: PollsRoute,
   PreferencesRoute: PreferencesRoute,
+  PricingRoute: PricingRoute,
   PrintRoute: PrintRoute,
+  ReadinessRoute: ReadinessRoute,
   ReplanRoute: ReplanRoute,
   ReviewRoute: ReviewRoute,
   RolesRoute: RolesRoute,
+  ScenariosRoute: ScenariosRoute,
   SponsorRoute: SponsorRoute,
+  StaysRoute: StaysRoute,
   TodayRoute: TodayRoute,
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,

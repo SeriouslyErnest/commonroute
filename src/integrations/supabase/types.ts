@@ -77,6 +77,71 @@ export type Database = {
         }
         Relationships: []
       }
+      advanced_jobs: {
+        Row: {
+          confidence: string | null
+          cost_units: number
+          created_at: string
+          created_by: string | null
+          entitlement_id: string | null
+          feature: string
+          id: string
+          idempotency_key: string
+          inputs_hash: string
+          output: Json | null
+          rating: number | null
+          revision: number
+          sources: Json
+          status: Database["public"]["Enums"]["job_status"]
+          trip_id: string
+          updated_at: string
+        }
+        Insert: {
+          confidence?: string | null
+          cost_units?: number
+          created_at?: string
+          created_by?: string | null
+          entitlement_id?: string | null
+          feature: string
+          id?: string
+          idempotency_key: string
+          inputs_hash: string
+          output?: Json | null
+          rating?: number | null
+          revision?: number
+          sources?: Json
+          status?: Database["public"]["Enums"]["job_status"]
+          trip_id: string
+          updated_at?: string
+        }
+        Update: {
+          confidence?: string | null
+          cost_units?: number
+          created_at?: string
+          created_by?: string | null
+          entitlement_id?: string | null
+          feature?: string
+          id?: string
+          idempotency_key?: string
+          inputs_hash?: string
+          output?: Json | null
+          rating?: number | null
+          revision?: number
+          sources?: Json
+          status?: Database["public"]["Enums"]["job_status"]
+          trip_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advanced_jobs_entitlement_id_fkey"
+            columns: ["entitlement_id"]
+            isOneToOne: false
+            referencedRelation: "trip_entitlements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_admins: {
         Row: {
           admin_role: Database["public"]["Enums"]["admin_role"]
@@ -101,6 +166,51 @@ export type Database = {
           disabled_at?: string | null
           status?: Database["public"]["Enums"]["admin_status"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      commerce_orders: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          offer_code: string
+          price_minor: number
+          provider: string
+          provider_event_ids: string[]
+          provider_ref: string | null
+          purchaser_user_id: string
+          status: Database["public"]["Enums"]["order_status"]
+          trip_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          offer_code: string
+          price_minor?: number
+          provider?: string
+          provider_event_ids?: string[]
+          provider_ref?: string | null
+          purchaser_user_id: string
+          status?: Database["public"]["Enums"]["order_status"]
+          trip_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          offer_code?: string
+          price_minor?: number
+          provider?: string
+          provider_event_ids?: string[]
+          provider_ref?: string | null
+          purchaser_user_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          trip_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -200,6 +310,33 @@ export type Database = {
           state?: Json
           trip_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      product_events: {
+        Row: {
+          account_key: string | null
+          at: string
+          id: string
+          name: string
+          props: Json
+          trip_key: string | null
+        }
+        Insert: {
+          account_key?: string | null
+          at?: string
+          id?: string
+          name: string
+          props?: Json
+          trip_key?: string | null
+        }
+        Update: {
+          account_key?: string | null
+          at?: string
+          id?: string
+          name?: string
+          props?: Json
+          trip_key?: string | null
         }
         Relationships: []
       }
@@ -320,6 +457,122 @@ export type Database = {
         }
         Relationships: []
       }
+      trip_entitlements: {
+        Row: {
+          ceiling_at: string
+          created_at: string
+          expires_at: string
+          features: string[]
+          grant_id: string | null
+          id: string
+          job_quota: number
+          offer_code: string
+          order_id: string | null
+          page_quota: number
+          purchaser_user_id: string | null
+          starts_at: string
+          status: Database["public"]["Enums"]["entitlement_status"]
+          trip_id: string
+        }
+        Insert: {
+          ceiling_at: string
+          created_at?: string
+          expires_at: string
+          features?: string[]
+          grant_id?: string | null
+          id?: string
+          job_quota?: number
+          offer_code: string
+          order_id?: string | null
+          page_quota?: number
+          purchaser_user_id?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["entitlement_status"]
+          trip_id: string
+        }
+        Update: {
+          ceiling_at?: string
+          created_at?: string
+          expires_at?: string
+          features?: string[]
+          grant_id?: string | null
+          id?: string
+          job_quota?: number
+          offer_code?: string
+          order_id?: string | null
+          page_quota?: number
+          purchaser_user_id?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["entitlement_status"]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_entitlements_grant_id_fkey"
+            columns: ["grant_id"]
+            isOneToOne: false
+            referencedRelation: "entitlement_grants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_entitlements_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "commerce_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_ledger: {
+        Row: {
+          actor_user_id: string | null
+          amount: number
+          created_at: string
+          entitlement_id: string
+          id: string
+          idempotency_key: string
+          job_id: string | null
+          kind: Database["public"]["Enums"]["usage_kind"]
+          state: Database["public"]["Enums"]["usage_state"]
+          trip_id: string
+          updated_at: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          amount?: number
+          created_at?: string
+          entitlement_id: string
+          id?: string
+          idempotency_key: string
+          job_id?: string | null
+          kind: Database["public"]["Enums"]["usage_kind"]
+          state?: Database["public"]["Enums"]["usage_state"]
+          trip_id: string
+          updated_at?: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          amount?: number
+          created_at?: string
+          entitlement_id?: string
+          id?: string
+          idempotency_key?: string
+          job_id?: string | null
+          kind?: Database["public"]["Enums"]["usage_kind"]
+          state?: Database["public"]["Enums"]["usage_state"]
+          trip_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_ledger_entitlement_id_fkey"
+            columns: ["entitlement_id"]
+            isOneToOne: false
+            referencedRelation: "trip_entitlements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -328,6 +581,10 @@ export type Database = {
       admin_role_of: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["admin_role"]
+      }
+      is_trip_member: {
+        Args: { _trip_id: string; _user_id: string }
+        Returns: boolean
       }
     }
     Enums: {
@@ -343,12 +600,21 @@ export type Database = {
         | "percent_discount"
         | "fixed_discount"
         | "trial_extension"
+      entitlement_status: "active" | "expired" | "revoked"
       grant_source:
         | "complimentary"
         | "trial"
         | "promotion"
         | "paid_subscription"
       grant_status: "active" | "revoked"
+      job_status: "reserved" | "succeeded" | "failed" | "outdated"
+      order_status:
+        | "pending"
+        | "paid"
+        | "refunded"
+        | "disputed"
+        | "cancelled"
+        | "expired"
       promotion_status:
         | "draft"
         | "scheduled"
@@ -356,6 +622,8 @@ export type Database = {
         | "paused"
         | "expired"
         | "exhausted"
+      usage_kind: "advanced_job" | "processed_page"
+      usage_state: "reserved" | "settled" | "released"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -497,6 +765,7 @@ export const Constants = {
         "fixed_discount",
         "trial_extension",
       ],
+      entitlement_status: ["active", "expired", "revoked"],
       grant_source: [
         "complimentary",
         "trial",
@@ -504,6 +773,15 @@ export const Constants = {
         "paid_subscription",
       ],
       grant_status: ["active", "revoked"],
+      job_status: ["reserved", "succeeded", "failed", "outdated"],
+      order_status: [
+        "pending",
+        "paid",
+        "refunded",
+        "disputed",
+        "cancelled",
+        "expired",
+      ],
       promotion_status: [
         "draft",
         "scheduled",
@@ -512,6 +790,8 @@ export const Constants = {
         "expired",
         "exhausted",
       ],
+      usage_kind: ["advanced_job", "processed_page"],
+      usage_state: ["reserved", "settled", "released"],
     },
   },
 } as const

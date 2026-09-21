@@ -6,6 +6,7 @@ import { Button, Card, Chip, inputClass } from "@/components/kintrip/ui";
 import { pretty, replanDay, type ReplanResult } from "@/lib/kintrip/engine";
 import { setState, useKintrip } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
+import { CostImpact } from "@/components/kintrip/CostImpact";
 
 export const Route = createFileRoute("/replan")({
   head: () => ({
@@ -69,6 +70,12 @@ function ReplanPage() {
             ))}
           </ul>
         </Card>
+
+        <CostImpact
+          state={state}
+          original={state.itinerary.days.find((d) => d.day === day) ?? revisedDay}
+          revised={revisedDay}
+        />
 
         <Card>
           <h2 className="text-lg">Revised timeline</h2>

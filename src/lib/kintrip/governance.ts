@@ -142,6 +142,10 @@ export function normalizeState(input: KintripState): KintripState {
     publishedChanges: state.publishedChanges ?? [],
     attendance: state.attendance ?? [],
     publishedSnapshot: state.publishedSnapshot ?? null,
+    polls: state.polls ?? [],
+    milestones: state.milestones ?? [],
+    stayOptions: state.stayOptions ?? [],
+    scenarios: state.scenarios ?? [],
   };
 }
 
