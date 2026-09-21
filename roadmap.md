@@ -18,3 +18,4 @@
 - [x] PRD v2.2 Phase A: helped travellers (F01), Today and simple view (F02), bookings and stay (F03), shared jobs and packing (F04)
 - [x] PRD v2.2 Phase B (F05–F08): change summaries and acknowledgement, travel buffers, comfort/meal planning, personal attendance
 - [x] Admin console v1.0: operator roles, account review + suspend/restore, entitlement grants, promo codes, audit log
+- [x] Maps, scheduling and access: map view with category pins, nearby grouping, driving times, opening hours per visit date, car access and onward journeys, whole-day check

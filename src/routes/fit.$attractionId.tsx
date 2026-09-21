@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, TriangleAlert } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Card, Chip } from "@/components/kintrip/ui";
+import { AccessPanel, HoursPanel, LocationPanel } from "@/components/kintrip/PlacePanels";
 import { VOTE_LABEL } from "@/lib/kintrip/engine";
 import { groupFit, tallyFor } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
@@ -43,6 +44,21 @@ function FitScreen() {
 
   const fit = groupFit(state, attraction);
   const tally = tallyFor(state, attraction.id);
+
+  // If this place is already in the plan, check its hours against that real date.
+  const scheduled = (() => {
+    for (const day of state.itinerary?.days ?? []) {
+      const item = day.items.find((i) => i.attractionId === attraction.id);
+      if (!item) continue;
+      const [h, m] = item.start.split(":").map(Number);
+      const end = ((h ?? 0) * 60 + (m ?? 0) + item.durationMin) % 1440;
+      return {
+        date: day.date,
+        finish: `${String(Math.floor(end / 60)).padStart(2, "0")}:${String(end % 60).padStart(2, "0")}`,
+      };
+    }
+    return undefined;
+  })();
 
   return (
     <AppShell
@@ -109,6 +125,10 @@ function FitScreen() {
           {tally.MUST_GO} must-go · {tally.WOULD_LIKE} would like · {tally.DONT_MIND} don&apos;t mind · {tally.SKIP} skip
         </p>
       </Card>
+
+      <LocationPanel place={attraction} />
+      <HoursPanel place={attraction} visitDate={scheduled?.date} />
+      <AccessPanel place={attraction} finishTime={scheduled?.finish} />
     </AppShell>
   );
 }

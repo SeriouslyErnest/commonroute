@@ -7,6 +7,7 @@ import { formatDate, generateItinerary, pretty } from "@/lib/kintrip/engine";
 import { canPublish, dayEnergy, isOrganiser, publicationChecks } from "@/lib/kintrip/governance";
 import { addDayItem } from "@/lib/kintrip/actions";
 import { comfortReview, travelGaps } from "@/lib/kintrip/travel";
+import { validateDay } from "@/lib/kintrip/schedule";
 import {
   acknowledgeCheck,
   publishItinerary,
@@ -376,6 +377,43 @@ function ComfortPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>[
           ))}
         </ul>
       ) : null}
+      <DayCheck day={day} />
+    </div>
+  );
+}
+
+/** Opening hours on the real date, booked slots, and the journey home. */
+function DayCheck({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["itinerary"]>["days"][number] }) {
+  const state = useKintrip();
+  const result = validateDay(state, day);
+  const blocking = result.checks.filter((c) => c.severity === "block");
+  const open = result.checks.filter((c) => c.severity !== "block");
+
+  return (
+    <div className="space-y-1 border-t border-border pt-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <h4 className="text-sm font-extrabold text-secondary">Day check</h4>
+        <Chip tone={blocking.length > 0 ? "coral" : result.provisional ? "sunny" : "lime"}>
+          {blocking.length > 0
+            ? "Something cannot work as planned"
+            : result.provisional
+              ? "Open questions"
+              : "Checked"}
+        </Chip>
+      </div>
+      {result.checks.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Every stop is open on this date and the way back looks workable.
+        </p>
+      ) : (
+        <ul className="space-y-1 text-sm">
+          {[...blocking, ...open].map((c) => (
+            <li key={c.id} className={c.severity === "block" ? "text-coral-foreground" : "text-muted-foreground"}>
+              {c.text}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

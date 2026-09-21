@@ -439,6 +439,9 @@ function DiscoverTab() {
       ) : null}
 
       <div className="grid gap-2 pb-4 sm:flex sm:justify-center">
+        <LinkButton to="/places" variant="secondary">
+          Map & group nearby
+        </LinkButton>
         <LinkButton to="/consensus">See group summary</LinkButton>
         <Button
           variant="outline"

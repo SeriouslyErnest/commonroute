@@ -97,6 +97,108 @@ export interface Traveller {
   preferences: Preferences;
 }
 
+/* ---------------- opening hours ---------------- */
+
+/** How trustworthy an hours record is. Absence of data is never "open". */
+export type HoursVerification = "confirmed" | "reported" | "needs_check" | "unknown";
+
+/** One opening session. `close` earlier than `open` means it runs past midnight. */
+export interface HoursInterval {
+  /** 0 = Sunday … 6 = Saturday. */
+  weekday: number;
+  open: string; // HH:MM, venue local
+  close: string; // HH:MM, venue local
+}
+
+/** A dated override — a holiday, a seasonal or a temporary closure. */
+export interface HoursException {
+  date: string; // YYYY-MM-DD, venue local
+  closed: boolean;
+  open?: undefined | string;
+  close?: undefined | string;
+  label?: undefined | string;
+}
+
+export interface HoursRecord {
+  intervals: HoursInterval[];
+  exceptions: HoursException[];
+  /** Minutes before closing that last entry / last food order is taken. */
+  lastAdmissionMin?: undefined | number;
+  lastOrderMin?: undefined | number;
+  /** The window this record is known to describe. Outside it, treat as unverified. */
+  validFrom?: undefined | string;
+  validTo?: undefined | string;
+  sourceName?: undefined | string;
+  sourceUrl?: undefined | string;
+  checkedAt?: undefined | string;
+  enteredBy?: undefined | string;
+  verification: HoursVerification;
+}
+
+/* ---------------- car access and onward journeys ---------------- */
+
+export type CarStatus =
+  | "direct"
+  | "park_and_transfer"
+  | "restricted"
+  | "prohibited"
+  | "unknown";
+
+export type LegMode =
+  | "drive"
+  | "park"
+  | "walk"
+  | "bus"
+  | "shuttle"
+  | "rail"
+  | "cable_car"
+  | "ferry"
+  | "taxi";
+
+/** Recorded evidence, never inferred from the absence of a barrier. */
+export type EvidenceState = "confirmed" | "reported" | "unsuitable" | "unknown";
+
+export interface AccessLeg {
+  id: string;
+  mode: LegMode;
+  from: string;
+  to: string;
+  durationMin?: undefined | number;
+  /** Local clock time of the last service of the day, where known. */
+  lastDeparture?: undefined | string;
+  operatingNote?: undefined | string;
+  bookingRequired?: undefined | "yes" | "no" | "unknown";
+  walkMetres?: undefined | number;
+  steps?: undefined | number;
+  stepFree: EvidenceState;
+  wheelchair: EvidenceState;
+  stroller: EvidenceState;
+  sourceUrl?: undefined | string;
+}
+
+export interface AccessProfile {
+  carStatus: CarStatus;
+  conditions?: undefined | string;
+  /** Where the car actually stops when it cannot reach the place itself. */
+  gatewayName?: undefined | string;
+  gatewayLatitude?: undefined | number;
+  gatewayLongitude?: undefined | number;
+  parkingNote?: undefined | string;
+  outbound: AccessLeg[];
+  inbound: AccessLeg[];
+  /** Local clock time the group must start heading back by. */
+  returnDeadline?: undefined | string;
+  /** True when the journey ends somewhere other than where the car was left. */
+  oneWay?: undefined | boolean;
+  carEndsAt?: undefined | string;
+  transferBufferMin?: undefined | number;
+  sourceName?: undefined | string;
+  sourceUrl?: undefined | string;
+  checkedAt?: undefined | string;
+}
+
+export type PlaceKind = "attraction" | "eatery";
+
 export interface Attraction {
   id: string;
   name: string;
@@ -118,6 +220,24 @@ export interface Attraction {
   providerPlaceId?: undefined | string;
   sourceQuery?: undefined | string;
   capturedAt?: undefined | string;
+  /** Attraction or somewhere to eat — drives map pins and filters. */
+  kind?: undefined | PlaceKind;
+  /** IANA zone of the venue; opening hours are always resolved in it. */
+  timeZone?: undefined | string;
+  hours?: undefined | HoursRecord;
+  access?: undefined | AccessProfile;
+}
+
+/** A saved geographic grouping of places. A planning aid, not a day. */
+export interface PlaceCluster {
+  id: string;
+  label: string;
+  placeIds: string[];
+  /** Metres: the maximum pairwise distance the grouping was built with. */
+  thresholdM: number;
+  algorithm: string;
+  manual: boolean;
+  revision: number;
 }
 
 export interface SuggestionCost {
@@ -410,6 +530,8 @@ export interface KintripState {
   attendance: AttendanceRecord[];
   /** Snapshot of the last published days, so changes can be described plainly. */
   publishedSnapshot: { version: number; days: ItineraryDay[] } | null;
+  /** Saved geographic groupings of shortlisted places. */
+  clusters?: undefined | PlaceCluster[];
   activeTravellerId: string;
   currentDay: number;
   replanLog: { day: number; at: string; reason: string; changes: string[] }[];
