@@ -209,7 +209,7 @@ function DependenciesScreen() {
                       type="button"
                       variant="ghost"
                       className="min-h-11 px-3 text-sm"
-                      onClick={() => setError(warnAboutDescendants(state, ref) as unknown as string)}
+                      onClick={() => setError(warnAboutDescendants(ref))}
                     >
                       Tell the organisers what this affects
                     </Button>

@@ -18,14 +18,17 @@ import { Route as BreaksRouteImport } from './routes/breaks'
 import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as ConsensusRouteImport } from './routes/consensus'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as DependenciesRouteImport } from './routes/dependencies'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ExportRouteImport } from './routes/export'
 import { Route as FairnessRouteImport } from './routes/fairness'
 import { Route as FamilyRouteImport } from './routes/family'
+import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as GettingReadyRouteImport } from './routes/getting-ready'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
+import { Route as LogisticsRouteImport } from './routes/logistics'
 import { Route as OfflineRouteImport } from './routes/offline'
 import { Route as PlacesRouteImport } from './routes/places'
 import { Route as PollsRouteImport } from './routes/polls'
@@ -92,6 +95,11 @@ const CreateRoute = CreateRouteImport.update({
   path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DependenciesRoute = DependenciesRouteImport.update({
+  id: '/dependencies',
+  path: '/dependencies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
@@ -112,6 +120,11 @@ const FamilyRoute = FamilyRouteImport.update({
   path: '/family',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GettingReadyRoute = GettingReadyRouteImport.update({
   id: '/getting-ready',
   path: '/getting-ready',
@@ -130,6 +143,11 @@ const ItineraryRoute = ItineraryRouteImport.update({
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogisticsRoute = LogisticsRouteImport.update({
+  id: '/logistics',
+  path: '/logistics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OfflineRoute = OfflineRouteImport.update({
@@ -243,14 +261,17 @@ export interface FileRoutesByFullPath {
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
+  '/dependencies': typeof DependenciesRoute
   '/discover': typeof DiscoverRoute
   '/export': typeof ExportRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
+  '/feedback': typeof FeedbackRoute
   '/getting-ready': typeof GettingReadyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/logistics': typeof LogisticsRoute
   '/offline': typeof OfflineRoute
   '/places': typeof PlacesRoute
   '/polls': typeof PollsRoute
@@ -282,14 +303,17 @@ export interface FileRoutesByTo {
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
+  '/dependencies': typeof DependenciesRoute
   '/discover': typeof DiscoverRoute
   '/export': typeof ExportRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
+  '/feedback': typeof FeedbackRoute
   '/getting-ready': typeof GettingReadyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/logistics': typeof LogisticsRoute
   '/offline': typeof OfflineRoute
   '/places': typeof PlacesRoute
   '/polls': typeof PollsRoute
@@ -322,14 +346,17 @@ export interface FileRoutesById {
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
+  '/dependencies': typeof DependenciesRoute
   '/discover': typeof DiscoverRoute
   '/export': typeof ExportRoute
   '/fairness': typeof FairnessRoute
   '/family': typeof FamilyRoute
+  '/feedback': typeof FeedbackRoute
   '/getting-ready': typeof GettingReadyRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/logistics': typeof LogisticsRoute
   '/offline': typeof OfflineRoute
   '/places': typeof PlacesRoute
   '/polls': typeof PollsRoute
@@ -363,14 +390,17 @@ export interface FileRouteTypes {
     | '/changes'
     | '/consensus'
     | '/create'
+    | '/dependencies'
     | '/discover'
     | '/export'
     | '/fairness'
     | '/family'
+    | '/feedback'
     | '/getting-ready'
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/logistics'
     | '/offline'
     | '/places'
     | '/polls'
@@ -402,14 +432,17 @@ export interface FileRouteTypes {
     | '/changes'
     | '/consensus'
     | '/create'
+    | '/dependencies'
     | '/discover'
     | '/export'
     | '/fairness'
     | '/family'
+    | '/feedback'
     | '/getting-ready'
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/logistics'
     | '/offline'
     | '/places'
     | '/polls'
@@ -441,14 +474,17 @@ export interface FileRouteTypes {
     | '/changes'
     | '/consensus'
     | '/create'
+    | '/dependencies'
     | '/discover'
     | '/export'
     | '/fairness'
     | '/family'
+    | '/feedback'
     | '/getting-ready'
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/logistics'
     | '/offline'
     | '/places'
     | '/polls'
@@ -481,14 +517,17 @@ export interface RootRouteChildren {
   ChangesRoute: typeof ChangesRoute
   ConsensusRoute: typeof ConsensusRoute
   CreateRoute: typeof CreateRoute
+  DependenciesRoute: typeof DependenciesRoute
   DiscoverRoute: typeof DiscoverRoute
   ExportRoute: typeof ExportRoute
   FairnessRoute: typeof FairnessRoute
   FamilyRoute: typeof FamilyRoute
+  FeedbackRoute: typeof FeedbackRoute
   GettingReadyRoute: typeof GettingReadyRoute
   InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
+  LogisticsRoute: typeof LogisticsRoute
   OfflineRoute: typeof OfflineRoute
   PlacesRoute: typeof PlacesRoute
   PollsRoute: typeof PollsRoute
@@ -576,6 +615,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dependencies': {
+      id: '/dependencies'
+      path: '/dependencies'
+      fullPath: '/dependencies'
+      preLoaderRoute: typeof DependenciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -604,6 +650,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FamilyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/getting-ready': {
       id: '/getting-ready'
       path: '/getting-ready'
@@ -630,6 +683,13 @@ declare module '@tanstack/react-router' {
       path: '/join'
       fullPath: '/join'
       preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logistics': {
+      id: '/logistics'
+      path: '/logistics'
+      fullPath: '/logistics'
+      preLoaderRoute: typeof LogisticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/offline': {
@@ -785,14 +845,17 @@ const rootRouteChildren: RootRouteChildren = {
   ChangesRoute: ChangesRoute,
   ConsensusRoute: ConsensusRoute,
   CreateRoute: CreateRoute,
+  DependenciesRoute: DependenciesRoute,
   DiscoverRoute: DiscoverRoute,
   ExportRoute: ExportRoute,
   FairnessRoute: FairnessRoute,
   FamilyRoute: FamilyRoute,
+  FeedbackRoute: FeedbackRoute,
   GettingReadyRoute: GettingReadyRoute,
   InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,
+  LogisticsRoute: LogisticsRoute,
   OfflineRoute: OfflineRoute,
   PlacesRoute: PlacesRoute,
   PollsRoute: PollsRoute,
