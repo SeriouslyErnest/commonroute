@@ -696,3 +696,38 @@ export function deleteFeedback(travellerId: string): Result {
     (prev) => ({ ...prev, feedback: prev.feedback.filter((f) => f.travellerId !== travellerId) }),
   );
 }
+
+/* ---------------- who is with whom on a split day ---------------- */
+
+/** Move one person between the two groups on a split day. */
+export function moveToSubgroup(dayNumber: number, groupId: string, travellerId: string): Result {
+  return guard(canManageLogistics, (prev) => {
+    if (!prev.itinerary) return "There is no plan yet.";
+    const day = prev.itinerary.days.find((d) => d.day === dayNumber);
+    if (!day?.split) return "That day is not split into groups.";
+    const target = day.split.groups.find((g) => g.id === groupId);
+    if (!target) return "That group is no longer here.";
+    const days = prev.itinerary.days.map((d) =>
+      d.day !== dayNumber || !d.split
+        ? d
+        : {
+            ...d,
+            split: {
+              ...d.split,
+              groups: d.split.groups.map((g) => ({
+                ...g,
+                memberIds:
+                  g.id === groupId
+                    ? [...new Set([...g.memberIds, travellerId])]
+                    : g.memberIds.filter((id) => id !== travellerId),
+              })),
+            },
+          },
+    );
+    return logAudit(
+      { ...prev, itinerary: { ...prev.itinerary, days } },
+      "Group changed",
+      `Day ${dayNumber}: ${actorName(prev, travellerId)} → ${target.label}`,
+    );
+  });
+}
