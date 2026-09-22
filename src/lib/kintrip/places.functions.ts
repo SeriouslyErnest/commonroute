@@ -196,12 +196,12 @@ async function searchFree(query: string, destination: string): Promise<PlaceResu
 export const searchPlaces = createServerFn({ method: "GET" })
   .inputValidator((data) => inputSchema.parse(data))
   .handler(async ({ data }): Promise<PlaceResult[]> => {
-    const { enforceRateLimit, requireSignedIn } = await import("./guard.server");
+    const { enforceRateLimit, isSignedIn } = await import("./guard.server");
     // Open map search stays available to demo and invited guests; the billable
-    // Google provider is for signed-in planners only.
+    // Google provider is for signed-in planners only, and falls back to the
+    // free provider rather than failing the search.
     enforceRateLimit("places", 30, 60_000);
-    if (data.provider === "google") {
-      await requireSignedIn();
+    if (data.provider === "google" && (await isSignedIn())) {
       return searchGoogle(data.query, data.destination);
     }
     return searchFree(data.query, data.destination);
