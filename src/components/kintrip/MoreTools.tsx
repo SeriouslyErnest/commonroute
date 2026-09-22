@@ -25,6 +25,11 @@ const tools = [
   { to: "/templates", label: "Starter lists", hint: "Packing, jobs and deadlines", icon: LayoutList },
   { to: "/stays", label: "Places to stay", hint: "Compare up to five bases", icon: Building2 },
   { to: "/scenarios", label: "Compare plans", hint: "Alternatives side by side", icon: GitCompare },
+  { to: "/logistics", label: "Rooms and vehicles", hint: "Who sleeps where, who travels with whom", icon: BedDouble },
+  { to: "/dependencies", label: "What waits for what", hint: "Booking order and risks", icon: Link2 },
+  { to: "/breaks", label: "Rest and rejoin", hint: "A quiet word, not an announcement", icon: HeartHandshake },
+  { to: "/offline", label: "Save days to this phone", hint: "For when there is no signal", icon: CloudOff },
+  { to: "/feedback", label: "After the trip", hint: "Three optional questions", icon: MessageSquareHeart },
   { to: "/pricing", label: "Plans and prices", hint: "What is free, what is not", icon: Sparkles },
 ];
 
