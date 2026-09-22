@@ -394,6 +394,8 @@ function TodayScreen() {
         </Card>
       ) : null}
 
+      {day ? <DayNoticeCard dayNumber={day.day} /> : null}
+
       {items.length === 0 ? (
         <Card>
           <p className="text-sm">Nothing is planned for this day. It is a free day — enjoy it.</p>
