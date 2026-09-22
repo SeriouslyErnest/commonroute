@@ -113,9 +113,14 @@ function DiscoverTab() {
     const timer = setTimeout(() => {
       searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
         .then((results) => setGoogleResults(results))
-        .catch(() => {
+        .catch((error: unknown) => {
           setGoogleResults([]);
-          setSearchError("Search is unavailable right now. Try the other map source.");
+          const message = error instanceof Error ? error.message : "";
+          setSearchError(
+            /sign in|Too many/i.test(message)
+              ? message
+              : "Search is unavailable right now. Try the other map source.",
+          );
         })
         .finally(() => setSearching(false));
     }, 400);

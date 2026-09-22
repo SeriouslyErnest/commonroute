@@ -36,6 +36,8 @@ const ROUTER = "https://router.project-osrm.org";
 export const routeDriving = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }): Promise<DrivingRouteResult> => {
+    const { enforceRateLimit } = await import("./guard.server");
+    enforceRateLimit("routing", 60, 60_000);
     const coords = data.points.map((p) => `${p.longitude},${p.latitude}`).join(";");
     const unavailable = (error?: string): DrivingRouteResult => ({
       provider: "osrm",
