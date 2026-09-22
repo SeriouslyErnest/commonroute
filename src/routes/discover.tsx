@@ -117,16 +117,23 @@ function DiscoverTab() {
       setGoogleResults([]);
       setSearching(false);
       setSearchError(null);
+      setFallbackNotice(null);
       return;
     }
     setSearching(true);
     setSearchError(null);
     setAddNotice(null);
+    setFallbackNotice(null);
     const timer = setTimeout(() => {
       searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
-        .then((results) => setGoogleResults(results))
+        .then((outcome) => {
+          setGoogleResults(outcome.results);
+          setUsedProvider(outcome.provider);
+          setFallbackNotice(outcome.notice ?? null);
+        })
         .catch((error: unknown) => {
           setGoogleResults([]);
+          setUsedProvider(provider);
           const message = error instanceof Error ? error.message : "";
           setSearchError(
             /sign in|Too many/i.test(message)
