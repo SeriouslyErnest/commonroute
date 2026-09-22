@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { setupOfflineSupport } from "../lib/kintrip/pwa";
 import { LocaleProvider, translateText } from "../lib/i18n";
+import { AccountGate } from "../components/kintrip/AccountGate";
 
 function NotFoundComponent() {
   return (
@@ -152,7 +153,9 @@ function RootComponent() {
     <LocaleProvider>
       <QueryClientProvider client={queryClient}>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <AccountGate>
+          <Outlet />
+        </AccountGate>
       </QueryClientProvider>
     </LocaleProvider>
   );
