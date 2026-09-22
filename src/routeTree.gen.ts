@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BookingsRouteImport } from './routes/bookings'
+import { Route as BreaksRouteImport } from './routes/breaks'
 import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as ConsensusRouteImport } from './routes/consensus'
 import { Route as CreateRouteImport } from './routes/create'
@@ -25,6 +26,7 @@ import { Route as GettingReadyRouteImport } from './routes/getting-ready'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
+import { Route as OfflineRouteImport } from './routes/offline'
 import { Route as PlacesRouteImport } from './routes/places'
 import { Route as PollsRouteImport } from './routes/polls'
 import { Route as PreferencesRouteImport } from './routes/preferences'
@@ -68,6 +70,11 @@ const AuthRoute = AuthRouteImport.update({
 const BookingsRoute = BookingsRouteImport.update({
   id: '/bookings',
   path: '/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BreaksRoute = BreaksRouteImport.update({
+  id: '/breaks',
+  path: '/breaks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangesRoute = ChangesRouteImport.update({
@@ -123,6 +130,11 @@ const ItineraryRoute = ItineraryRouteImport.update({
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfflineRoute = OfflineRouteImport.update({
+  id: '/offline',
+  path: '/offline',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlacesRoute = PlacesRouteImport.update({
@@ -227,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
+  '/breaks': typeof BreaksRoute
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
@@ -238,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/offline': typeof OfflineRoute
   '/places': typeof PlacesRoute
   '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
@@ -264,6 +278,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
+  '/breaks': typeof BreaksRoute
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
@@ -275,6 +290,7 @@ export interface FileRoutesByTo {
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/offline': typeof OfflineRoute
   '/places': typeof PlacesRoute
   '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
@@ -302,6 +318,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
+  '/breaks': typeof BreaksRoute
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
   '/create': typeof CreateRoute
@@ -313,6 +330,7 @@ export interface FileRoutesById {
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
+  '/offline': typeof OfflineRoute
   '/places': typeof PlacesRoute
   '/polls': typeof PollsRoute
   '/preferences': typeof PreferencesRoute
@@ -341,6 +359,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/bookings'
+    | '/breaks'
     | '/changes'
     | '/consensus'
     | '/create'
@@ -352,6 +371,7 @@ export interface FileRouteTypes {
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/offline'
     | '/places'
     | '/polls'
     | '/preferences'
@@ -378,6 +398,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/bookings'
+    | '/breaks'
     | '/changes'
     | '/consensus'
     | '/create'
@@ -389,6 +410,7 @@ export interface FileRouteTypes {
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/offline'
     | '/places'
     | '/polls'
     | '/preferences'
@@ -415,6 +437,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/bookings'
+    | '/breaks'
     | '/changes'
     | '/consensus'
     | '/create'
@@ -426,6 +449,7 @@ export interface FileRouteTypes {
     | '/invite'
     | '/itinerary'
     | '/join'
+    | '/offline'
     | '/places'
     | '/polls'
     | '/preferences'
@@ -453,6 +477,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   BookingsRoute: typeof BookingsRoute
+  BreaksRoute: typeof BreaksRoute
   ChangesRoute: typeof ChangesRoute
   ConsensusRoute: typeof ConsensusRoute
   CreateRoute: typeof CreateRoute
@@ -464,6 +489,7 @@ export interface RootRouteChildren {
   InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
+  OfflineRoute: typeof OfflineRoute
   PlacesRoute: typeof PlacesRoute
   PollsRoute: typeof PollsRoute
   PreferencesRoute: typeof PreferencesRoute
@@ -520,6 +546,13 @@ declare module '@tanstack/react-router' {
       path: '/bookings'
       fullPath: '/bookings'
       preLoaderRoute: typeof BookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/breaks': {
+      id: '/breaks'
+      path: '/breaks'
+      fullPath: '/breaks'
+      preLoaderRoute: typeof BreaksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/changes': {
@@ -597,6 +630,13 @@ declare module '@tanstack/react-router' {
       path: '/join'
       fullPath: '/join'
       preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offline': {
+      id: '/offline'
+      path: '/offline'
+      fullPath: '/offline'
+      preLoaderRoute: typeof OfflineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/places': {
@@ -741,6 +781,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   BookingsRoute: BookingsRoute,
+  BreaksRoute: BreaksRoute,
   ChangesRoute: ChangesRoute,
   ConsensusRoute: ConsensusRoute,
   CreateRoute: CreateRoute,
@@ -752,6 +793,7 @@ const rootRouteChildren: RootRouteChildren = {
   InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,
+  OfflineRoute: OfflineRoute,
   PlacesRoute: PlacesRoute,
   PollsRoute: PollsRoute,
   PreferencesRoute: PreferencesRoute,
