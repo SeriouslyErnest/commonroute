@@ -28,9 +28,9 @@ function isPublicPath(pathname: string): boolean {
 export function AccountGate({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { session, loading } = useAccount();
-  const { demoActive } = useTripSetupStatus();
+  const { demoActive, guestActive } = useTripSetupStatus();
 
-  if (isPublicPath(pathname) || session || demoActive) return <>{children}</>;
+  if (isPublicPath(pathname) || session || demoActive || guestActive) return <>{children}</>;
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
