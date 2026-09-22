@@ -14,6 +14,7 @@ import {
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { StartTripCard } from "@/components/kintrip/StartTripForm";
+import { MoreTools } from "@/components/kintrip/MoreTools";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
 import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
@@ -145,6 +146,7 @@ function ActiveTrip() {
           </LinkButton>
         </div>
 
+        <MoreTools />
         <Notes />
       </AppShell>
     );
@@ -257,6 +259,7 @@ function ActiveTrip() {
         </LinkButton>
       </div>
 
+      <MoreTools />
       <Notes />
     </AppShell>
   );

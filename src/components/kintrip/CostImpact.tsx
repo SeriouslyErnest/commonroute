@@ -27,7 +27,8 @@ export function CostImpact({
     );
     return original.items
       .map((i) => i.attractionId)
-      .filter((id): id is string => Boolean(id) && !kept.has(id));
+      .filter((id): id is string => typeof id === "string")
+      .filter((id) => !kept.has(id));
   }, [original, revised]);
 
   const impact = useMemo(() => costImpact(state, dropped), [state, dropped]);

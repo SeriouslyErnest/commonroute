@@ -456,6 +456,27 @@ export function publicationChecks(state: KintripState): PublishCheck[] {
     }
   }
 
+  // Cross-feature gate: paid-for work that was based on an older plan must not
+  // be published as if it still matched.
+  const staleScenarios = (state.scenarios ?? []).filter((s) => s.outdated).length;
+  if (staleScenarios > 0) {
+    checks.push({
+      id: "stale-scenarios",
+      text: `${staleScenarios} saved alternative${staleScenarios === 1 ? " was" : "s were"} worked out from an older plan`,
+      blocking: false,
+    });
+  }
+  const openMilestones = (state.milestones ?? []).filter(
+    (m) => !m.done && m.dueDate && m.dueDate < new Date().toISOString().slice(0, 10),
+  ).length;
+  if (openMilestones > 0) {
+    checks.push({
+      id: "overdue-deadlines",
+      text: `${openMilestones} deadline${openMilestones === 1 ? " is" : "s are"} past due`,
+      blocking: false,
+    });
+  }
+
   const f = fairness(state);
   for (const t of f.uncovered) {
     checks.push({ id: `win-${t.id}`, text: `${t.name} has no top-choice activity in this plan`, blocking: false });

@@ -37,6 +37,7 @@ import { Route as RolesRouteImport } from './routes/roles'
 import { Route as ScenariosRouteImport } from './routes/scenarios'
 import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as StaysRouteImport } from './routes/stays'
+import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TripsRouteImport } from './routes/trips'
 import { Route as UpdatesRouteImport } from './routes/updates'
@@ -184,6 +185,11 @@ const StaysRoute = StaysRouteImport.update({
   path: '/stays',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/scenarios': typeof ScenariosRoute
   '/sponsor': typeof SponsorRoute
   '/stays': typeof StaysRoute
+  '/templates': typeof TemplatesRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -280,6 +287,7 @@ export interface FileRoutesByTo {
   '/scenarios': typeof ScenariosRoute
   '/sponsor': typeof SponsorRoute
   '/stays': typeof StaysRoute
+  '/templates': typeof TemplatesRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -317,6 +325,7 @@ export interface FileRoutesById {
   '/scenarios': typeof ScenariosRoute
   '/sponsor': typeof SponsorRoute
   '/stays': typeof StaysRoute
+  '/templates': typeof TemplatesRoute
   '/today': typeof TodayRoute
   '/trips': typeof TripsRoute
   '/updates': typeof UpdatesRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/scenarios'
     | '/sponsor'
     | '/stays'
+    | '/templates'
     | '/today'
     | '/trips'
     | '/updates'
@@ -391,6 +401,7 @@ export interface FileRouteTypes {
     | '/scenarios'
     | '/sponsor'
     | '/stays'
+    | '/templates'
     | '/today'
     | '/trips'
     | '/updates'
@@ -427,6 +438,7 @@ export interface FileRouteTypes {
     | '/scenarios'
     | '/sponsor'
     | '/stays'
+    | '/templates'
     | '/today'
     | '/trips'
     | '/updates'
@@ -464,6 +476,7 @@ export interface RootRouteChildren {
   ScenariosRoute: typeof ScenariosRoute
   SponsorRoute: typeof SponsorRoute
   StaysRoute: typeof StaysRoute
+  TemplatesRoute: typeof TemplatesRoute
   TodayRoute: typeof TodayRoute
   TripsRoute: typeof TripsRoute
   UpdatesRoute: typeof UpdatesRoute
@@ -670,6 +683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaysRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/today': {
       id: '/today'
       path: '/today'
@@ -744,6 +764,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScenariosRoute: ScenariosRoute,
   SponsorRoute: SponsorRoute,
   StaysRoute: StaysRoute,
+  TemplatesRoute: TemplatesRoute,
   TodayRoute: TodayRoute,
   TripsRoute: TripsRoute,
   UpdatesRoute: UpdatesRoute,

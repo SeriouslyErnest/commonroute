@@ -652,3 +652,56 @@ export const adminSetAdminRole = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+/**
+ * Read-only product measurement (P17). Counts only — the events table itself
+ * holds no addresses, private needs, notes, emails or invite codes.
+ */
+export const adminProductMetrics = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { days?: number }) => ({
+    days: Math.min(90, Math.max(1, Math.round(Number(input?.days) || 30))),
+  }))
+  .handler(async ({ data, context }) => {
+    const { admin } = await requireAdmin(context, [...WRITE_ROLES, "read_only_admin"]);
+    const since = new Date(Date.now() - data.days * 864e5).toISOString();
+
+    const [events, orders, entitlements, usage, jobs] = await Promise.all([
+      admin.from("product_events").select("name, account_key, trip_key").gte("at", since),
+      admin.from("commerce_orders").select("status, price_minor, currency").gte("created_at", since),
+      admin.from("trip_entitlements").select("offer_code, status").gte("created_at", since),
+      admin.from("usage_ledger").select("kind, amount, state").gte("created_at", since),
+      admin.from("advanced_jobs").select("feature, status, rating").gte("created_at", since),
+    ]);
+
+    const tally = <T extends string>(rows: { k: T }[]) => {
+      const out: Record<string, number> = {};
+      for (const r of rows) out[r.k] = (out[r.k] ?? 0) + 1;
+      return Object.entries(out)
+        .map(([key, count]) => ({ key, count }))
+        .sort((a, b) => b.count - a.count);
+    };
+
+    const ev = events.data ?? [];
+    const paid = (orders.data ?? []).filter((o) => o.status === "paid");
+    const ratings = (jobs.data ?? []).map((j) => j.rating).filter((r): r is number => typeof r === "number");
+
+    return {
+      days: data.days,
+      events: tally(ev.map((e) => ({ k: e.name as string }))),
+      people: new Set(ev.map((e) => e.account_key).filter(Boolean)).size,
+      trips: new Set(ev.map((e) => e.trip_key).filter(Boolean)).size,
+      orders: tally((orders.data ?? []).map((o) => ({ k: o.status as string }))),
+      paidRevenueMinor: paid.reduce((sum, o) => sum + (o.price_minor ?? 0), 0),
+      currency: paid[0]?.currency ?? "SGD",
+      entitlements: tally((entitlements.data ?? []).map((e) => ({ k: e.offer_code as string }))),
+      jobsByFeature: tally((jobs.data ?? []).map((j) => ({ k: j.feature as string }))),
+      jobsByStatus: tally((jobs.data ?? []).map((j) => ({ k: j.status as string }))),
+      averageRating: ratings.length
+        ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10
+        : null,
+      unitsSettled: (usage.data ?? [])
+        .filter((u) => u.state === "settled")
+        .reduce((sum, u) => sum + (u.amount ?? 0), 0),
+    };
+  });
