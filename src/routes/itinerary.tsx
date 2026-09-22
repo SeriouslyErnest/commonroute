@@ -435,7 +435,7 @@ function SplitPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["i
     return (
       <div className="space-y-2 rounded-xl bg-muted px-3 py-3">
         <p className="font-semibold">Two groups on this day</p>
-        <ul className="space-y-1 text-sm">
+        <ul className="space-y-2 text-sm">
           {day.split.groups.map((g) => (
             <li key={g.id}>
               <span className="font-semibold">{g.label}:</span> {g.activity}
@@ -445,6 +445,26 @@ function SplitPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["i
                   .filter(Boolean)
                   .join(", ") || "Nobody yet"}
               </span>
+              {mayEdit ? (
+                <select
+                  className="mt-1 min-h-11 w-full rounded-xl border border-border bg-card px-3 text-sm"
+                  aria-label={`Move someone into ${g.label}`}
+                  defaultValue=""
+                  onChange={(e) => {
+                    if (e.target.value) moveToSubgroup(day.day, g.id, e.target.value);
+                    e.target.value = "";
+                  }}
+                >
+                  <option value="">Move someone into this group…</option>
+                  {state.travellers
+                    .filter((t) => !g.memberIds.includes(t.id))
+                    .map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                </select>
+              ) : null}
             </li>
           ))}
         </ul>
