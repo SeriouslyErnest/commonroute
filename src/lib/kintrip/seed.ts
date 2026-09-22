@@ -623,6 +623,61 @@ function buildSuggestions(): Record<string, Suggestion> {
 
 const TZ = "Asia/Tokyo";
 
+export const seedRooms: Room[] = [
+  {
+    id: "rm-1",
+    label: "Family room",
+    stayBookingId: "bk-stay",
+    fromDate: "2027-03-20",
+    toDate: "2027-03-24",
+    roomNumber: "805",
+    occupancy: 4,
+    bedCount: 3,
+    bedNotes: [
+      { id: "bd-1", label: "Double bed" },
+      { id: "bd-2", label: "Single bed" },
+      { id: "bd-3", label: "Futon on the floor" },
+    ],
+    occupantIds: ["dad", "mum", "son", "toddler"],
+    note: "Close to the lift.",
+    version: 1,
+  },
+  {
+    id: "rm-2",
+    label: "Twin room",
+    stayBookingId: "bk-stay",
+    fromDate: "2027-03-20",
+    toDate: "2027-03-24",
+    roomNumber: "807",
+    occupancy: 2,
+    bedCount: 2,
+    bedNotes: [
+      { id: "bd-4", label: "Single bed" },
+      { id: "bd-5", label: "Single bed" },
+    ],
+    occupantIds: ["grandpa", "grandma"],
+    version: 1,
+  },
+];
+
+export const seedVehicles: Vehicle[] = [
+  {
+    id: "vh-1",
+    label: "Hired van",
+    segmentId: "Day 6 \u2014 Arashiyama transfer",
+    fromDate: "2027-03-25",
+    toDate: "2027-03-25",
+    driverId: "dad",
+    seats: 7,
+    childSeats: 1,
+    luggageNote: "Two large cases fit behind the back row.",
+    passengerIds: ["dad", "mum", "grandma", "toddler"],
+    version: 1,
+  },
+];
+
+export const seedDependencies: DependencyEdge[] = [];
+
 export const seedBookings: Booking[] = [
   {
     id: "bk-stay",
