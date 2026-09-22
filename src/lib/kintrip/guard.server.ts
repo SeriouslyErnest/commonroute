@@ -43,24 +43,23 @@ export function enforceRateLimit(scope: string, limit: number, windowMs: number)
   }
 }
 
-/** Throws unless the request carries a valid signed-in session token. */
-export async function requireSignedIn(): Promise<string> {
+/** True when the request carries a valid signed-in session token. */
+export async function isSignedIn(): Promise<boolean> {
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!url || !key) throw new Error("Sign-in is not available right now.");
+  if (!url || !key) return false;
 
   const authHeader = getRequest()?.headers?.get("authorization") ?? "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  if (!token || token.split(".").length !== 3) {
-    throw new Error("Please sign in to use Google Maps search.");
-  }
+  if (!token || token.split(".").length !== 3) return false;
 
-  const supabase = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  const { data, error } = await supabase.auth.getClaims(token);
-  if (error || !data?.claims?.sub) {
-    throw new Error("Please sign in to use Google Maps search.");
+  try {
+    const supabase = createClient(url, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const { data, error } = await supabase.auth.getClaims(token);
+    return !error && !!data?.claims?.sub;
+  } catch {
+    return false;
   }
-  return data.claims.sub;
 }
