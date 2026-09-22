@@ -73,31 +73,33 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
 
           <fieldset>
             <legend className="mb-1.5 text-base font-extrabold">Dates</legend>
-            <div className="grid grid-cols-[auto_1fr_auto_1fr] items-center gap-2 rounded-2xl border border-input bg-card px-4 py-2 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
-              <CalendarDays className="size-5 shrink-0 text-secondary" aria-hidden />
-              <label className="min-w-0">
-                <span className="block text-[11px] font-bold text-muted-foreground">START</span>
-                <input
-                  type="date"
-                  name="start"
-                  required
-                  aria-label="Start date"
-                  className="w-full min-w-0 bg-transparent text-sm font-semibold outline-none"
-                />
-              </label>
-              <span className="text-muted-foreground" aria-hidden>
-                –
-              </span>
-              <label className="min-w-0">
-                <span className="block text-[11px] font-bold text-muted-foreground">END</span>
-                <input
-                  type="date"
-                  name="end"
-                  required
-                  aria-label="End date"
-                  className="w-full min-w-0 bg-transparent text-sm font-semibold outline-none"
-                />
-              </label>
+            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 rounded-2xl border border-input bg-card px-4 py-3 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30 sm:items-center">
+              <CalendarDays className="mt-5 size-5 shrink-0 text-secondary sm:mt-0" aria-hidden />
+              <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center sm:gap-2">
+                <label className="min-w-0">
+                  <span className="block text-[11px] font-bold text-muted-foreground">START</span>
+                  <input
+                    type="date"
+                    name="start"
+                    required
+                    aria-label="Start date"
+                    className="min-h-11 w-full min-w-0 bg-transparent text-sm font-semibold outline-none"
+                  />
+                </label>
+                <span className="hidden text-muted-foreground sm:block" aria-hidden>
+                  –
+                </span>
+                <label className="min-w-0">
+                  <span className="block text-[11px] font-bold text-muted-foreground">END</span>
+                  <input
+                    type="date"
+                    name="end"
+                    required
+                    aria-label="End date"
+                    className="min-h-11 w-full min-w-0 bg-transparent text-sm font-semibold outline-none"
+                  />
+                </label>
+              </div>
             </div>
           </fieldset>
 

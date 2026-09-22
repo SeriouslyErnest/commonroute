@@ -140,19 +140,19 @@ export function AppShell({
   const { hasTrips, demoActive } = useTripSetupStatus();
 
   return (
-    <div className="min-h-screen bg-background pb-40 sm:pb-32">
+    <div className="min-h-screen overflow-x-clip bg-background pb-40 sm:pb-32">
       <header className="sticky top-0 z-20 border-b border-border bg-card/95">
-        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
-          <Link to="/" aria-label="CommonRoute home" className="flex items-center gap-2">
+        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
+          <Link to="/" aria-label="CommonRoute home" className="flex min-w-0 items-center gap-2">
             <img src={symbol.url} alt="" className="size-11 object-contain" />
-            <span className="hidden font-display text-xl font-extrabold text-secondary min-[420px]:inline">
+            <span className="hidden truncate font-display text-xl font-extrabold text-secondary min-[360px]:inline">
               CommonRoute
             </span>
           </Link>
           <p className="hidden text-sm text-muted-foreground sm:block">
             Plan together. Find your common route.
           </p>
-          <span className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:justify-self-end">
+          <span className="col-span-2 flex min-w-0 flex-wrap items-center justify-end gap-2 sm:col-span-1 sm:flex-nowrap sm:justify-self-end">
             <LanguageToggle />
             <AccountButton />
             {hasTrips ? <UpdatesBell /> : null}
@@ -171,9 +171,10 @@ export function AppShell({
             ) : (
               <Link
                 to="/trips"
-                className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-bold text-secondary shadow-sm sm:justify-self-end"
+                aria-label="My trips"
+                className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-card px-3 text-sm font-bold text-secondary shadow-sm sm:justify-self-end sm:px-4"
               >
-                <Layers className="size-4" aria-hidden /> My trips
+                <Layers className="size-4" aria-hidden /> <span className="hidden min-[420px]:inline">My trips</span>
               </Link>
             )}
           </span>
@@ -200,7 +201,7 @@ export function AppShell({
       </main>
 
       {hasTrips ? (
-        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-2xl border border-border bg-secondary px-2 shadow-lift sm:bottom-5">
+        <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-2xl border border-border bg-secondary px-2 shadow-lift sm:bottom-5 sm:max-w-xl lg:max-w-2xl">
           <ul className="mx-auto flex">
             {tabs.map(({ to, label, icon: Icon }) => {
               const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
@@ -209,14 +210,14 @@ export function AppShell({
                   <Link
                     to={to}
                     className={cn(
-                      "flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[11px] font-bold transition-colors",
+                      "flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[11px] font-bold transition-colors",
                       active
                         ? "bg-card/10 text-success"
                         : "text-secondary-foreground/70 hover:text-secondary-foreground",
                     )}
                   >
                     <Icon className="size-6" aria-hidden />
-                    {label}
+                    <span className="max-w-full truncate">{label}</span>
                   </Link>
                 </li>
               );

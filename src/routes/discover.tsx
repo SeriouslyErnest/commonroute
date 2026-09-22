@@ -250,7 +250,7 @@ function DiscoverTab() {
           <div
             role="group"
             aria-label="Place search source"
-            className="inline-flex rounded-full bg-muted p-1 text-sm font-semibold"
+            className="inline-flex max-w-full rounded-full bg-muted p-1 text-sm font-semibold"
           >
             {(
               [
@@ -264,7 +264,7 @@ function DiscoverTab() {
                 onClick={() => chooseProvider(value)}
                 aria-pressed={provider === value}
                 className={cn(
-                  "min-h-9 rounded-full px-3",
+                  "min-h-11 min-w-0 rounded-full px-3",
                   provider === value
                        ? "bg-card text-primary shadow-sm"
                     : "text-muted-foreground",
@@ -319,9 +319,9 @@ function DiscoverTab() {
                 return (
                   <li
                     key={p.placeId}
-                    className="flex flex-wrap items-center gap-2 rounded-xl bg-muted px-3 py-2"
+                    className="grid grid-cols-2 items-center gap-2 rounded-xl bg-muted px-3 py-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]"
                   >
-                    <span className="min-w-0 flex-1">
+                    <span className="col-span-2 min-w-0 sm:col-span-1">
                       <span className="block truncate font-semibold">{p.name}</span>
                       <span className="block truncate text-sm text-muted-foreground">
                         {p.address}
@@ -331,7 +331,7 @@ function DiscoverTab() {
                       href={p.mapsUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex min-h-10 items-center gap-1 rounded-full bg-card px-3 text-sm font-semibold text-secondary"
+                      className="inline-flex min-h-11 items-center justify-center gap-1 rounded-full bg-card px-3 text-sm font-semibold text-secondary"
                     >
                       <MapPin className="size-4" aria-hidden /> View
                     </a>
@@ -339,7 +339,7 @@ function DiscoverTab() {
                        variant={added ? "outline" : "collaborative"}
                       disabled={added}
                       onClick={() => addPlace(p)}
-                      className="min-h-10 px-3 text-sm"
+                      className="min-h-11 px-3 text-sm"
                     >
                       {added ? (
                         <>
