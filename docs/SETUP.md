@@ -214,3 +214,9 @@ When pulling upstream changes:
 6. Apply migrations in a controlled deployment window.
 
 Never resolve a migration conflict by weakening row-level security or granting browser access to server-only tables.
+## Payments (optional)
+
+Set `PAYMENTS_PROVIDER` to enable checkout. With it unset, the plans page and
+purchase flow still work but end with an honest "payment provider not
+configured" message, and passes can only be granted from the operations console
+or redeemed with a promotion code.

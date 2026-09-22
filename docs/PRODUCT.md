@@ -232,3 +232,21 @@ The following are not part of the current implementation:
 - the optional nearby-eatery recommendation module described in the maps roadmap.
 
 Provider coverage and quality vary by destination. Missing or unverified data is intentionally shown as unknown instead of being guessed.
+## Paid features (C1)
+
+Planning together stays free: group questions, deadlines and readiness, starter
+packing/job lists, the full itinerary, re-planning and exports.
+
+One optional purchase, **Trip Plus**, covers a single trip and adds three
+advanced tools: comparing places to stay, comparing alternative versions of a
+plan, and showing the money already committed when a day is re-planned. Each
+trip with a pass gets a fixed allowance of advanced runs; a run that fails is
+never counted. Every trip may try one advanced run before buying.
+
+No payment provider is connected yet, so checkout records the request and says
+so plainly instead of pretending to take money. Passes can also be granted from
+the operations console or through a promotion code.
+
+Advanced results are always suggestions. They never change the shared plan by
+themselves, never book or cancel anything, and are marked as out of date when
+the plan they were based on has moved on.
