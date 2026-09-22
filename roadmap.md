@@ -25,3 +25,13 @@
 - [x] Public repository documentation: product guide, fork setup, architecture, security, contribution rules, and refreshed README
 - [x] Paid features C1 (PRD v1.0, excluding P02/P05/P09/P11/P12 and tax): group questions and deadlines (P01/P03/P04), stay comparison (P06), plan alternatives (P07), cost-aware re-planning (P08), starter lists (P10), one-off Trip Plus pass with allowances and refund-safe usage counting (P14), promo redemption (P15), plans page (P16), private counts view in the operations console (P17), disclosed outside links (P18)
 - [x] Responsive interface audit and cleanup across phone and desktop layouts, shared navigation, date entry, and touch targets.
+
+## Trip coordination (built)
+
+- TC02 offline pack — `/offline`, device-only, checksum verified, no central tracking
+- TC03 rooms and vehicles — `/logistics`, capacity and accompaniment rules, private room numbers
+- TC05 private break requests — `/breaks`, note seen only by named handlers, group sees times only
+- TC06 booking dependencies — `/dependencies`, cycle detection, waivers with reason
+- TC07 after-trip learning — `/feedback`, two separate explicit consents, deletable
+- Gap items — split-day subgroups (Itinerary), organiser day note (Today), contact cards (Logistics), check-out sweep list (Getting ready)
+- Not built by decision: TC01 meetup check-ins and TC04 activity questions (messaging and tracking dropped)
