@@ -117,18 +117,19 @@ const FAQS = [
 function AboutPage() {
   return (
     <main className="min-h-screen bg-background pb-16">
-      <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
-        <span className="flex items-center gap-2">
+      <header className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4">
+        <span className="flex min-w-0 items-center gap-2">
           <img src={symbol.url} alt="CommonRoute symbol" className="size-11 object-contain" />
-          <span className="font-display text-xl font-extrabold text-secondary">CommonRoute</span>
+          <span className="hidden truncate font-display text-xl font-extrabold text-secondary min-[390px]:inline">CommonRoute</span>
         </span>
-        <span className="flex items-center gap-2">
+        <span className="flex min-w-0 items-center justify-end gap-2">
           <LanguageToggle />
           <Link
             to="/"
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm"
+            aria-label="Plan a trip"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-2xl bg-primary px-3 text-sm font-bold text-primary-foreground shadow-sm sm:px-4"
           >
-            Plan a trip <ArrowRight className="size-4" aria-hidden />
+            <span className="hidden sm:inline">Plan a trip</span> <ArrowRight className="size-4" aria-hidden />
           </Link>
         </span>
       </header>
