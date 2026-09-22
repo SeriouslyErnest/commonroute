@@ -82,6 +82,8 @@ function DiscoverTab() {
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [provider, setProvider] = useState<PlaceProvider>("free");
+  const [usedProvider, setUsedProvider] = useState<PlaceProvider>("free");
+  const [fallbackNotice, setFallbackNotice] = useState<string | null>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [addNotice, setAddNotice] = useState<string | null>(null);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
