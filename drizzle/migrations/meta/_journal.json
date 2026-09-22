@@ -50,6 +50,13 @@
       "when": 1790041780829,
       "tag": "0006_restrict_is_trip_member_execute",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790057258006,
+      "tag": "0007_revoke_anon_grants_public_tables",
+      "breakpoints": true
     }
   ]
 }
