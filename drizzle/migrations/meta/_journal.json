@@ -57,6 +57,13 @@
       "when": 1790057258006,
       "tag": "0007_revoke_anon_grants_public_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790058049854,
+      "tag": "0008_is_trip_member_security_invoker",
+      "breakpoints": true
     }
   ]
 }
