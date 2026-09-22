@@ -13,6 +13,8 @@ interface MultiTripState {
   activeTripId: string;
   trips: Record<string, KintripState>;
   demoTripId?: string | undefined;
+  /** Trips opened with an invite code: usable without an account. */
+  guestTripIds?: string[] | undefined;
 }
 
 function initialMulti(): MultiTripState {
@@ -234,10 +236,13 @@ export async function joinTripByCode(code: string): Promise<string | null> {
   hydrate();
   const remote = await pullTrip({ data: { shareCode: code.trim().toUpperCase() } });
   if (!remote) return null;
+  const guests = new Set(multi.guestTripIds ?? []);
+  guests.add(remote.tripId);
   multi = {
     ...multi,
     activeTripId: remote.tripId,
     trips: { ...multi.trips, [remote.tripId]: backfillPlaceData(normalizeState(remote.state)) },
+    guestTripIds: [...guests],
   };
   persist();
   emit();
@@ -439,6 +444,7 @@ export function deleteTrip(tripId: string) {
     activeTripId,
     trips,
     demoTripId: multi.demoTripId === tripId ? undefined : multi.demoTripId,
+    guestTripIds: (multi.guestTripIds ?? []).filter((id) => id !== tripId),
   };
   persist();
   emit();
@@ -493,6 +499,7 @@ export function useTripSetupStatus() {
     hasTrips: Object.keys(m.trips).length > 0,
     demoActive: !!m.demoTripId && m.demoTripId === m.activeTripId,
     hasDemo: !!m.demoTripId && !!m.trips[m.demoTripId],
+    guestActive: (m.guestTripIds ?? []).includes(m.activeTripId),
   };
 }
 
