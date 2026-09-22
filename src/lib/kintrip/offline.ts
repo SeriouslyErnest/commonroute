@@ -124,7 +124,7 @@ export function buildPack(state: KintripState, dates: string[]): OfflinePack {
 
   const pack: OfflinePack = {
     tripId: state.trip.id,
-    tripName: state.trip.name,
+    tripName: state.trip.title,
     planVersion: published?.version ?? 0,
     savedAt: new Date().toISOString(),
     dates,

@@ -1,9 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import {
+  BedDouble,
   Building2,
   CalendarClock,
+  CloudOff,
   GitCompare,
+  HeartHandshake,
   LayoutList,
+  Link2,
+  MessageSquareHeart,
   Sparkles,
   Vote,
 } from "lucide-react";
