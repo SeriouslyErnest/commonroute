@@ -43,6 +43,13 @@
       "when": 1790009976314,
       "tag": "0005_commerce_entitlements_usage_events",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790041780829,
+      "tag": "0006_restrict_is_trip_member_execute",
+      "breakpoints": true
     }
   ]
 }
