@@ -321,8 +321,13 @@ function DiscoverTab() {
             ) : (
               <MapPin className="size-5 text-secondary" aria-hidden />
             )}
-            {provider === "google" ? "Found on Google Maps" : "Found on free map search"}
+            {usedProvider === "google" ? "Found on Google Maps" : "Found on free map search"}
           </h2>
+          {fallbackNotice ? (
+            <p className="rounded-xl bg-primary-soft px-3 py-2 text-sm font-semibold" role="status">
+              {fallbackNotice}
+            </p>
+          ) : null}
           {addNotice ? (
             <p className="text-sm text-secondary" role="status">
               {addNotice}
