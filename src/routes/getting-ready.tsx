@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { CheckCircle2, ClipboardList, Clock, Luggage, Plus, Trash2 } from "lucide-react";
+import { CheckCircle2, ClipboardList, Clock, Luggage, Plus, Search, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, Field, inputClass } from "@/components/kintrip/ui";
 import {
@@ -17,6 +17,8 @@ import {
   setTaskComplete,
 } from "@/lib/kintrip/actions";
 import { actorName, canEditFor, isOrganiser } from "@/lib/kintrip/governance";
+import { SWEEP_CHECKS } from "@/lib/kintrip/coordination";
+import { addSweepJobs } from "@/lib/kintrip/coordination.actions";
 import { useKintrip } from "@/lib/kintrip/store";
 import type { PackingItem, TaskState } from "@/lib/kintrip/types";
 
@@ -356,5 +358,39 @@ function GettingReadyScreen() {
         )}
       </Card>
     </AppShell>
+  );
+}
+
+/**
+ * A last look round each room before checking out, so nothing is left behind.
+ * Creating the list adds an ordinary job anyone in the group can pick up.
+ */
+function SweepCard() {
+  const state = useKintrip();
+  const [message, setMessage] = useState<string | null>(null);
+  if (state.rooms.length === 0) return null;
+  return (
+    <Card className="space-y-3">
+      <h2 className="flex items-center gap-2 text-lg">
+        <Search className="size-5 text-secondary" aria-hidden /> Before you check out
+      </h2>
+      <p className="text-sm text-muted-foreground">
+        Add a last-look job for a room. It lists the usual hiding places: {SWEEP_CHECKS.join(", ")}.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {state.rooms.map((r) => (
+          <Button
+            key={r.id}
+            type="button"
+            variant="outline"
+            className="min-h-11 px-3 text-sm"
+            onClick={() => setMessage(addSweepJobs(r.id) ?? `Last look round ${r.label} added to the jobs.`)}
+          >
+            {r.label}
+          </Button>
+        ))}
+      </div>
+      {message ? <p className="text-sm">{message}</p> : null}
+    </Card>
   );
 }
