@@ -2,6 +2,9 @@ import { defaultCost } from "./governance";
 import type {
   Attraction,
   Booking,
+  DependencyEdge,
+  Room,
+  Vehicle,
   PackingItem,
   TripTask,
   DecisionSettings,
@@ -623,6 +626,61 @@ function buildSuggestions(): Record<string, Suggestion> {
 
 const TZ = "Asia/Tokyo";
 
+export const seedRooms: Room[] = [
+  {
+    id: "rm-1",
+    label: "Family room",
+    stayBookingId: "bk-stay",
+    fromDate: "2027-03-20",
+    toDate: "2027-03-24",
+    roomNumber: "805",
+    occupancy: 4,
+    bedCount: 3,
+    bedNotes: [
+      { id: "bd-1", label: "Double bed" },
+      { id: "bd-2", label: "Single bed" },
+      { id: "bd-3", label: "Futon on the floor" },
+    ],
+    occupantIds: ["dad", "mum", "son", "toddler"],
+    note: "Close to the lift.",
+    version: 1,
+  },
+  {
+    id: "rm-2",
+    label: "Twin room",
+    stayBookingId: "bk-stay",
+    fromDate: "2027-03-20",
+    toDate: "2027-03-24",
+    roomNumber: "807",
+    occupancy: 2,
+    bedCount: 2,
+    bedNotes: [
+      { id: "bd-4", label: "Single bed" },
+      { id: "bd-5", label: "Single bed" },
+    ],
+    occupantIds: ["grandpa", "grandma"],
+    version: 1,
+  },
+];
+
+export const seedVehicles: Vehicle[] = [
+  {
+    id: "vh-1",
+    label: "Hired van",
+    segmentId: "Day 6 \u2014 Arashiyama transfer",
+    fromDate: "2027-03-25",
+    toDate: "2027-03-25",
+    driverId: "dad",
+    seats: 7,
+    childSeats: 1,
+    luggageNote: "Two large cases fit behind the back row.",
+    passengerIds: ["dad", "mum", "grandma", "toddler"],
+    version: 1,
+  },
+];
+
+export const seedDependencies: DependencyEdge[] = [];
+
 export const seedBookings: Booking[] = [
   {
     id: "bk-stay",
@@ -803,6 +861,13 @@ export function createEmptyTripState(input: {
     publishedChanges: [],
     attendance: [],
     publishedSnapshot: null,
+    rooms: [],
+    vehicles: [],
+    breakRequests: [],
+    dependencies: [],
+    feedback: [],
+    dayNotices: [],
+    emergencyCards: [],
     polls: [],
     milestones: [],
     stayOptions: [],
@@ -846,6 +911,30 @@ export function createSeedState(): KintripState {
     publishedChanges: [],
     attendance: [],
     publishedSnapshot: null,
+    rooms: seedRooms,
+    vehicles: seedVehicles,
+    breakRequests: [],
+    dependencies: seedDependencies,
+    feedback: [],
+    dayNotices: [
+      {
+        id: "dn-1",
+        dayNumber: 3,
+        text: "Rain is likely in the afternoon. If the park is shut, we go to the covered market instead.",
+        author: "Wei (Dad)",
+        at: "2027-03-21T09:00:00.000Z",
+      },
+    ],
+    emergencyCards: [
+      {
+        travellerId: "grandma",
+        contactName: "Wei (Dad)",
+        contactPhone: "+65 9123 4567",
+        allergyNote: "Allergic to shellfish.",
+        visibility: "group",
+        updatedAt: "2027-01-10T09:00:00.000Z",
+      },
+    ],
     polls: [],
     milestones: [],
     stayOptions: [],
