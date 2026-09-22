@@ -82,6 +82,8 @@ function DiscoverTab() {
   const [googleResults, setGoogleResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [provider, setProvider] = useState<PlaceProvider>("free");
+  const [usedProvider, setUsedProvider] = useState<PlaceProvider>("free");
+  const [fallbackNotice, setFallbackNotice] = useState<string | null>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [addNotice, setAddNotice] = useState<string | null>(null);
   const me = state.travellers.find((t) => t.id === state.activeTravellerId) ?? state.travellers[0];
@@ -115,16 +117,23 @@ function DiscoverTab() {
       setGoogleResults([]);
       setSearching(false);
       setSearchError(null);
+      setFallbackNotice(null);
       return;
     }
     setSearching(true);
     setSearchError(null);
     setAddNotice(null);
+    setFallbackNotice(null);
     const timer = setTimeout(() => {
       searchPlaces({ data: { query: q, destination: state.trip.destination, provider } })
-        .then((results) => setGoogleResults(results))
+        .then((outcome) => {
+          setGoogleResults(outcome.results);
+          setUsedProvider(outcome.provider);
+          setFallbackNotice(outcome.notice ?? null);
+        })
         .catch((error: unknown) => {
           setGoogleResults([]);
+          setUsedProvider(provider);
           const message = error instanceof Error ? error.message : "";
           setSearchError(
             /sign in|Too many/i.test(message)
@@ -312,8 +321,13 @@ function DiscoverTab() {
             ) : (
               <MapPin className="size-5 text-secondary" aria-hidden />
             )}
-            {provider === "google" ? "Found on Google Maps" : "Found on free map search"}
+            {usedProvider === "google" ? "Found on Google Maps" : "Found on free map search"}
           </h2>
+          {fallbackNotice ? (
+            <p className="rounded-xl bg-primary-soft px-3 py-2 text-sm font-semibold" role="status">
+              {fallbackNotice}
+            </p>
+          ) : null}
           {addNotice ? (
             <p className="text-sm text-secondary" role="status">
               {addNotice}
