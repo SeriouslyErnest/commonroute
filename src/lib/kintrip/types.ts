@@ -602,6 +602,138 @@ export interface PartnerLink {
   disclosure: string;
 }
 
+/* ---------------- rooms and vehicles ---------------- */
+
+/** A room at a stay, held for a date range. `toDate` is the checkout date (end exclusive). */
+export interface Room {
+  id: string;
+  label: string;
+  stayBookingId?: undefined | string;
+  fromDate: string;
+  toDate: string;
+  /** Restricted: only occupants, their carers and organisers see it. */
+  roomNumber?: undefined | string;
+  /** Permitted occupancy. Undefined means not verified — never inferred from beds. */
+  occupancy?: undefined | number;
+  bedCount?: undefined | number;
+  bedNotes: { id: string; label: string; travellerId?: undefined | string }[];
+  occupantIds: string[];
+  note?: undefined | string;
+  version: number;
+}
+
+/** A vehicle for one travel segment or date range. The driver occupies a seat. */
+export interface Vehicle {
+  id: string;
+  label: string;
+  /** Free text such as "Day 3 — airport transfer". Uniqueness is per segment. */
+  segmentId: string;
+  fromDate?: undefined | string;
+  toDate?: undefined | string;
+  driverId?: undefined | string;
+  /** Total seats including the driver. Undefined means not verified. */
+  seats?: undefined | number;
+  childSeats: number;
+  luggageNote?: undefined | string;
+  passengerIds: string[];
+  version: number;
+}
+
+/* ---------------- private break requests ---------------- */
+
+export type BreakType = "rest" | "skip_next" | "join_later";
+
+export type BreakStatus =
+  | "submitted"
+  | "acknowledged"
+  | "arrangement_proposed"
+  | "resolved"
+  | "cancelled";
+
+export interface BreakRequest {
+  id: string;
+  travellerId: string;
+  /** Who actually sent it — a carer may send for an assigned traveller. */
+  actorId: string;
+  type: BreakType;
+  /** Private: readable only by the requester, their carer and the handlers. */
+  note?: undefined | string;
+  rejoinPoint?: undefined | string;
+  rejoinTime?: undefined | string;
+  handlerIds: string[];
+  status: BreakStatus;
+  createdAt: string;
+  proposal?:
+    | undefined
+    | {
+        text: string;
+        checks: string[];
+        unverified: string[];
+        at: string;
+        by: string;
+        acknowledged: boolean;
+      };
+  outcome?: undefined | string;
+  history: { at: string; actorName: string; action: string }[];
+}
+
+/* ---------------- booking dependencies ---------------- */
+
+export type DependencyRefKind = "booking" | "task";
+
+export interface DependencyRef {
+  kind: DependencyRefKind;
+  id: string;
+}
+
+export interface DependencyEdge {
+  id: string;
+  prerequisite: DependencyRef;
+  dependent: DependencyRef;
+  /** Satisfied only by this state, or by an explicit authorised waiver. */
+  requiredState: "confirmed" | "complete";
+  waivedBy?: undefined | string;
+  waivedReason?: undefined | string;
+  waivedAt?: undefined | string;
+  createdAt: string;
+}
+
+/* ---------------- post-trip learning ---------------- */
+
+export interface TripFeedback {
+  id: string;
+  travellerId: string;
+  authorId: string;
+  at: string;
+  pace?: undefined | "too_much" | "about_right" | "too_little";
+  downtime?: undefined | "not_enough" | "about_right" | "plenty";
+  revisit?: undefined | string;
+  /** Two separate consent decisions, neither preselected. */
+  sharedWithOrganisers: boolean;
+  preferenceApplied: boolean;
+}
+
+/* ---------------- day notice and emergency cards ---------------- */
+
+/** An organiser note pinned to one day — entered by a person, never fetched. */
+export interface DayNotice {
+  id: string;
+  dayNumber: number;
+  text: string;
+  author: string;
+  at: string;
+}
+
+/** A static contact card. Deliberately not an emergency response service. */
+export interface EmergencyCard {
+  travellerId: string;
+  contactName: string;
+  contactPhone: string;
+  allergyNote?: undefined | string;
+  visibility: "organisers" | "group";
+  updatedAt: string;
+}
+
 export interface KintripState {
   trip: Trip;
   travellers: Traveller[];
