@@ -9,6 +9,7 @@ import {
   adminDashboard,
   adminListAdmins,
   adminListPromotions,
+  adminProductMetrics,
   adminRevokeGrant,
   adminSearchAccounts,
   adminSession,
