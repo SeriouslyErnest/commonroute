@@ -6,6 +6,7 @@ import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip
 import { formatDate, generateItinerary, pretty } from "@/lib/kintrip/engine";
 import { canPublish, dayEnergy, isOrganiser, publicationChecks } from "@/lib/kintrip/governance";
 import { addDayItem } from "@/lib/kintrip/actions";
+import { moveToSubgroup } from "@/lib/kintrip/coordination.actions";
 import { comfortReview, travelGaps } from "@/lib/kintrip/travel";
 import { validateDay } from "@/lib/kintrip/schedule";
 import {
