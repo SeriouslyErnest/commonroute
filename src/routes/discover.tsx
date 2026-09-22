@@ -12,6 +12,7 @@ import {
   type PlaceResult,
 } from "@/lib/kintrip/places.functions";
 import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { useAccount } from "@/lib/kintrip/auth";
 import type { Attraction, VoteValue } from "@/lib/kintrip/types";
 import { cn } from "@/lib/utils";
 
@@ -260,7 +261,7 @@ function DiscoverTab() {
         ) : (
           <Chip tone="primary">Your votes only · {me.name}</Chip>
         )}
-        <div className="sm:col-span-2">
+        <div className={cn("sm:col-span-2", !canUseGoogle && "hidden")}>
           <div
             role="group"
             aria-label="Place search source"
