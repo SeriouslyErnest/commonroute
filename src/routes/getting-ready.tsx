@@ -82,6 +82,8 @@ function GettingReadyScreen() {
         </Card>
       ) : null}
 
+      <SweepCard />
+
       <Card className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg">
           <ClipboardList className="size-5 text-primary" aria-hidden /> Jobs
