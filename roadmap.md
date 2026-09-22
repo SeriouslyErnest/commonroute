@@ -24,3 +24,4 @@
 - [x] Maps, scheduling and access: map view with category pins, nearby grouping, driving times, opening hours per visit date, car access and onward journeys, whole-day check
 - [x] Public repository documentation: product guide, fork setup, architecture, security, contribution rules, and refreshed README
 - [x] Paid features C1 (PRD v1.0, excluding P02/P05/P09/P11/P12 and tax): group questions and deadlines (P01/P03/P04), stay comparison (P06), plan alternatives (P07), cost-aware re-planning (P08), starter lists (P10), one-off Trip Plus pass with allowances and refund-safe usage counting (P14), promo redemption (P15), plans page (P16), private counts view in the operations console (P17), disclosed outside links (P18)
+- [x] Responsive interface audit and cleanup across phone and desktop layouts, shared navigation, date entry, and touch targets.

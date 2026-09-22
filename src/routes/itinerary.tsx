@@ -145,7 +145,7 @@ function ItineraryTab() {
                           <span className="mt-2 flex flex-wrap gap-2">
                             <Button
                               variant="outline"
-                              className="min-h-10 px-3 text-sm"
+                              className="min-h-11 flex-1 px-3 text-sm sm:flex-initial"
                               onClick={() => moveItem(day.day, item.id, 1)}
                               disabled={item.locked}
                             >
@@ -153,7 +153,7 @@ function ItineraryTab() {
                             </Button>
                             <Button
                               variant="outline"
-                              className="min-h-10 px-3 text-sm"
+                              className="min-h-11 flex-1 px-3 text-sm sm:flex-initial"
                               onClick={() => removeItem(day.day, item.id)}
                               disabled={item.locked}
                             >
@@ -161,7 +161,7 @@ function ItineraryTab() {
                             </Button>
                             <Button
                               variant="ghost"
-                              className="min-h-10 px-3 text-sm"
+                              className="min-h-11 flex-1 px-3 text-sm sm:flex-initial"
                               onClick={() => toggleItemLock(day.day, item.id)}
                             >
                               {item.locked ? "Unlock" : "Lock in"}
@@ -452,7 +452,7 @@ function SplitPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["i
           Meeting back at {day.split.meetingPoint} at {day.split.meetingTime}.
         </p>
         {mayEdit ? (
-          <Button variant="outline" className="min-h-10 px-3 text-sm" onClick={() => rejoinDay(day.day)}>
+          <Button variant="outline" className="min-h-11 px-3 text-sm" onClick={() => rejoinDay(day.day)}>
             Keep everyone together instead
           </Button>
         ) : null}
@@ -464,7 +464,7 @@ function SplitPanel({ day }: { day: NonNullable<ReturnType<typeof useKintrip>["i
 
   if (!openForm) {
     return (
-      <Button variant="ghost" className="min-h-10 px-3 text-sm" onClick={() => setOpenForm(true)}>
+      <Button variant="ghost" className="min-h-11 px-3 text-sm" onClick={() => setOpenForm(true)}>
         Split this day into two groups
       </Button>
     );

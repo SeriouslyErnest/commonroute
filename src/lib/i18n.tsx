@@ -712,13 +712,13 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLocale();
   return (
     <div
-      className={`inline-flex min-h-11 items-center rounded-xl border border-border bg-card p-1 shadow-sm ${className}`}
+      className={`inline-flex min-h-11 items-center rounded-xl border border-border bg-card p-0.5 shadow-sm ${className}`}
       aria-label="Language"
     >
-      <Languages className="mx-2 size-4 text-secondary" aria-hidden />
+      <Languages className="mx-1.5 size-4 shrink-0 text-secondary" aria-hidden />
       <button
         type="button"
-        className={`min-h-9 rounded-lg px-2 text-xs font-extrabold ${locale === "en" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"}`}
+        className={`min-h-11 min-w-11 rounded-lg px-2 text-xs font-extrabold ${locale === "en" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"}`}
         aria-pressed={locale === "en"}
         onClick={() => setLocale("en")}
       >
@@ -726,7 +726,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
       </button>
       <button
         type="button"
-        className={`min-h-9 rounded-lg px-2 text-xs font-extrabold ${locale === "zh-CN" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"}`}
+        className={`min-h-11 min-w-11 rounded-lg px-2 text-xs font-extrabold ${locale === "zh-CN" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"}`}
         aria-pressed={locale === "zh-CN"}
         onClick={() => setLocale("zh-CN")}
       >
