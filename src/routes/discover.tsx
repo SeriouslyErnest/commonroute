@@ -89,10 +89,19 @@ function DiscoverTab() {
   const votableFor = editableTravellers(state).filter((t) => t.canVote !== false);
   const voter = votableFor.find((t) => t.id === voteForId) ?? me;
 
+  // Google Maps search is a paid lookup, so it is offered to signed-in
+  // planners only; demo and invited guests use the free map search.
+  const { session } = useAccount();
+  const canUseGoogle = !!session;
+
   useEffect(() => {
     const saved = localStorage.getItem("kintrip.placeProvider");
-    if (saved === "free" || saved === "google") setProvider(saved);
-  }, []);
+    if (saved === "free" || (saved === "google" && canUseGoogle)) setProvider(saved);
+  }, [canUseGoogle]);
+
+  useEffect(() => {
+    if (!canUseGoogle) setProvider("free");
+  }, [canUseGoogle]);
 
   const chooseProvider = (next: PlaceProvider) => {
     setProvider(next);
