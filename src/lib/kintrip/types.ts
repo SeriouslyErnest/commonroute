@@ -755,6 +755,19 @@ export interface KintripState {
   publishedSnapshot: { version: number; days: ItineraryDay[] } | null;
   /** Saved geographic groupings of shortlisted places. */
   clusters?: undefined | PlaceCluster[];
+  /** Rooms and vehicles, with who is in each. */
+  rooms: Room[];
+  vehicles: Vehicle[];
+  /** Private requests to rest, skip a stop or rejoin later. */
+  breakRequests: BreakRequest[];
+  /** "Do this after that" links between bookings and jobs. */
+  dependencies: DependencyEdge[];
+  /** Private answers collected after the trip. */
+  feedback: TripFeedback[];
+  /** Organiser notes pinned to a day (weather, closures, backup plan). */
+  dayNotices: DayNotice[];
+  /** One contact card per traveller. */
+  emergencyCards: EmergencyCard[];
   /** Group questions asked before the plan exists. */
   polls: Poll[];
   /** Dated things that must happen before the trip works. */
