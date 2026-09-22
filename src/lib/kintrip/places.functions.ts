@@ -193,16 +193,43 @@ async function searchFree(query: string, destination: string): Promise<PlaceResu
     .filter((r): r is PlaceResult => r !== null);
 }
 
+export interface PlaceSearchOutcome {
+  results: PlaceResult[];
+  /** Provider that actually produced these results. */
+  provider: PlaceProvider;
+  /**
+   * Set when Google Maps was requested but free results were served instead,
+   * so the interface can tell people plainly.
+   */
+  notice?: string | undefined;
+}
+
 export const searchPlaces = createServerFn({ method: "GET" })
   .inputValidator((data) => inputSchema.parse(data))
-  .handler(async ({ data }): Promise<PlaceResult[]> => {
+  .handler(async ({ data }): Promise<PlaceSearchOutcome> => {
     const { enforceRateLimit, isSignedIn } = await import("./guard.server");
     // Open map search stays available to demo and invited guests; the billable
-    // Google provider is for signed-in planners only, and falls back to the
-    // free provider rather than failing the search.
+    // Google provider is for signed-in planners only. Whenever Google cannot
+    // answer, we serve free results and say so rather than failing silently.
     enforceRateLimit("places", 30, 60_000);
-    if (data.provider === "google" && (await isSignedIn())) {
-      return searchGoogle(data.query, data.destination);
+    if (data.provider !== "google") {
+      return { results: await searchFree(data.query, data.destination), provider: "free" };
     }
-    return searchFree(data.query, data.destination);
+    if (!(await isSignedIn())) {
+      return {
+        results: await searchFree(data.query, data.destination),
+        provider: "free",
+        notice: "Google Maps search needs a sign-in, so these results come from the free map search.",
+      };
+    }
+    try {
+      return { results: await searchGoogle(data.query, data.destination), provider: "google" };
+    } catch (error) {
+      console.error("Google Maps search fell back to free provider:", error);
+      return {
+        results: await searchFree(data.query, data.destination),
+        provider: "free",
+        notice: "Google Maps search is not working right now, so these results come from the free map search.",
+      };
+    }
   });
