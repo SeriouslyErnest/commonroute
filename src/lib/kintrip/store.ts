@@ -444,6 +444,7 @@ export function deleteTrip(tripId: string) {
     activeTripId,
     trips,
     demoTripId: multi.demoTripId === tripId ? undefined : multi.demoTripId,
+    guestTripIds: (multi.guestTripIds ?? []).filter((id) => id !== tripId),
   };
   persist();
   emit();
@@ -498,6 +499,7 @@ export function useTripSetupStatus() {
     hasTrips: Object.keys(m.trips).length > 0,
     demoActive: !!m.demoTripId && m.demoTripId === m.activeTripId,
     hasDemo: !!m.demoTripId && !!m.trips[m.demoTripId],
+    guestActive: (m.guestTripIds ?? []).includes(m.activeTripId),
   };
 }
 
