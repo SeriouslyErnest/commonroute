@@ -250,3 +250,18 @@ the operations console or through a promotion code.
 Advanced results are always suggestions. They never change the shared plan by
 themselves, never book or cancel anything, and are marked as out of date when
 the plan they were based on has moved on.
+
+## Trip coordination
+
+Contextual tools, all free, reached from More tools on the trip home:
+
+- **Save days to this phone** — the chosen days, stays, rooms, vehicles and contact cards are stored on that device only. Documents and map directions are honestly marked as not available offline.
+- **Rooms, vehicles and contacts** — who sleeps where and who travels in which vehicle. Permitted occupancy, overlapping stays and adult accompaniment are enforced, not merely suggested. Room numbers are private to the people in that room and the organisers, and never appear in exports. Contact cards hold one name, one phone and one allergy line; CommonRoute is never described as an emergency service.
+- **Rest and rejoin** — a traveller (or the adult who assists them) can ask for a rest, to skip the next stop, or to rejoin later. The reason is read only by the organisers and any named adult. The group is told about time and meeting changes alone.
+- **What waits for what** — record that one booking or job must be settled before another. Cycles are refused, and an organiser can waive a link with a written reason.
+- **After the trip** — three optional questions. Sharing with the organisers and applying the answer to future preferences are two separate choices, neither ticked in advance, and any answer can be deleted.
+- **Split days** — an organiser can move people between the groups on a split day, so counts and the rejoin point mean something.
+- **A note for the day** — an organiser can pin a short note (rain, a closure, the backup plan). CommonRoute never guesses it.
+- **Before you check out** — adds a last-look job per room covering the usual hiding places.
+
+Meetup check-ins and activity questions were deliberately left out: they would amount to tracking and messaging, which this product does not do.

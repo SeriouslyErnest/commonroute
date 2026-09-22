@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  CloudSun,
   Copy,
   Hotel,
   MapPin,
@@ -17,7 +18,9 @@ import {
   UserCheck,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
-import { Button, Card, Chip } from "@/components/kintrip/ui";
+import { Button, Card, Chip, inputClass } from "@/components/kintrip/ui";
+import { canManageLogistics } from "@/lib/kintrip/coordination";
+import { setDayNotice } from "@/lib/kintrip/coordination.actions";
 import { acknowledgeChange, attendanceFor, setAttendance, unacknowledgedFor } from "@/lib/kintrip/actions";
 import { editableTravellers } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
@@ -464,5 +467,80 @@ function TodayScreen() {
         </Link>
       </p>
     </AppShell>
+  );
+}
+
+/**
+ * An organiser's note pinned to one day — weather, a closure or a backup plan.
+ * It is typed by a person; CommonRoute never fetches or guesses it.
+ */
+function DayNoticeCard({ dayNumber }: { dayNumber: number }) {
+  const state = useKintrip();
+  const mayEdit = canManageLogistics(state);
+  const notice = state.dayNotices.find((n) => n.dayNumber === dayNumber);
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState(notice?.text ?? "");
+
+  if (!notice && !mayEdit) return null;
+
+  return (
+    <Card className={notice ? "space-y-2 border-sunny bg-sunny-soft" : "space-y-2"}>
+      {notice ? (
+        <>
+          <p className="inline-flex items-center gap-2 text-sm font-bold">
+            <CloudSun className="size-4" aria-hidden /> Note for today
+          </p>
+          <p className="text-sm">{notice.text}</p>
+          <p className="text-xs text-muted-foreground">
+            Written by {notice.author} · {new Date(notice.at).toLocaleDateString("en-GB")}
+          </p>
+        </>
+      ) : null}
+      {mayEdit ? (
+        open ? (
+          <div className="space-y-2">
+            <textarea
+              className={inputClass}
+              rows={2}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Rain is likely this afternoon — the covered market is our backup."
+            />
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                className="min-h-11 px-3 text-sm"
+                onClick={() => {
+                  setDayNotice(dayNumber, text);
+                  setOpen(false);
+                }}
+              >
+                Save the note
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="min-h-11 px-3 text-sm"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11 px-3 text-sm"
+            onClick={() => {
+              setText(notice?.text ?? "");
+              setOpen(true);
+            }}
+          >
+            {notice ? "Change this note" : "Add a note for this day"}
+          </Button>
+        )
+      ) : null}
+    </Card>
   );
 }
