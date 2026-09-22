@@ -18,7 +18,7 @@ import {
   type AdminRole,
 } from "@/lib/kintrip/admin.functions";
 
-type Tab = "dashboard" | "accounts" | "promotions" | "audit" | "admins";
+type Tab = "dashboard" | "accounts" | "promotions" | "usage" | "audit" | "admins";
 
 export function AdminConsole() {
   const session = useServerFn(adminSession);
@@ -49,6 +49,7 @@ export function AdminConsole() {
     { id: "dashboard", label: "Overview" },
     { id: "accounts", label: "Accounts" },
     { id: "promotions", label: "Promotions" },
+    { id: "usage", label: "Usage" },
     { id: "audit", label: "Audit log" },
     ...(role === "super_admin" ? [{ id: "admins" as Tab, label: "Operators" }] : []),
   ];
@@ -81,6 +82,7 @@ export function AdminConsole() {
       {tab === "dashboard" && <DashboardTab />}
       {tab === "accounts" && <AccountsTab role={role} />}
       {tab === "promotions" && <PromotionsTab role={role} />}
+      {tab === "usage" && <UsageTab />}
       {tab === "audit" && <AuditTab />}
       {tab === "admins" && role === "super_admin" && <AdminsTab />}
     </Shell>
@@ -96,6 +98,72 @@ function Shell({ children }: { children: React.ReactNode }) {
 function Notice({ text }: { text: string | null }) {
   if (!text) return null;
   return <p className="text-sm font-semibold text-foreground">{text}</p>;
+}
+
+function UsageTab() {
+  const load = useServerFn(adminProductMetrics);
+  const [days, setDays] = useState(30);
+  const [data, setData] = useState<Awaited<ReturnType<typeof adminProductMetrics>> | null>(null);
+  useEffect(() => {
+    load({ data: { days } }).then(setData).catch(() => setData(null));
+  }, [load, days]);
+  if (!data) return <Card>Loading…</Card>;
+  const cards = [
+    { label: "People active", value: data.people },
+    { label: "Trips active", value: data.trips },
+    { label: "Advanced runs settled", value: data.unitsSettled },
+    {
+      label: "Paid revenue",
+      value: `${data.currency} ${(data.paidRevenueMinor / 100).toFixed(0)}`,
+    },
+    { label: "Average usefulness", value: data.averageRating ?? "—" },
+  ];
+  const lists: { title: string; rows: { key: string; count: number }[] }[] = [
+    { title: "Events", rows: data.events },
+    { title: "Orders by state", rows: data.orders },
+    { title: "Passes granted", rows: data.entitlements },
+    { title: "Advanced runs by feature", rows: data.jobsByFeature },
+    { title: "Advanced runs by outcome", rows: data.jobsByStatus },
+  ];
+  return (
+    <>
+      <div className="flex flex-wrap gap-2">
+        {[7, 30, 90].map((d) => (
+          <Button key={d} variant={days === d ? "primary" : "outline"} className="px-4 text-sm" onClick={() => setDays(d)}>
+            Last {d} days
+          </Button>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {cards.map((c) => (
+          <Card key={c.label} className="text-center">
+            <p className="text-2xl font-extrabold text-foreground">{c.value}</p>
+            <p className="text-xs text-muted-foreground">{c.label}</p>
+          </Card>
+        ))}
+      </div>
+      {lists.map((l) => (
+        <Card key={l.title}>
+          <h2 className="text-lg font-bold">{l.title}</h2>
+          {l.rows.length === 0 ? (
+            <p className="mt-1 text-sm text-muted-foreground">Nothing yet.</p>
+          ) : (
+            <ul className="mt-2 flex flex-col gap-1 text-sm">
+              {l.rows.map((r) => (
+                <li key={r.key} className="flex justify-between gap-3">
+                  <span>{r.key.replace(/_/g, " ")}</span>
+                  <span className="font-bold">{r.count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      ))}
+      <p className="text-xs text-muted-foreground">
+        Counts only. No addresses, private needs, notes, emails or invite codes are recorded.
+      </p>
+    </>
+  );
 }
 
 function DashboardTab() {
