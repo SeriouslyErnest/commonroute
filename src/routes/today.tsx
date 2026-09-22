@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  CloudSun,
   Copy,
   Hotel,
   MapPin,
@@ -17,7 +18,9 @@ import {
   UserCheck,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
-import { Button, Card, Chip } from "@/components/kintrip/ui";
+import { Button, Card, Chip, inputClass } from "@/components/kintrip/ui";
+import { canManageLogistics } from "@/lib/kintrip/coordination";
+import { setDayNotice } from "@/lib/kintrip/coordination.actions";
 import { acknowledgeChange, attendanceFor, setAttendance, unacknowledgedFor } from "@/lib/kintrip/actions";
 import { editableTravellers } from "@/lib/kintrip/governance";
 import { useKintrip } from "@/lib/kintrip/store";
