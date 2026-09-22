@@ -172,7 +172,7 @@ export function vehicleWarnings(state: KintripState, vehicle: Vehicle) {
   if (typeof vehicle.seats !== "number") out.push("The number of seats has not been confirmed.");
   const needChildSeat = vehicleOccupants(vehicle).filter((id) => {
     const t = state.travellers.find((x) => x.id === id);
-    return t?.ageGroup === "child" || t?.ageGroup === "toddler";
+    return t?.ageGroup === "child";
   }).length;
   if (needChildSeat > vehicle.childSeats) {
     out.push(
