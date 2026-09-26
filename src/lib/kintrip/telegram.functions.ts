@@ -11,6 +11,8 @@ import {
   type TelegramPrefs,
 } from "./telegram.server";
 
+export type { TelegramPrefs } from "./telegram.server";
+
 /**
  * Telegram account linking, preferences, and delivery.
  *

@@ -10,7 +10,7 @@ import {
   updateTelegramPrefs,
   type TelegramStatus,
 } from "@/lib/kintrip/telegram.functions";
-import type { TelegramPrefs } from "@/lib/kintrip/telegram.server";
+import type { TelegramPrefs } from "@/lib/kintrip/telegram.functions";
 
 const PREF_LABELS: { key: keyof TelegramPrefs; label: string }[] = [
   { key: "vote_reminders", label: "Voting and decision reminders" },
