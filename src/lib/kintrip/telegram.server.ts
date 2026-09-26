@@ -63,7 +63,7 @@ export async function tgNotify(
   if (button) {
     // Only same-app paths are allowlisted; never build URLs from user content.
     const safePath = /^\/[A-Za-z0-9/_-]*$/.test(button.path) ? button.path : "/";
-    body.reply_markup = {
+    body["reply_markup"] = {
       inline_keyboard: [[{ text: button.label, url: `${appOrigin()}${safePath}` }]],
     };
   }
@@ -117,9 +117,9 @@ export const DEFAULT_PREFS: TelegramPrefs = {
 export function sanitizePrefs(input: unknown): TelegramPrefs {
   const src = (input ?? {}) as Record<string, unknown>;
   return {
-    vote_reminders: typeof src.vote_reminders === "boolean" ? src.vote_reminders : DEFAULT_PREFS.vote_reminders,
-    itinerary_changes: typeof src.itinerary_changes === "boolean" ? src.itinerary_changes : DEFAULT_PREFS.itinerary_changes,
-    organiser_updates: typeof src.organiser_updates === "boolean" ? src.organiser_updates : DEFAULT_PREFS.organiser_updates,
-    travel_day: typeof src.travel_day === "boolean" ? src.travel_day : DEFAULT_PREFS.travel_day,
+    vote_reminders: typeof src["vote_reminders"] === "boolean" ? src["vote_reminders"] : DEFAULT_PREFS.vote_reminders,
+    itinerary_changes: typeof src["itinerary_changes"] === "boolean" ? src["itinerary_changes"] : DEFAULT_PREFS.itinerary_changes,
+    organiser_updates: typeof src["organiser_updates"] === "boolean" ? src["organiser_updates"] : DEFAULT_PREFS.organiser_updates,
+    travel_day: typeof src["travel_day"] === "boolean" ? src["travel_day"] : DEFAULT_PREFS.travel_day,
   };
 }
