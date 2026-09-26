@@ -209,6 +209,7 @@ The unlinked operations console supports:
 - account suspension and restoration;
 - complimentary and trial grants;
 - promotion creation and status changes;
+- Telegram admin alerts (connect, test, disconnect, per-destination event categories); and
 - append-only operator action records; and
 - super-admin management of operator roles.
 
@@ -233,6 +234,10 @@ The following are not part of the current implementation:
 - the optional nearby-eatery recommendation module described in the maps roadmap.
 
 Provider coverage and quality vary by destination. Missing or unverified data is intentionally shown as unknown instead of being guessed.
+## Telegram notifications (optional)
+
+Signed-in travellers can connect the CommonRoute Telegram bot from Account → Telegram notifications. Connecting uses a short-lived, single-use deep link; disconnecting and a test message are always available. Preferences cover voting and decision reminders, itinerary changes, organiser updates, and optional travel-day prompts. Telegram is notification/deep-link only — voting, editing, and admin actions never happen in Telegram. Trip details are only delivered while the recipient is a member of the trip, and a blocked or revoked chat pauses delivery ("needs attention") without affecting the trip. The demo trip never sends Telegram notifications. Travel-day prompts require a scheduled job, which is not yet enabled.
+
 ## Paid features (C1)
 
 Planning together stays free: group questions, deadlines and readiness, starter
