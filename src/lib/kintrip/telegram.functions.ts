@@ -99,7 +99,7 @@ export const updateTelegramPrefs = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("telegram_user_links")
-      .update({ prefs: data.prefs })
+      .update({ prefs: data.prefs as unknown as import("@/integrations/supabase/types").Json })
       .eq("user_id", context.userId)
       .neq("status", "revoked");
     if (error) throw new Error(error.message);
@@ -253,7 +253,7 @@ type RpcClient = {
   rpc: (
     fn: "admin_role_of",
     args: { _user_id: string },
-  ) => Promise<{ data: unknown }>;
+  ) => PromiseLike<{ data: unknown }>;
 };
 
 async function requireAdmin(supabase: RpcClient, userId: string) {
