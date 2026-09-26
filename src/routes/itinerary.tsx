@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { markPlanSeen } from "@/lib/kintrip/enhancements.actions";
+import { notifyTrip } from "@/lib/kintrip/telegram-notify";
 import { Check, Download, Share2, Sparkles, TriangleAlert } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
