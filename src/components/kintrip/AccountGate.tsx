@@ -109,6 +109,10 @@ function Welcome({ pathname }: { pathname: string }) {
           <Link to="/about" className="font-semibold text-secondary">
             About CommonRoute
           </Link>
+          {" · "}
+          <Link to="/guide" className="font-semibold text-secondary">
+            User guide
+          </Link>
         </p>
       </div>
     </main>

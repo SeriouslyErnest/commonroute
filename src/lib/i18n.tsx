@@ -147,8 +147,8 @@ const ZH: Record<string, string> = {
     "群聊、表格和截图无法解决这些问题。CommonRoute 能清楚地兼顾大家，而不会让任何人觉得自己在添麻烦。",
   "From scattered wishes to one workable plan": "把零散愿望变成一份可行计划",
   "Start the trip": "创建旅行",
-  "Destination, dates, group size. That's it — no account, no setup call.":
-    "填写目的地、日期和人数即可，无需账户或筹备会议。",
+  "Destination, dates, group size. Sign in with a one-tap email link — no password.":
+    "填写目的地、日期和人数，用邮件一键链接登录，无需密码。",
   "Invite and gather": "邀请并收集需求",
   "One link. Everyone answers five short questions about pace, walking and rest.":
     "分享一个链接，每个人回答五个关于节奏、步行和休息的简短问题。",
@@ -173,8 +173,8 @@ const ZH: Record<string, string> = {
     "旅途中即使离线，也能查看今天的地点、时间、地址和备注。",
   "Questions families ask": "常见问题",
   "Does everyone need an account?": "每个人都需要账户吗？",
-  "No. Family members open your invite link, add their name and preferences, and start voting.":
-    "不需要。同行者打开邀请链接，填写姓名和偏好后即可开始投票。",
+  "The organiser signs in with an email link. Family members can join with an invite code, add their name and preferences, and start voting without an account.":
+    "组织者通过邮件链接登录。家人可凭邀请码加入，填写姓名和偏好后即可投票，无需账户。",
   "Can grandparents use it?": "长辈也能使用吗？",
   "Yes — large buttons, plain wording, and only five short questions to answer.":
     "可以。按钮清晰、文字简单，而且只需回答五个简短问题。",
@@ -187,7 +187,38 @@ const ZH: Record<string, string> = {
   "Your next family trip starts with one destination": "下一趟群组旅行，从一个目的地开始",
   "Add where you're going and the dates. CommonRoute takes it from there.":
     "填写目的地和日期，接下来交给 CommonRoute。",
-  "Last updated: 20 September 2026.": "最后更新：2026年9月20日。",
+  "Last updated: 26 September 2026.":
+    "最后更新：2026年9月26日。",
+  "Read the user guide": "阅读使用指南",
+  "User guide": "使用指南",
+  "Everything you need to plan a trip together, in the order you will need it.": "一起规划旅行所需的一切，按使用顺序排列。",
+  "1. Sign in": "1. 登录",
+  "2. Start a trip and invite people": "2. 创建旅行并邀请成员",
+  "3. Share needs and settings": "3. 分享需求和设置",
+  "4. Find and vote on places": "4. 查找地点并投票",
+  "5. Build and publish the plan": "5. 生成并发布行程",
+  "6. Get ready": "6. 出发准备",
+  "7. On the trip": "7. 旅途中",
+  "8. Afterwards": "8. 旅行结束后",
+  "Enter your email and tap the link we send you. There is no password to remember.": "输入邮箱并点击我们发送的链接，无需记住密码。",
+  "Want to look around first? Open the Japan demo trip. It stays on this device and is never shared.": "想先看看？打开日本示例旅行。它只保存在本设备上，从不共享。",
+  "Invited by someone? Use \"I have an invite code\" — you can join without an account.": "收到邀请？点击“我有邀请码”，无需账户即可加入。",
+  "Add the destination and dates, then share the invite code from the Group tab.": "填写目的地和日期，然后在“群组”页分享邀请码。",
+  "Organisers can give roles, and helpers can answer for a traveller they look after.": "组织者可以分配角色，协助者可以代其照顾的旅伴作答。",
+  "Each person answers a few short questions about pace, walking and rest.": "每个人回答几个关于节奏、步行和休息的简短问题。",
+  "Trip settings show who said them and for which days. A setting entered by someone else needs confirming.": "旅行设置会显示由谁提出、适用哪几天。他人代填的设置需要确认。",
+  "Private needs are only seen by organisers and the person's helper.": "私人需求只有组织者和本人的协助者可见。",
+  "Search places on the Discover tab, or save a quick idea with just a name or link.": "在“发现”页搜索地点，或只用名称或链接快速保存一个想法。",
+  "Everyone votes only for themselves. Ideas without a location stay out of the plan until one is picked.": "每个人只能为自己投票。未确定位置的想法在选定地点前不会进入行程。",
+  "The Itinerary tab builds one realistic plan with rests, meals and opening hours.": "“行程”页会生成一份包含休息、用餐和营业时间的可行计划。",
+  "Organisers review warnings, then publish. The group always sees the latest published plan.": "组织者查看提醒后发布。全组始终看到最新发布的行程。",
+  "Getting ready holds jobs, packing lists, bookings and anything waiting for a reply.": "“出发准备”包含任务、行李清单、预订以及等待回复的事项。",
+  "Pick up planning on the home screen shows the next few things that need you.": "首页的“继续规划”会显示接下来需要你处理的几件事。",
+  "Today shows the current day in a simple view. Save days to your phone for use without signal.": "“今天”以简洁视图显示当天安排。可将行程保存到手机，无信号时也能查看。",
+  "Ask quietly for a rest, or propose a temporary change such as a later start. Organisers decide what goes into the plan.": "可以悄悄申请休息，或提议临时调整（如晚些出发）。由组织者决定是否加入行程。",
+  "Re-plan when weather or tiredness changes the day.": "天气或疲劳改变当天安排时，可重新规划。",
+  "Export the plan to a calendar or spreadsheet, and answer three optional questions about what worked.": "将行程导出到日历或表格，并可回答三个关于旅行体验的可选问题。",
+  "On the Account page you can change your email, sign out everywhere, or delete your account.": "在“账户”页可以更改邮箱、在所有设备退出或删除账户。",
   "Sign in to CommonRoute": "登录 CommonRoute",
   "We'll email you a link that signs you straight in. No password, no code to type.":
     "我们会通过邮件发送一键登录链接，无需密码，也无需输入验证码。",
