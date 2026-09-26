@@ -81,6 +81,8 @@ const SECTIONS: Section[] = [
       "Type the destination, choose the start and end dates, then create the trip.",
       "Share the invite by WhatsApp, email or by copying the link.",
       "Everyone who joins appears under \"Who's on board\" with their progress.",
+      "Organisers can use \"Change invite code\" if a link was shared too widely — the old link stops working for everyone.",
+      "\"Delete trip for everyone\" removes the shared plan from every account. Anyone else can tap \"Leave\" on My trips to remove it just for themselves.",
     ],
     shots: [
       { src: trips, alt: "My trips list with a Penang trip" },

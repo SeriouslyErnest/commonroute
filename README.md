@@ -11,7 +11,8 @@ Built with [Lovable](https://lovable.dev), TanStack Start, React, TypeScript, Ta
 ## What is included
 
 - Passwordless email-link accounts and cross-device trip lists
-- Invite links and shared-trip synchronization
+- Invite links and shared-trip synchronization, with organiser invite-code rotation, delete-for-everyone, and leave-trip
+- Optional Telegram notifications through a dedicated bot (reminders, itinerary changes, organiser updates) and Telegram alerts for operators
 - Personal preferences, accessibility and comfort needs, place voting, and group-fit summaries
 - Owner, organiser, sponsor, contributor, and viewer roles
 - Suggestion review, spending decisions, publication checks, and an audit history
@@ -93,6 +94,11 @@ ADMIN_EMAIL_HASH_SALT=<long-random-secret>
 
 # Optional; defaults to /admin/admin
 ADMIN_CONSOLE_PATH=/admin/admin
+
+# Optional Telegram bot (token and webhook secret are protected server secrets)
+TELEGRAM_BOT_TOKEN=<bot-token-from-botfather>
+TELEGRAM_WEBHOOK_SECRET=<long-random-secret>
+TELEGRAM_BOT_USERNAME=<public-bot-username>
 ```
 
 Never commit `.env`, `.env.local`, server keys, database URLs, connector keys, real operator email addresses, or audit salts.
@@ -111,6 +117,7 @@ The SQL migrations are in `drizzle/migrations/`. A fresh fork should apply the p
 6. `0006_restrict_is_trip_member_execute.sql`
 7. `0007_revoke_anon_grants_public_tables.sql`
 8. `0008_is_trip_member_security_invoker.sql`
+9. `0009_telegram.sql`
 
 Do **not** apply `0002_seed_test_super_admin.sql` to a new backend. It is a development-only historical seed tied to the original test environment. New installations bootstrap their first operator with `ADMIN_BOOTSTRAP_EMAIL` instead.
 
