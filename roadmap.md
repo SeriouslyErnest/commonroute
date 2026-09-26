@@ -49,4 +49,4 @@
 - [x] Public user guide at /guide, linked from welcome and About; About copy matches sign-in rules
 - [x] Console Usage tab counts idea/setting/arrangement events (demo never tracked)
 - [x] README/SETUP migration lists 0000–0008; PRODUCT/ARCHITECTURE updated
-- [x] End-to-end test with a dummy test account (password used only by the test script, not offered in the app)
+- [x] End-to-end test run with a temporary test account (account, trip and records removed afterwards)
