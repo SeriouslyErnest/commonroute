@@ -2,6 +2,9 @@ import { Link } from "@tanstack/react-router";
 import {
   BedDouble,
   Building2,
+  CalendarRange,
+  Lightbulb,
+  UserCog,
   CalendarClock,
   CloudOff,
   GitCompare,
@@ -13,6 +16,7 @@ import {
   Vote,
 } from "lucide-react";
 import { Card } from "@/components/kintrip/ui";
+import { ARRANGEMENTS_ENABLED } from "@/lib/kintrip/features";
 
 /**
  * Links to the planning tools that do not have their own tab.
@@ -20,6 +24,11 @@ import { Card } from "@/components/kintrip/ui";
  */
 
 const tools = [
+  { to: "/ideas", label: "Save an idea", hint: "A name or link is enough", icon: Lightbulb },
+  { to: "/context", label: "Traveller settings", hint: "Trip-only needs, who said them", icon: UserCog },
+  ...(ARRANGEMENTS_ENABLED
+    ? [{ to: "/arrangements", label: "Temporary arrangements", hint: "A later start, a taxi, a rest", icon: CalendarRange }]
+    : []),
   { to: "/polls", label: "Group questions", hint: "Dates, destination, budget", icon: Vote },
   { to: "/readiness", label: "Readiness and deadlines", hint: "What is still missing", icon: CalendarClock },
   { to: "/templates", label: "Starter lists", hint: "Packing, jobs and deadlines", icon: LayoutList },
