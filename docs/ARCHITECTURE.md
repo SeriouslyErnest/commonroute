@@ -151,6 +151,8 @@ The path gate is not authorization. Every admin server function:
 
 Operator emails in audit rows are stored as salted SHA-256 fingerprints. The console resolves current operator addresses live by account ID for authorized display.
 
+The Usage tab reads `product_events` counts through `adminProductMetrics`. Events are sent with `trackProduct()` (`src/lib/kintrip/track.ts`), which never fires for the local-only demo; allowed names are listed in `EVENT_NAMES` in `commerce.functions.ts`.
+
 The admin console may manage account status and commercial entitlements. It must not become an unrestricted editor for customer trip content.
 
 ## 13. Database migrations

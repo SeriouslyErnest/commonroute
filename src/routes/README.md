@@ -8,6 +8,7 @@ CommonRoute uses TanStack Start file-based routing. Every route belongs under th
 | --- | --- |
 | `index.tsx` | `/` |
 | `about.tsx` | `/about` |
+| `guide.tsx` | `/guide` (public user guide) |
 | `users/index.tsx` | `/users` |
 | `users/$id.tsx` | `/users/:id` |
 | `posts/{-$category}.tsx` | `/posts/:category?` |
