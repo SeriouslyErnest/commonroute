@@ -220,8 +220,8 @@ The console address is configurable. Its obscurity is only a minor defence-in-de
 
 The following are not part of the current implementation:
 
-- payments, booking checkout, or expense settlement;
-- customer-facing promotion redemption;
+- live payment processing (checkout records the request until a provider is configured), booking checkout, or expense settlement;
+- password or social sign-in;
 - automatic booking import, mailbox access, OCR, or ticket storage;
 - in-app group chat or a social feed;
 - continuous location tracking;
