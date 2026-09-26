@@ -646,8 +646,6 @@ const ZH: Record<string, string> = {
   "Pick up planning": "继续规划",
   "Waiting for an answer": "等待答复",
   "Answer arrived": "已收到答复",
-  "Cancel": "取消",
-  "Save": "保存",
   "Need a rest? Ask quietly": "需要休息？悄悄说一声",
   "Slower today? Add a trip setting": "今天想慢一点？添加旅行设置",
   "Add a trip setting": "添加旅行设置",
