@@ -394,10 +394,11 @@ export const finishAdvancedJob = createServerFn({ method: "POST" })
     const db = await admin();
     const { data: job } = await db
       .from("advanced_jobs")
-      .select("id, status, trip_id, feature")
+      .select("id, status, trip_id, feature, created_by")
       .eq("id", data.jobId)
       .maybeSingle();
     if (!job || job.trip_id !== data.tripId) throw new Error("Job not found");
+    if (job.created_by !== context.userId) throw new Error("Only the person who started this job can finish it");
     if (job.status !== "reserved") return { ok: true as const, alreadyFinished: true };
     await db
       .from("advanced_jobs")
