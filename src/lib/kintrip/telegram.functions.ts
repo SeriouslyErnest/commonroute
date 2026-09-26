@@ -249,7 +249,14 @@ export const notifyTripTelegram = createServerFn({ method: "POST" })
 
 /* ---------------- admin destinations ---------------- */
 
-async function requireAdmin(supabase: { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown }> }, userId: string) {
+type RpcClient = {
+  rpc: (
+    fn: "admin_role_of",
+    args: { _user_id: string },
+  ) => Promise<{ data: unknown }>;
+};
+
+async function requireAdmin(supabase: RpcClient, userId: string) {
   const { data: role } = await supabase.rpc("admin_role_of", { _user_id: userId });
   if (!role) throw new Error("Forbidden");
   return role as string;
@@ -385,11 +392,11 @@ export const registerTelegramWebhook = createServerFn({ method: "POST" })
     const secret = process.env["TELEGRAM_WEBHOOK_SECRET"];
     if (!secret) throw new Error("Webhook secret is not configured");
     const result = await tgCall("setWebhook", {
-      url: `${input.publicUrl}/api/public/telegram/webhook`,
+      url: `${data.publicUrl}/api/public/telegram/webhook`,
       secret_token: secret,
       allowed_updates: ["message"],
       drop_pending_updates: true,
     });
     if (!result.ok) throw new Error(`Telegram rejected the webhook: ${result.error ?? "unknown"}`);
-    return { ok: true, url: `${input.publicUrl}/api/public/telegram/webhook`, origin: appOrigin() };
+    return { ok: true, url: `${data.publicUrl}/api/public/telegram/webhook`, origin: appOrigin() };
   });
