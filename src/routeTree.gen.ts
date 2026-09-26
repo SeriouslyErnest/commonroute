@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as ArrangementsRouteImport } from './routes/arrangements'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as BreaksRouteImport } from './routes/breaks'
@@ -65,6 +66,11 @@ const AboutRoute = AboutRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArrangementsRoute = ArrangementsRouteImport.update({
+  id: '/arrangements',
+  path: '/arrangements',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -267,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/arrangements': typeof ArrangementsRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
   '/breaks': typeof BreaksRoute
@@ -311,6 +318,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/arrangements': typeof ArrangementsRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
   '/breaks': typeof BreaksRoute
@@ -356,6 +364,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/arrangements': typeof ArrangementsRoute
   '/auth': typeof AuthRoute
   '/bookings': typeof BookingsRoute
   '/breaks': typeof BreaksRoute
@@ -402,6 +411,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/arrangements'
     | '/auth'
     | '/bookings'
     | '/breaks'
@@ -446,6 +456,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/arrangements'
     | '/auth'
     | '/bookings'
     | '/breaks'
@@ -490,6 +501,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/arrangements'
     | '/auth'
     | '/bookings'
     | '/breaks'
@@ -535,6 +547,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
+  ArrangementsRoute: typeof ArrangementsRoute
   AuthRoute: typeof AuthRoute
   BookingsRoute: typeof BookingsRoute
   BreaksRoute: typeof BreaksRoute
@@ -597,6 +610,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arrangements': {
+      id: '/arrangements'
+      path: '/arrangements'
+      fullPath: '/arrangements'
+      preLoaderRoute: typeof ArrangementsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -879,6 +899,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
+  ArrangementsRoute: ArrangementsRoute,
   AuthRoute: AuthRoute,
   BookingsRoute: BookingsRoute,
   BreaksRoute: BreaksRoute,
