@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { KintripState } from "./types";
 
 /**
@@ -95,4 +96,83 @@ export const pullTrip = createServerFn({ method: "POST" })
       state: row.state as unknown as KintripState,
       updatedAt: row.updated_at as string,
     };
+  });
+
+/* ---------------- organiser trip controls ---------------- */
+
+const TRIP_ID_RE = /^[A-Za-z0-9_-]{3,64}$/;
+
+function newServerCode(): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(10);
+  crypto.getRandomValues(bytes);
+  let out = "";
+  for (const b of bytes) out += alphabet[b % alphabet.length];
+  return out;
+}
+
+function validControl(input: { tripId: string; shareCode: string }) {
+  if (!input || typeof input.tripId !== "string" || !TRIP_ID_RE.test(input.tripId) || !isValidCode(input.shareCode)) {
+    throw new Error("Invalid trip");
+  }
+  return { tripId: input.tripId, shareCode: input.shareCode };
+}
+
+/**
+ * Issue a new invite code. The old code stops working at once for everyone,
+ * including devices that already joined; the organiser re-shares the new link.
+ * Requires sign-in plus the current code (the trip's write secret).
+ */
+export const rotateTripCode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(validControl)
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row } = await supabaseAdmin
+      .from("kintrip_trips")
+      .select("state")
+      .eq("trip_id", data.tripId)
+      .eq("share_code", data.shareCode)
+      .maybeSingle();
+    if (!row) throw new Error("This invite code is no longer valid for this trip");
+    const code = newServerCode();
+    const state = row.state as unknown as KintripState;
+    const nextState = { ...state, trip: { ...state.trip, shareCode: code } };
+    const { error } = await supabaseAdmin
+      .from("kintrip_trips")
+      .update({ share_code: code, state: nextState as unknown as never, updated_at: new Date().toISOString() })
+      .eq("trip_id", data.tripId)
+      .eq("share_code", data.shareCode);
+    if (error) throw new Error(error.message);
+    await context.supabase
+      .from("kintrip_memberships")
+      .update({ share_code: code, updated_at: new Date().toISOString() })
+      .eq("trip_id", data.tripId);
+    return { shareCode: code };
+  });
+
+/**
+ * Delete a shared trip for everyone. The trip content is erased and the row is
+ * left as a tombstone with an unusable code, so other devices cannot re-upload it.
+ */
+export const deleteSharedTrip = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(validControl)
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("kintrip_trips")
+      .update({
+        share_code: `deleted_${newServerCode()}${newServerCode()}`,
+        state: { deleted: true } as unknown as never,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("trip_id", data.tripId)
+      .eq("share_code", data.shareCode)
+      .select("trip_id")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("This invite code is no longer valid for this trip");
+    await supabaseAdmin.from("kintrip_memberships").delete().eq("trip_id", data.tripId);
+    return { ok: true };
   });
