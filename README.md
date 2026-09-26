@@ -21,7 +21,13 @@ Built with [Lovable](https://lovable.dev), TanStack Start, React, TypeScript, Ta
 - English and Simplified Chinese interfaces
 - Place search, category maps, nearby grouping, driving-time checks, date-aware opening hours, and onward-access journeys
 - Installable app behavior and offline access to saved trip information
-- An internal operations console for account review, suspension, operator roles, grants, promotions, and audit records
+- Coordination tools: rooms and vehicles, private rest requests, booking dependencies, offline day packs, contact cards, and post-trip reflections
+- Quick idea capture, traveller settings with provenance, waiting/check-back jobs, pick-up planning cues, and temporary arrangements
+- CSV and calendar (ICS) exports
+- Trip Plus pass, promo codes, and allowance tracking (no payment provider connected by default)
+- Anonymous product-usage counts viewable only in the operations console
+- An in-app user guide at `/guide`
+- An internal operations console for account review, suspension, operator roles, grants, promotions, usage counts, and audit records
 - A local-only Japan demo that never syncs to the backend
 
 See [Product guide](docs/PRODUCT.md) for the complete user journey, product rules, and current limitations.
@@ -101,6 +107,10 @@ The SQL migrations are in `drizzle/migrations/`. A fresh fork should apply the p
 2. `0001_admin_console_entitlements.sql`
 3. `0003_lock_down_security_definer_functions.sql`
 4. `0004_hash_admin_audit_emails.sql`
+5. `0005_commerce_entitlements_usage_events.sql`
+6. `0006_restrict_is_trip_member_execute.sql`
+7. `0007_revoke_anon_grants_public_tables.sql`
+8. `0008_is_trip_member_security_invoker.sql`
 
 Do **not** apply `0002_seed_test_super_admin.sql` to a new backend. It is a development-only historical seed tied to the original test environment. New installations bootstrap their first operator with `ADMIN_BOOTSTRAP_EMAIL` instead.
 
@@ -118,13 +128,15 @@ bun run preview   # preview a production build locally
 
 ## Demo mode
 
+Everything except the welcome page, About, the user guide, pricing, invite joining, and the demo requires signing in with an email link.
+
 The Japan sample trip is intentionally local-only. It does not require sign-in, does not upload to the shared backend, and must remain excluded from every current or future synchronization feature.
 
 ## Project status and limits
 
 CommonRoute is a working product prototype with a broad planning workflow. Before operating a public service, review the security model, configure provider quotas and email delivery, run the full test checklist, and establish privacy, retention, support, and incident-response policies.
 
-Not currently included: booking transactions, payment processing, customer promo redemption, in-app chat, live location tracking, live transport disruption alerts, guaranteed accessibility certification, worldwide transit schedules, turn-by-turn navigation, or offline map tiles.
+Not currently included: booking transactions, live payment processing (checkout records the request until a provider is configured), password sign-in, in-app chat, live location tracking, live transport disruption alerts, guaranteed accessibility certification, worldwide transit schedules, turn-by-turn navigation, or offline map tiles.
 
 ## Licensing
 

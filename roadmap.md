@@ -44,3 +44,9 @@
 - [x] CE05 Temporary arrangements (/arrangements): versioned per-person answers, organiser applies to draft, expiry never edits the plan
 - [x] CE06 Today/preferences point-of-need links to breaks and trip settings
 - [x] CE07 VITE_FEATURE_ARRANGEMENTS=off switch
+
+## Docs and console refresh (26 Sep 2026)
+- [x] Public user guide at /guide, linked from welcome and About; About copy matches sign-in rules
+- [x] Console Usage tab counts idea/setting/arrangement events (demo never tracked)
+- [x] README/SETUP migration lists 0000–0008; PRODUCT/ARCHITECTURE updated
+- [x] End-to-end test with a dummy test account (password used only by the test script, not offered in the app)

@@ -4,6 +4,7 @@ import { Lightbulb, MapPin, Plus, Search } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, Field, inputClass } from "@/components/kintrip/ui";
 import { useKintrip } from "@/lib/kintrip/store";
+import { trackProduct } from "@/lib/kintrip/track";
 import { actorName, isOrganiser } from "@/lib/kintrip/governance";
 import { needsLocation } from "@/lib/kintrip/enhancements";
 import { resolveIdeaLocation, saveIdea } from "@/lib/kintrip/enhancements.actions";
@@ -49,6 +50,7 @@ function IdeasScreen() {
     }
     setDupId(null);
     setSavedId(out.savedId ?? null);
+    trackProduct(state, "idea_saved");
     setMessage("Saved. It is on the shortlist and can be discussed now.");
   };
 

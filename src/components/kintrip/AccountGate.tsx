@@ -16,6 +16,7 @@ const PUBLIC_PREFIXES = [
   "/join",
   "/invite",
   "/about",
+  "/guide",
   "/pricing",
   "/ops/console",
   "/admin",
@@ -107,6 +108,10 @@ function Welcome({ pathname }: { pathname: string }) {
         <p className="text-center text-sm">
           <Link to="/about" className="font-semibold text-secondary">
             About CommonRoute
+          </Link>
+          {" · "}
+          <Link to="/guide" className="font-semibold text-secondary">
+            User guide
           </Link>
         </p>
       </div>
