@@ -186,6 +186,11 @@ function AccountPage() {
         <TelegramSettings />
 
         <Card className="space-y-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={async () => {
+              await signOutEverything();
               void navigate({ to: "/", replace: true });
             }}
           >
