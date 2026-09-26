@@ -457,6 +457,141 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_admin_destinations: {
+        Row: {
+          admin_user_id: string
+          created_at: string
+          event_prefs: Json
+          id: string
+          status: string
+          tg_chat_id: number
+          tg_user_id: number
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string
+          event_prefs?: Json
+          id?: string
+          status?: string
+          tg_chat_id: number
+          tg_user_id: number
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string
+          event_prefs?: Json
+          id?: string
+          status?: string
+          tg_chat_id?: number
+          tg_user_id?: number
+        }
+        Relationships: []
+      }
+      telegram_deliveries: {
+        Row: {
+          attempts: number
+          chat_id: number
+          created_at: string
+          id: string
+          idempotency_key: string
+          kind: string
+          status: string
+        }
+        Insert: {
+          attempts?: number
+          chat_id: number
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          kind: string
+          status?: string
+        }
+        Update: {
+          attempts?: number
+          chat_id?: number
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          kind?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      telegram_link_tokens: {
+        Row: {
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          scope: string
+          token_hash: string
+          user_id: string
+        }
+        Insert: {
+          consumed_at?: string | null
+          created_at?: string
+          expires_at: string
+          scope?: string
+          token_hash: string
+          user_id: string
+        }
+        Update: {
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          scope?: string
+          token_hash?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      telegram_updates: {
+        Row: {
+          processed_at: string
+          update_id: number
+        }
+        Insert: {
+          processed_at?: string
+          update_id: number
+        }
+        Update: {
+          processed_at?: string
+          update_id?: number
+        }
+        Relationships: []
+      }
+      telegram_user_links: {
+        Row: {
+          failure_reason: string | null
+          last_delivery_at: string | null
+          linked_at: string
+          prefs: Json
+          status: string
+          tg_chat_id: number
+          tg_user_id: number
+          user_id: string
+        }
+        Insert: {
+          failure_reason?: string | null
+          last_delivery_at?: string | null
+          linked_at?: string
+          prefs?: Json
+          status?: string
+          tg_chat_id: number
+          tg_user_id: number
+          user_id: string
+        }
+        Update: {
+          failure_reason?: string | null
+          last_delivery_at?: string | null
+          linked_at?: string
+          prefs?: Json
+          status?: string
+          tg_chat_id?: number
+          tg_user_id?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       trip_entitlements: {
         Row: {
           ceiling_at: string
