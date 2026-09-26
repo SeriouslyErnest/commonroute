@@ -23,8 +23,8 @@ export function StartTripCard({ embedded = false }: { embedded?: boolean | undef
         embedded ? "rounded-3xl shadow-lift" : "min-h-screen sm:min-h-0 sm:rounded-3xl sm:shadow-lift",
       )}
     >
-      <div className="flex justify-end px-4 pt-4"><LanguageToggle /></div>
-      <div className="px-6 pt-3 text-center sm:px-9">
+      {embedded ? null : <div className="flex justify-end px-4 pt-4"><LanguageToggle /></div>}
+      <div className={cn("px-6 text-center sm:px-9", embedded ? "pt-6" : "pt-3")}>
         <img src={logo.url} alt="CommonRoute — Plan together. Find your common route." className="commonroute-lockup mx-auto h-auto w-full max-w-[330px]" />
         <h1 className="mx-auto mt-5 max-w-sm text-3xl leading-tight sm:text-4xl">Plan a trip that works for everyone.</h1>
         <p className="mt-2 text-base font-semibold text-muted-foreground">Bring every idea and practical need into one shared plan.</p>
