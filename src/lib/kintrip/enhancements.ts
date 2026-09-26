@@ -309,7 +309,7 @@ export function pickUpCards(
     }
   }
   if (organiser) {
-    const pendingSponsor = state.sponsorApprovals.filter((s) => !s.decision).length;
+    const pendingSponsor = state.sponsorApprovals.filter((s) => s.decision === "hold").length;
     if (pendingSponsor > 0) {
       cards.push({ id: "sponsor", tier: 1, title: `${pendingSponsor} waiting for the sponsor`, hint: "Funding decisions", to: "/sponsor", critical: false });
     }
