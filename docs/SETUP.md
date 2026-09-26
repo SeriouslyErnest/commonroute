@@ -88,6 +88,21 @@ GOOGLE_MAPS_API_KEY=<linked-connection-key>
 
 These two values are server-only and are created when the Google Maps connector is linked to the Lovable project. A non-Lovable deployment must replace that gateway adapter or use only the free provider; a raw Google API key is not a drop-in replacement for `GOOGLE_MAPS_API_KEY` in the current gateway code.
 
+### Optional Telegram notifications
+
+The dedicated Telegram bot is optional. To enable it:
+
+```env
+TELEGRAM_BOT_TOKEN=<bot-token-from-botfather>
+TELEGRAM_WEBHOOK_SECRET=<long-random-secret>
+TELEGRAM_BOT_USERNAME=<public-bot-username>
+```
+
+- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_WEBHOOK_SECRET` are protected server secrets. Never place them in source-controlled files, frontend variables, database tables, logs, screenshots, or documentation.
+- `TELEGRAM_BOT_USERNAME` is public, non-secret configuration used to build the `https://t.me/<username>?start=<token>` deep link.
+- After deploying, register the webhook once as a super admin from the operations console (Telegram alerts tab), or call Telegram `setWebhook` with `<public-origin>/api/public/telegram/webhook` and the webhook secret. The secret is verified on every delivery.
+
+
 ## 4. Create the database
 
 Migration files are in `drizzle/migrations/`. For a new installation, apply:
@@ -100,6 +115,7 @@ Migration files are in `drizzle/migrations/`. For a new installation, apply:
 6. `0006_restrict_is_trip_member_execute.sql`
 7. `0007_revoke_anon_grants_public_tables.sql`
 8. `0008_is_trip_member_security_invoker.sql`
+9. `0009_telegram.sql` (Telegram linking, webhook inbox, and delivery log)
 
 Do **not** apply `0002_seed_test_super_admin.sql`. It is a historical development seed tied to an account in the original test environment. Use `ADMIN_BOOTSTRAP_EMAIL` for your installation.
 

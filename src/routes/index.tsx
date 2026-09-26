@@ -15,6 +15,7 @@ import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { StartTripCard } from "@/components/kintrip/StartTripForm";
 import { MoreTools } from "@/components/kintrip/MoreTools";
+import { TelegramPrompt } from "@/components/kintrip/TelegramPrompt";
 import { PickUpPlanning } from "@/components/kintrip/PickUpPlanning";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
@@ -263,6 +264,7 @@ function ActiveTrip() {
 
       {/* During travel, Today stays first; planning cues sit lower down. */}
       <PickUpPlanning secondary />
+      <TelegramPrompt />
       <MoreTools />
       <Notes />
     </AppShell>

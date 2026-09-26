@@ -17,9 +17,12 @@ Server-only secrets include:
 - service-role database keys;
 - database migration URLs;
 - connector and gateway keys;
+- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_WEBHOOK_SECRET` (protected server secrets only — never in source, frontend variables, database tables, logs, screenshots, or docs);
 - `ADMIN_BOOTSTRAP_EMAIL`;
 - `ADMIN_EMAIL_HASH_SALT`; and
 - any private provider API key.
+
+Non-secret Telegram configuration (`TELEGRAM_BOT_USERNAME`, the bot's display name, and public deep links) may live in ordinary configuration.
 
 Never:
 

@@ -50,3 +50,10 @@
 - [x] Console Usage tab counts idea/setting/arrangement events (demo never tracked)
 - [x] README/SETUP migration lists 0000–0008; PRODUCT/ARCHITECTURE updated
 - [x] End-to-end test run with a temporary test account (account, trip and records removed afterwards)
+
+## Telegram bot (done)
+- [x] Tables: user links, admin destinations, link tokens, webhook inbox, delivery log (grants + RLS)
+- [x] Webhook /api/public/telegram/webhook (secret-token check, /start linking, /help)
+- [x] Server fns: connect/disconnect/prefs/test, admin alerts, trip event notify with membership revalidation
+- [x] UI: Telegram settings on Account, admin alerts in ops console, adoption prompt, guide section, ZH strings
+- [x] Register webhook with Telegram; travel-day prompts deferred (needs scheduler — product-owner approval per PRD §10)

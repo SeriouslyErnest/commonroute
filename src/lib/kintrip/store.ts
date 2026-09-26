@@ -350,6 +350,13 @@ export function useShareCode(): string | null {
   return state.trip.shareCode ?? null;
 }
 
+/** Active trip's sync identity, or null for the demo / unsynced trips. */
+export function activeSyncInfo(): { tripId: string; shareCode: string } | null {
+  const state = syncableTrip(multi.activeTripId);
+  if (!state?.trip.shareCode) return null;
+  return { tripId: multi.activeTripId, shareCode: state.trip.shareCode };
+}
+
 export interface NewTripInput {
   title: string;
   destination: string;

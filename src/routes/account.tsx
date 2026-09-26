@@ -11,6 +11,7 @@ import {
 } from "@/lib/kintrip/auth";
 import { deleteAccount, getProfile, updateProfile } from "@/lib/kintrip/account.functions";
 import { linkAccountTrips, useTripList } from "@/lib/kintrip/store";
+import { TelegramSettings } from "@/components/kintrip/TelegramSettings";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
@@ -181,6 +182,8 @@ function AccountPage() {
             ) : null}
           </div>
         </Card>
+
+        <TelegramSettings />
 
         <Card className="space-y-3">
           <Button

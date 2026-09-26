@@ -4,6 +4,7 @@ import { CheckCircle2, MinusCircle, Plus, Trash2, Vote, XCircle } from "lucide-r
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, Field, inputClass } from "@/components/kintrip/ui";
 import { useKintrip } from "@/lib/kintrip/store";
+import { notifyTrip } from "@/lib/kintrip/telegram-notify";
 import { isOrganiser, editableTravellers } from "@/lib/kintrip/governance";
 import {
   answerPoll,
@@ -74,6 +75,7 @@ function PollsScreen() {
     void trackEvent({ data: { name: "poll_created", tripId: state.trip.id, props: { step: kind } } }).catch(
       () => {},
     );
+    notifyTrip("vote_reminder", `poll-${Date.now()}`);
     setQuestion("");
     setLines("");
     setShowNew(false);
