@@ -86,6 +86,10 @@ function PreferencesForm({ me }: { me: Traveller }) {
       <div className="h-2 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
         <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(step / 5) * 100}%` }} />
       </div>
+      <p className="text-sm text-muted-foreground">
+        Something only for this trip, or only for a few days?{" "}
+        <Link to="/context" className="font-semibold underline">Add a trip setting</Link> instead of changing your usual answers.
+      </p>
 
       {demoActive ? (
         <label className="block">

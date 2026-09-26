@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { markPlanSeen } from "@/lib/kintrip/enhancements.actions";
 import { Check, Download, Share2, Sparkles, TriangleAlert } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton, inputClass } from "@/components/kintrip/ui";
@@ -45,6 +46,11 @@ function ItineraryTab() {
   const [openDay, setOpenDay] = useState<number | null>(1);
   const [shared, setShared] = useState(false);
   const itinerary = state.itinerary;
+  // Remember which published revision this person has looked at. Looking is not acknowledging.
+  const seenVersion = itinerary?.published ? itinerary.version : undefined;
+  useEffect(() => {
+    if (seenVersion !== undefined) markPlanSeen(state.trip.id, state.activeTravellerId, seenVersion);
+  }, [seenVersion, state.trip.id, state.activeTravellerId]);
 
   if (!itinerary) {
     return (
