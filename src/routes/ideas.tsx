@@ -35,7 +35,6 @@ function IdeasScreen() {
   const [dupId, setDupId] = useState<string | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
   const keyRef = useRef(newKey());
-  const audience = state.decisions.publication === "organisers" ? "organisers and the group" : "the group";
 
   const incomplete = useMemo(() => state.attractions.filter(needsLocation), [state.attractions]);
 
@@ -77,7 +76,7 @@ function IdeasScreen() {
           <textarea className={inputClass} rows={2} value={note} onChange={(e) => setNote(e.target.value)} maxLength={1000} />
         </Field>
         <p className="text-xs text-muted-foreground">
-          Seen by {audience}, like other suggestions. Nothing is looked up, fetched or charged when you save.
+          Seen by everyone on this trip, like other suggestions. Nothing is looked up, fetched or charged when you save.
         </p>
         {error ? (
           <div role="alert" className="rounded-xl bg-sunny-soft px-3 py-2 text-sm">
