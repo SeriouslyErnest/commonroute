@@ -497,6 +497,10 @@ const EVENT_NAMES = new Set([
   "template_used",
   "expense_recorded",
   "export_downloaded",
+  "idea_saved",
+  "preference_recorded",
+  "arrangement_proposed",
+  "arrangement_applied",
 ]);
 
 /** Records one product event from the app. Consent-aware and anonymous. */

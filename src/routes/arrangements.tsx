@@ -81,6 +81,7 @@ function ArrangementsScreen() {
     if (err) setError(err);
     else {
       setOk("Proposed. Organisers will see it; the people affected can answer.");
+      trackProduct(state, "arrangement_proposed", { kind });
       setDetail("");
       setReason("");
     }

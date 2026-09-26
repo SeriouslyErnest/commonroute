@@ -49,6 +49,7 @@ function IdeasScreen() {
     }
     setDupId(null);
     setSavedId(out.savedId ?? null);
+    trackProduct(state, "idea_saved");
     setMessage("Saved. It is on the shortlist and can be discussed now.");
   };
 

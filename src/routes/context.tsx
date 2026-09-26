@@ -77,7 +77,10 @@ function ContextScreen() {
       visibility,
     });
     if (err) setError(err);
-    else setNote("Saved.");
+    else {
+      setNote("Saved.");
+      trackProduct(state, "preference_recorded", { field });
+    }
   };
 
   const records = visiblePreferences(state);
