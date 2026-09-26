@@ -4,6 +4,7 @@ import { CalendarClock, Lock } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, Field, inputClass } from "@/components/kintrip/ui";
 import { useKintrip } from "@/lib/kintrip/store";
+import { trackProduct } from "@/lib/kintrip/track";
 import { actorName, canEditFor, isOrganiser } from "@/lib/kintrip/governance";
 import {
   ARRANGEMENT_LABEL,
@@ -201,7 +202,7 @@ function ArrangementsScreen() {
                       </span>
                     ))}
                     {organiser ? (
-                      <Button type="button" onClick={() => run(() => applyArrangement(a.id), "Added to the draft plan. Review and publish it from the itinerary.")}>Add to draft plan</Button>
+                      <Button type="button" onClick={() => run(() => { const e = applyArrangement(a.id); if (!e) trackProduct(state, "arrangement_applied", { kind: a.kind }); return e; }, "Added to the draft plan. Review and publish it from the itinerary.")}>Add to draft plan</Button>
                     ) : null}
                     {organiser || a.createdBy === me ? (
                       <Button type="button" variant="outline" onClick={() => run(() => withdrawArrangement(a.id))}>Withdraw</Button>

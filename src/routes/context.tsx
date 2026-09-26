@@ -4,6 +4,7 @@ import { BadgeCheck, History, UserRound } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, Field, inputClass } from "@/components/kintrip/ui";
 import { useKintrip } from "@/lib/kintrip/store";
+import { trackProduct } from "@/lib/kintrip/track";
 import { actorName, canEditFor, isOrganiser } from "@/lib/kintrip/governance";
 import {
   CONFIRM_LABEL,
