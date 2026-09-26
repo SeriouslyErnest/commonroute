@@ -17,6 +17,7 @@ import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as BreaksRouteImport } from './routes/breaks'
 import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as ConsensusRouteImport } from './routes/consensus'
+import { Route as ContextRouteImport } from './routes/context'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DependenciesRouteImport } from './routes/dependencies'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -89,6 +90,11 @@ const ChangesRoute = ChangesRouteImport.update({
 const ConsensusRoute = ConsensusRouteImport.update({
   id: '/consensus',
   path: '/consensus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContextRoute = ContextRouteImport.update({
+  id: '/context',
+  path: '/context',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreateRoute = CreateRouteImport.update({
@@ -266,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/breaks': typeof BreaksRoute
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
+  '/context': typeof ContextRoute
   '/create': typeof CreateRoute
   '/dependencies': typeof DependenciesRoute
   '/discover': typeof DiscoverRoute
@@ -309,6 +316,7 @@ export interface FileRoutesByTo {
   '/breaks': typeof BreaksRoute
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
+  '/context': typeof ContextRoute
   '/create': typeof CreateRoute
   '/dependencies': typeof DependenciesRoute
   '/discover': typeof DiscoverRoute
@@ -353,6 +361,7 @@ export interface FileRoutesById {
   '/breaks': typeof BreaksRoute
   '/changes': typeof ChangesRoute
   '/consensus': typeof ConsensusRoute
+  '/context': typeof ContextRoute
   '/create': typeof CreateRoute
   '/dependencies': typeof DependenciesRoute
   '/discover': typeof DiscoverRoute
@@ -398,6 +407,7 @@ export interface FileRouteTypes {
     | '/breaks'
     | '/changes'
     | '/consensus'
+    | '/context'
     | '/create'
     | '/dependencies'
     | '/discover'
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/breaks'
     | '/changes'
     | '/consensus'
+    | '/context'
     | '/create'
     | '/dependencies'
     | '/discover'
@@ -484,6 +495,7 @@ export interface FileRouteTypes {
     | '/breaks'
     | '/changes'
     | '/consensus'
+    | '/context'
     | '/create'
     | '/dependencies'
     | '/discover'
@@ -528,6 +540,7 @@ export interface RootRouteChildren {
   BreaksRoute: typeof BreaksRoute
   ChangesRoute: typeof ChangesRoute
   ConsensusRoute: typeof ConsensusRoute
+  ContextRoute: typeof ContextRoute
   CreateRoute: typeof CreateRoute
   DependenciesRoute: typeof DependenciesRoute
   DiscoverRoute: typeof DiscoverRoute
@@ -619,6 +632,13 @@ declare module '@tanstack/react-router' {
       path: '/consensus'
       fullPath: '/consensus'
       preLoaderRoute: typeof ConsensusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/context': {
+      id: '/context'
+      path: '/context'
+      fullPath: '/context'
+      preLoaderRoute: typeof ContextRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create': {
@@ -864,6 +884,7 @@ const rootRouteChildren: RootRouteChildren = {
   BreaksRoute: BreaksRoute,
   ChangesRoute: ChangesRoute,
   ConsensusRoute: ConsensusRoute,
+  ContextRoute: ContextRoute,
   CreateRoute: CreateRoute,
   DependenciesRoute: DependenciesRoute,
   DiscoverRoute: DiscoverRoute,
