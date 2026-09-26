@@ -53,6 +53,7 @@ import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as AdminAdminRouteImport } from './routes/admin/admin'
 import { Route as FitAttractionIdRouteImport } from './routes/fit.$attractionId'
 import { Route as OpsConsoleRouteImport } from './routes/ops.console'
+import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -274,6 +275,12 @@ const OpsConsoleRoute = OpsConsoleRouteImport.update({
   path: '/ops/console',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTelegramWebhookRoute =
+  ApiPublicTelegramWebhookRouteImport.update({
+    id: '/api/public/telegram/webhook',
+    path: '/api/public/telegram/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -320,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/admin/admin': typeof AdminAdminRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
   '/ops/console': typeof OpsConsoleRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -366,6 +374,7 @@ export interface FileRoutesByTo {
   '/admin/admin': typeof AdminAdminRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
   '/ops/console': typeof OpsConsoleRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -413,6 +422,7 @@ export interface FileRoutesById {
   '/admin/admin': typeof AdminAdminRoute
   '/fit/$attractionId': typeof FitAttractionIdRoute
   '/ops/console': typeof OpsConsoleRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/fit/$attractionId'
     | '/ops/console'
+    | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -507,6 +518,7 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/fit/$attractionId'
     | '/ops/console'
+    | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
@@ -553,6 +565,7 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/fit/$attractionId'
     | '/ops/console'
+    | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -600,6 +613,7 @@ export interface RootRouteChildren {
   AdminAdminRoute: typeof AdminAdminRoute
   FitAttractionIdRoute: typeof FitAttractionIdRoute
   OpsConsoleRoute: typeof OpsConsoleRoute
+  ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -912,6 +926,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OpsConsoleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/telegram/webhook': {
+      id: '/api/public/telegram/webhook'
+      path: '/api/public/telegram/webhook'
+      fullPath: '/api/public/telegram/webhook'
+      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -960,6 +981,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAdminRoute: AdminAdminRoute,
   FitAttractionIdRoute: FitAttractionIdRoute,
   OpsConsoleRoute: OpsConsoleRoute,
+  ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
