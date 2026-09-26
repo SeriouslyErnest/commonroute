@@ -178,6 +178,19 @@ const SECTIONS: Section[] = [
     ],
     shots: [{ src: account, alt: "Account settings screen" }],
   },
+  {
+    id: "telegram",
+    title: "11. Telegram notifications (optional)",
+    intro: "Get trip updates and reminders through the CommonRoute Telegram bot.",
+    steps: [
+      "Open Account → Telegram notifications and tap Connect Telegram.",
+      "Telegram opens the CommonRoute bot — tap START to finish connecting.",
+      "Choose which notifications you want: voting reminders, itinerary changes, organiser updates, and optional travel-day prompts.",
+      "Send a test notification anytime, and disconnect whenever you like.",
+    ],
+    tip: "Telegram is completely optional — CommonRoute works fully without it. Voting and planning always stay inside CommonRoute; the bot only delivers notifications. If delivery stops working, your trips are unaffected and you can reconnect from your account.",
+    shots: [],
+  },
 ];
 
 function GuidePage() {
