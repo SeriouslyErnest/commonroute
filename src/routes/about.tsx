@@ -45,7 +45,7 @@ const STEPS = [
   {
     icon: MapPin,
     title: "Start the trip",
-    body: "Destination, dates, group size. That's it — no account, no setup call.",
+    body: "Destination, dates, group size. Sign in with a one-tap email link — no password.",
     image: shotStart,
     alt: "CommonRoute trip setup screen",
   },
@@ -98,7 +98,7 @@ const FEATURES = [
 const FAQS = [
   {
     q: "Does everyone need an account?",
-    a: "No. Family members open your invite link, add their name and preferences, and start voting.",
+    a: "The organiser signs in with an email link. Family members can join with an invite code, add their name and preferences, and start voting without an account.",
   },
   {
     q: "Can grandparents use it?",
@@ -268,8 +268,11 @@ function AboutPage() {
         <p className="mt-3 text-sm font-semibold text-muted-foreground">
           Plan together. Find your common route.
         </p>
+        <Link to="/guide" className="mt-3 inline-flex min-h-11 items-center font-bold text-secondary underline">
+          Read the user guide
+        </Link>
         <p className="mt-2 text-xs text-muted-foreground">
-          Last updated: 20 September 2026.
+          Last updated: 26 September 2026.
         </p>
       </footer>
     </main>

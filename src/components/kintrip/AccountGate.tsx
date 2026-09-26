@@ -16,6 +16,7 @@ const PUBLIC_PREFIXES = [
   "/join",
   "/invite",
   "/about",
+  "/guide",
   "/pricing",
   "/ops/console",
   "/admin",
