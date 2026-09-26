@@ -632,3 +632,130 @@ function AdminsTab() {
     </Card>
   );
 }
+
+function TelegramTab({ role }: { role: AdminRole }) {
+  const [status, setStatus] = useState<{
+    configured: boolean;
+    status: string;
+    eventPrefs: Record<string, boolean>;
+  } | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [webhookUrl, setWebhookUrl] = useState("");
+
+  function refresh() {
+    getAdminTelegramStatus()
+      .then(setStatus)
+      .catch(() => setStatus(null));
+  }
+  useEffect(refresh, []);
+
+  if (!status) return <Card>Loading…</Card>;
+  if (!status.configured)
+    return (
+      <Card>
+        <h2 className="text-lg font-bold text-foreground">Telegram admin alerts</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Telegram is not configured on this server. The bot token and webhook secret must be set
+          as protected server secrets before admin alerts can be connected.
+        </p>
+      </Card>
+    );
+
+  return (
+    <Card className="space-y-3">
+      <h2 className="text-lg font-bold text-foreground">Telegram admin alerts</h2>
+      <p className="text-sm text-muted-foreground">
+        Operational alerts can be delivered to your Telegram through the CommonRoute bot. Alerts
+        are generic and read-only — they never contain sensitive narratives, and nothing can be
+        actioned from Telegram.
+      </p>
+      <p className="text-sm font-semibold text-foreground">
+        Status: {status.status === "active" ? "Connected" : status.status === "needs_attention" ? "Needs attention — reconnect" : "Not connected"}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          onClick={async () => {
+            setNotice(null);
+            try {
+              const { url } = await startAdminTelegramLink();
+              window.open(url, "_blank", "noopener");
+              setNotice("Finish connecting in Telegram (tap START), then refresh this page.");
+            } catch (err) {
+              setNotice(err instanceof Error ? err.message : "Couldn't start the connection");
+            }
+          }}
+        >
+          {status.status === "active" ? "Reconnect" : "Connect Telegram"}
+        </Button>
+        {status.status === "active" && (
+          <>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                setNotice(null);
+                try {
+                  await sendAdminTelegramTest();
+                  setNotice("Test alert sent — check Telegram.");
+                } catch (err) {
+                  setNotice(err instanceof Error ? err.message : "Couldn't send the test");
+                  refresh();
+                }
+              }}
+            >
+              Send test alert
+            </Button>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                setNotice(null);
+                await disconnectAdminTelegram();
+                refresh();
+              }}
+            >
+              Disconnect
+            </Button>
+          </>
+        )}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Event categories: operations, billing, accounts. Category toggles and severity thresholds
+        are stored per destination; delivery failures pause alerts for that destination only.
+      </p>
+
+      {role === "super_admin" && (
+        <div className="space-y-2 border-t border-border pt-3">
+          <h3 className="text-sm font-bold text-foreground">Webhook registration</h3>
+          <p className="text-xs text-muted-foreground">
+            Point Telegram at this deployment's webhook endpoint. The signing secret stays on the
+            server and is registered automatically.
+          </p>
+          <Field label="Public site origin (https://…)">
+            <input
+              className={inputClass}
+              value={webhookUrl}
+              placeholder="https://example.com"
+              onChange={(e) => setWebhookUrl(e.target.value)}
+            />
+          </Field>
+          <Button
+            variant="outline"
+            disabled={!webhookUrl.trim()}
+            onClick={async () => {
+              setNotice(null);
+              try {
+                const r = await registerTelegramWebhook({ data: { publicUrl: webhookUrl.trim() } });
+                setNotice(`Webhook registered: ${r.url}`);
+              } catch (err) {
+                setNotice(err instanceof Error ? err.message : "Couldn't register the webhook");
+              }
+            }}
+          >
+            Register webhook with Telegram
+          </Button>
+        </div>
+      )}
+      <Notice text={notice} />
+    </Card>
+  );
+}
