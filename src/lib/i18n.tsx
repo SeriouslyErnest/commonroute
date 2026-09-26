@@ -14,6 +14,15 @@ export type AppLocale = "en" | "zh-CN";
 const STORAGE_KEY = "commonroute.locale";
 
 const ZH: Record<string, string> = {
+  "Organiser controls": "组织者设置",
+  "Change the invite code if the link has spread further than intended. The old link stops working straight away, for everyone who used it — send the new link to the people who should stay.": "如果邀请链接传播得超出预期，可以更换邀请码。旧链接会立即失效，对所有用过它的人都一样——请把新链接发给应该留下的人。",
+  "Change invite code": "更换邀请码",
+  "Deleting the trip removes the shared plan for everyone. This can't be undone.": "删除行程会为所有人移除共享计划，且无法撤销。",
+  "Delete trip for everyone": "为所有人删除行程",
+  "New invite code ready — share the new link above.": "新邀请码已生成——请分享上方的新链接。",
+  "Please sign in to do this.": "请先登录再进行此操作。",
+  "That didn't work — check your connection and try again.": "操作未成功——请检查网络后重试。",
+  "This trip's invite code changed or the trip was deleted — ask the organiser for a new link": "此行程的邀请码已更换或行程已被删除——请向组织者索取新链接",
   "Map & nearby groups": "地图与邻近分组",
   "Map & group nearby": "地图与邻近分组",
   "Group nearby": "按邻近分组",
