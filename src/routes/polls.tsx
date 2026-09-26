@@ -74,6 +74,7 @@ function PollsScreen() {
     void trackEvent({ data: { name: "poll_created", tripId: state.trip.id, props: { step: kind } } }).catch(
       () => {},
     );
+    notifyTrip("vote_reminder", `poll-${Date.now()}`);
     setQuestion("");
     setLines("");
     setShowNew(false);

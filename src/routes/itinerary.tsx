@@ -231,7 +231,10 @@ function ItineraryTab() {
         ) : mayPublish ? (
           <Button
             disabled={blocking.length > 0}
-            onClick={() => publishItinerary(warnings.map((w) => w.id))}
+            onClick={() => {
+              publishItinerary(warnings.map((w) => w.id));
+              notifyTrip("itinerary_change", `publish-${Date.now()}`);
+            }}
           >
             Publish to the group
           </Button>
