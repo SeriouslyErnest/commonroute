@@ -81,6 +81,7 @@ function SyncBadge() {
     synced: { icon: Check, text: "Shared with your group" },
     offline: { icon: CloudOff, text: "Offline — changes save when you reconnect" },
     error: { icon: CloudOff, text: "Couldn't reach your group's trip — retrying" },
+    revoked: { icon: CloudOff, text: "This trip's invite code changed or the trip was deleted — ask the organiser for a new link" },
   } as const;
   const entry = map[status];
   const Icon = entry.icon;

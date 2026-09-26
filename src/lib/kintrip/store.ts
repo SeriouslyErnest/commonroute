@@ -134,7 +134,7 @@ export function setState(updater: (prev: KintripState) => KintripState) {
 
 /* ---------------- shared backend sync ---------------- */
 
-export type SyncStatus = "off" | "synced" | "saving" | "offline" | "error";
+export type SyncStatus = "off" | "synced" | "saving" | "offline" | "error" | "revoked";
 
 let syncStatus: SyncStatus = "off";
 let pushTimer: ReturnType<typeof setTimeout> | null = null;
@@ -195,8 +195,9 @@ async function pushNow(tripId: string) {
       data: { tripId, shareCode: state.trip.shareCode!, state },
     });
     setSyncStatus("synced");
-  } catch {
-    setSyncStatus("error");
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "";
+    setSyncStatus(msg.includes("Invalid invite code for this trip") ? "revoked" : "error");
   }
 }
 
@@ -432,6 +433,46 @@ export function switchTrip(tripId: string) {
   multi = { ...multi, activeTripId: tripId };
   persist();
   emit();
+}
+
+/** Organiser: replace the invite code; the old one stops working for everyone. */
+export async function rotateInviteCode(tripId: string = multi.activeTripId): Promise<string> {
+  const state = syncableTrip(tripId);
+  if (!state) throw new Error("This trip isn't shared online");
+  const { rotateTripCode } = await import("./sync.functions");
+  const { shareCode } = await rotateTripCode({ data: { tripId, shareCode: state.trip.shareCode! } });
+  const current = multi.trips[tripId];
+  if (current) {
+    multi = { ...multi, trips: { ...multi.trips, [tripId]: { ...current, trip: { ...current.trip, shareCode } } } };
+    persist();
+    emit();
+  }
+  setSyncStatus("synced");
+  return shareCode;
+}
+
+/** Organiser: delete the shared trip for everyone, then remove it here. */
+export async function deleteTripForEveryone(tripId: string = multi.activeTripId) {
+  const state = syncableTrip(tripId);
+  if (state) {
+    const { deleteSharedTrip } = await import("./sync.functions");
+    await deleteSharedTrip({ data: { tripId, shareCode: state.trip.shareCode! } });
+  }
+  deleteTrip(tripId);
+}
+
+/** Leave a trip: forget it on this device and drop it from the account. */
+export async function leaveTrip(tripId: string) {
+  const shared = !!syncableTrip(tripId);
+  deleteTrip(tripId);
+  if (!shared) return;
+  try {
+    if (!(await signedIn())) return;
+    const { removeMembership } = await import("./account.functions");
+    await removeMembership({ data: { tripId } });
+  } catch {
+    /* removal from the account list is best-effort */
+  }
 }
 
 export function deleteTrip(tripId: string) {

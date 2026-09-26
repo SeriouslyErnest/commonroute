@@ -4,7 +4,7 @@ import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate } from "@/lib/kintrip/engine";
 import {
-  deleteTrip,
+  leaveTrip,
   exitDemoTrip,
   resetDemoTrip,
   startDemoTrip,
@@ -99,10 +99,10 @@ function MyTrips() {
               {!t.active || trips.length === 1 ? (
                 <Button
                   variant="ghost"
-                  aria-label={`Delete ${t.title}`}
+                  aria-label={`Leave ${t.title}`}
                   onClick={() => {
-                    if (window.confirm(`Remove “${t.title}” from this device?`)) {
-                      deleteTrip(t.id);
+                    if (window.confirm(`Leave “${t.title}”? It is removed from this device and your account. The trip itself stays for everyone else.`)) {
+                      void leaveTrip(t.id);
                     }
                   }}
                 >

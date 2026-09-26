@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Copy, Mail, MessageCircle } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { Copy, Mail, MessageCircle, RefreshCw, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate } from "@/lib/kintrip/engine";
-import { useKintrip } from "@/lib/kintrip/store";
+import { deleteTripForEveryone, rotateInviteCode, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
+import { isOrganiser } from "@/lib/kintrip/governance";
 
 export const Route = createFileRoute("/invite")({
   head: () => ({
@@ -94,9 +96,75 @@ function InvitePage() {
         </ul>
       </Card>
 
+      <OrganiserControls />
+
       <div className="flex justify-center pb-4">
         <LinkButton to="/preferences">Share my preferences</LinkButton>
       </div>
     </AppShell>
+  );
+}
+
+function OrganiserControls() {
+  const state = useKintrip();
+  const navigate = useNavigate();
+  const { demoActive } = useTripSetupStatus();
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState("");
+  if (demoActive || !state.trip.shareCode || !isOrganiser(state)) return null;
+
+  async function run(fn: () => Promise<void>) {
+    setBusy(true);
+    setNote("");
+    try {
+      await fn();
+    } catch (err) {
+      setNote(err instanceof Error && /sign/i.test(err.message) ? "Please sign in to do this." : "That didn't work — check your connection and try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Card className="space-y-3">
+      <h2 className="text-lg">Organiser controls</h2>
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Change the invite code if the link has spread further than intended. The old link stops working straight away, for everyone who used it — send the new link to the people who should stay.
+        </p>
+        <Button
+          variant="outline"
+          disabled={busy}
+          onClick={() => {
+            if (!window.confirm("Change the invite code? The old link stops working for everyone, including people already in the trip.")) return;
+            void run(async () => {
+              await rotateInviteCode();
+              setNote("New invite code ready — share the new link above.");
+            });
+          }}
+        >
+          <RefreshCw className="size-5" aria-hidden /> Change invite code
+        </Button>
+      </div>
+      <div className="space-y-2 border-t border-border pt-3">
+        <p className="text-sm text-muted-foreground">
+          Deleting the trip removes the shared plan for everyone. This can't be undone.
+        </p>
+        <Button
+          variant="outline"
+          disabled={busy}
+          onClick={() => {
+            if (!window.confirm(`Delete “${state.trip.title}” for everyone? The shared plan is erased and can't be recovered.`)) return;
+            void run(async () => {
+              await deleteTripForEveryone();
+              void navigate({ to: "/trips" });
+            });
+          }}
+        >
+          <Trash2 className="size-5" aria-hidden /> Delete trip for everyone
+        </Button>
+      </div>
+      {note ? <p role="status" className="text-sm font-semibold">{note}</p> : null}
+    </Card>
   );
 }
