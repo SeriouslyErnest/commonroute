@@ -228,6 +228,11 @@ function DiscoverTab() {
 
   return (
     <AppShell title="Discover & vote" subtitle={`Voting as ${me.name}`}>
+      <p className="text-sm">
+        Found something while browsing?{" "}
+        <Link to="/ideas" className="inline-flex min-h-11 items-center font-semibold underline">Save idea</Link>
+        {" "}— a name or link is enough.
+      </p>
       <Card className="space-y-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-3 sm:space-y-0">
         <div className="relative">
           <Search className="absolute left-3 top-3.5 size-5 text-muted-foreground" aria-hidden />

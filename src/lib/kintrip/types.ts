@@ -226,6 +226,12 @@ export interface Attraction {
   timeZone?: undefined | string;
   hours?: undefined | HoursRecord;
   access?: undefined | AccessProfile;
+  /** Quick ideas start as "needs_location" and cannot enter a generated route until resolved. */
+  locationStatus?: undefined | "resolved" | "needs_location";
+  /** Free text saved with a quick idea. */
+  ideaNote?: undefined | string;
+  /** Idempotency key so retrying a save never creates a second record. */
+  captureKey?: undefined | string;
 }
 
 /** A saved geographic grouping of places. A planning aid, not a day. */
@@ -458,6 +464,12 @@ export interface TripTask {
   visibility: NeedVisibility;
   version: number;
   history: { at: string; actorName: string; action: string }[];
+  /** "Waiting for…" — what is awaited (a hotel reply, a person). Sends nothing to anyone. */
+  waitingFor?: undefined | string;
+  /** Personal date to look again. Never changes `deadline`. */
+  checkBackOn?: undefined | string;
+  /** Booking this answer is about, if any. */
+  waitingBookingId?: undefined | string;
 }
 
 export type PackingScope = "personal" | "dependent" | "shared";
@@ -734,6 +746,85 @@ export interface EmergencyCard {
   updatedAt: string;
 }
 
+/* ---------------- focused enhancements (CE02, CE05) ---------------- */
+
+export type PrefField = "pace" | "walking" | "earliestStart" | "latestFinish" | "restWindow" | "note";
+export type PrefScope = "trip" | "general";
+export type PrefSourceKind = "self" | "proxy" | "organiser_observation" | "unknown";
+export type PrefConfirmation =
+  | "unconfirmed"
+  | "confirmed_self"
+  | "confirmed_proxy"
+  | "needs_review"
+  | "rejected"
+  | "superseded";
+
+export interface PreferenceRecord {
+  id: string;
+  subjectId: string;
+  field: PrefField;
+  value: string;
+  scope: PrefScope;
+  /** Optional trip-day range; trip-wide when absent. */
+  fromDay?: undefined | number;
+  toDay?: undefined | number;
+  sourceKind: PrefSourceKind;
+  /** Traveller id of the person who actually entered it. */
+  recordedBy: string;
+  recordedByName: string;
+  /** When the person said it, if different from when it was entered. */
+  sourceTime?: undefined | string;
+  createdAt: string;
+  version: number;
+  confirmation: PrefConfirmation;
+  confirmedBy?: undefined | string;
+  confirmedAt?: undefined | string;
+  confirmedVersion?: undefined | number;
+  visibility: NeedVisibility;
+  /** Set when the traveller (or their authorised helper) chose to keep it for future trips. */
+  rememberedAt?: undefined | string;
+  history: { version: number; value: string; at: string; by: string; action: string }[];
+}
+
+export type ArrangementKind = "later_start" | "taxi_leg" | "subgroup_rest";
+export type ArrangementStatus = "draft" | "proposed" | "applied" | "withdrawn" | "expired";
+export type ArrangementResponseState = "pending" | "confirmed" | "declined";
+
+export interface ArrangementResponse {
+  travellerId: string;
+  state: ArrangementResponseState;
+  /** Who pressed the button — the traveller, or their authorised helper. */
+  byId: string;
+  proxy: boolean;
+  /** Arrangement version this response is about. */
+  version: number;
+  at: string;
+}
+
+export interface Arrangement {
+  id: string;
+  kind: ArrangementKind;
+  travellerIds: string[];
+  dayNumber: number;
+  itemId?: undefined | string;
+  /** Plain description the group may see, e.g. "Start at 10:30". */
+  detail: string;
+  /** For later_start: minutes to push the first stop back. For subgroup_rest: start time. */
+  minutes?: undefined | number;
+  restStart?: undefined | string;
+  /** Private reason, read only by organisers and the people affected. */
+  reason?: undefined | string;
+  /** Last trip date the arrangement applies to draft calculations. */
+  endDate?: undefined | string;
+  status: ArrangementStatus;
+  version: number;
+  responses: ArrangementResponse[];
+  createdBy: string;
+  createdAt: string;
+  appliedAt?: undefined | string;
+  history: { at: string; by: string; action: string }[];
+}
+
 export interface KintripState {
   trip: Trip;
   travellers: Traveller[];
@@ -776,6 +867,10 @@ export interface KintripState {
   stayOptions: StayOption[];
   /** Whole-plan alternatives generated from an unchanged baseline. */
   scenarios: Scenario[];
+  /** Preference values with where they came from, how far they apply and who confirmed them. */
+  prefRecords: PreferenceRecord[];
+  /** Temporary, concrete changes to the trip (a later start, a taxi, a rest). */
+  arrangements: Arrangement[];
   activeTravellerId: string;
   currentDay: number;
   replanLog: { day: number; at: string; reason: string; changes: string[] }[];

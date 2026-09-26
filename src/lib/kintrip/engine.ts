@@ -1,4 +1,5 @@
 import { backupAttractions, eligibleAttractions } from "./governance";
+import { effectivePreferences } from "./enhancements";
 import type {
   Attraction,
   Itinerary,
@@ -108,7 +109,9 @@ export function familyWalkingLimit(state: KintripState) {
   let limit: "low" | "moderate" | "high" = "high";
   for (const t of state.travellers) {
     if (t.prefStatus !== "complete") continue;
-    if (WALK_RANK[t.preferences.walking]! < WALK_RANK[limit]!) limit = t.preferences.walking;
+    // Confirmed trip-wide overrides can only tighten the profile value.
+    const walking = effectivePreferences(state, t.id).walking;
+    if (WALK_RANK[walking]! < WALK_RANK[limit]!) limit = walking;
   }
   return limit;
 }

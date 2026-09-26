@@ -20,6 +20,8 @@ import { actorName, canEditFor, isOrganiser } from "@/lib/kintrip/governance";
 import { SWEEP_CHECKS } from "@/lib/kintrip/coordination";
 import { addSweepJobs } from "@/lib/kintrip/coordination.actions";
 import { useKintrip } from "@/lib/kintrip/store";
+import { checkBackDue, isWaiting, waitingLine } from "@/lib/kintrip/enhancements";
+import { clearTaskWaiting, setTaskWaiting } from "@/lib/kintrip/enhancements.actions";
 import type { PackingItem, TaskState } from "@/lib/kintrip/types";
 
 export const Route = createFileRoute("/getting-ready")({
@@ -154,6 +156,13 @@ function GettingReadyScreen() {
                       {t.assigneeId ? actorName(state, t.assigneeId) : "Nobody yet"}
                       {t.deadline ? ` · by ${t.deadline}` : ""}
                     </p>
+                    {isWaiting(t) ? (
+                      <p className="text-xs font-semibold text-secondary">
+                        {waitingLine(t)}
+                        {t.waitingBookingId ? ` · ${state.bookings.find((b) => b.id === t.waitingBookingId)?.title ?? ""}` : ""}
+                        {checkBackDue(t) ? " · time to check" : ""}
+                      </p>
+                    ) : null}
                   </div>
                   <span className="flex flex-wrap items-center gap-2">
                     <Chip tone={t.state === "complete" ? "lime" : t.state === "cancelled" ? "sunny" : "primary"}>
@@ -202,6 +211,9 @@ function GettingReadyScreen() {
                         </option>
                       ))}
                     </select>
+                  ) : null}
+                  {(organiser || t.assigneeId === me) && t.state !== "cancelled" && t.state !== "complete" ? (
+                    <WaitingEditor taskId={t.id} waiting={isWaiting(t)} bookings={state.bookings.map((b) => ({ id: b.id, title: b.title }))} />
                   ) : null}
                   {organiser && t.state !== "cancelled" && t.state !== "complete" ? (
                     <Button type="button" variant="outline" onClick={() => cancelTask(t.id)}>
@@ -392,5 +404,57 @@ function SweepCard() {
       </div>
       {message ? <p className="text-sm">{message}</p> : null}
     </Card>
+  );
+}
+
+/** "Waiting for…" plus an optional personal check-back date. Sends nothing to anyone. */
+function WaitingEditor({ taskId, waiting, bookings }: { taskId: string; waiting: boolean; bookings: { id: string; title: string }[] }) {
+  const [open, setOpen] = useState(false);
+  const [what, setWhat] = useState("");
+  const [on, setOn] = useState("");
+  const [bookingId, setBookingId] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  if (waiting && !open) {
+    return (
+      <Button type="button" variant="outline" onClick={() => clearTaskWaiting(taskId)}>
+        Answer arrived
+      </Button>
+    );
+  }
+  if (!open) {
+    return (
+      <Button type="button" variant="outline" onClick={() => setOpen(true)}>
+        Waiting for an answer
+      </Button>
+    );
+  }
+  return (
+    <div className="w-full space-y-2 rounded-xl bg-card p-2">
+      <input className={inputClass} value={what} maxLength={120} onChange={(e) => setWhat(e.target.value)} placeholder="Waiting for… e.g. hotel reply" aria-label="Waiting for" />
+      <div className="grid gap-2 sm:grid-cols-2">
+        <input type="date" className={inputClass} value={on} onChange={(e) => setOn(e.target.value)} aria-label="Check again on (does not change the deadline)" />
+        <select className={inputClass} value={bookingId} onChange={(e) => setBookingId(e.target.value)} aria-label="About which booking">
+          <option value="">Not about a booking</option>
+          {bookings.map((b) => (
+            <option key={b.id} value={b.id}>{b.title}</option>
+          ))}
+        </select>
+      </div>
+      <p className="text-xs text-muted-foreground">Nobody is messaged. The check-back date is a reminder for you and never moves a real deadline.</p>
+      {err ? <p role="alert" className="text-sm">{err}</p> : null}
+      <div className="flex gap-2">
+        <Button
+          type="button"
+          onClick={() => {
+            const e = setTaskWaiting(taskId, { waitingFor: what, checkBackOn: on || undefined, waitingBookingId: bookingId || undefined });
+            if (e) setErr(e);
+            else setOpen(false);
+          }}
+        >
+          Save
+        </Button>
+        <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+      </div>
+    </div>
   );
 }

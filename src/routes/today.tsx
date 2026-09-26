@@ -344,6 +344,14 @@ function TodayScreen() {
 
   return (
     <AppShell title="Today" subtitle={day ? `Day ${day.day} · ${day.city}` : ""}>
+      <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <Link to="/breaks" className="inline-flex min-h-11 items-center font-semibold underline">
+          Need a rest? Ask quietly
+        </Link>
+        <Link to="/context" className="inline-flex min-h-11 items-center font-semibold underline">
+          Slower today? Add a trip setting
+        </Link>
+      </p>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Button

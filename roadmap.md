@@ -35,3 +35,12 @@
 - TC07 after-trip learning — `/feedback`, two separate explicit consents, deletable
 - Gap items — split-day subgroups (Itinerary), organiser day note (Today), contact cards (Logistics), check-out sweep list (Getting ready)
 - Not built by decision: TC01 meetup check-ins and TC04 activity questions (messaging and tracking dropped)
+
+## Focused enhancements CE01–CE07 (built)
+- [x] CE01 Save an idea (/ideas): no lookup on save, retry-safe, duplicates flagged not merged, "Location needed" ideas kept out of routes
+- [x] CE02 Traveller settings (/context): source, scope, day range, versioned confirmation, explicit "remember for future trips"; planner reads confirmed overrides (walking only ever tightens)
+- [x] CE03 "Waiting for…" + check-back date on jobs (never changes deadlines, messages nobody)
+- [x] CE04 Pick up planning cards on home (max 3, derived, dismissals per device, viewing ≠ acknowledging)
+- [x] CE05 Temporary arrangements (/arrangements): versioned per-person answers, organiser applies to draft, expiry never edits the plan
+- [x] CE06 Today/preferences point-of-need links to breaks and trip settings
+- [x] CE07 VITE_FEATURE_ARRANGEMENTS=off switch

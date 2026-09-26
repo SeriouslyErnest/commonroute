@@ -15,6 +15,7 @@ import { AppShell } from "@/components/kintrip/AppShell";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { StartTripCard } from "@/components/kintrip/StartTripForm";
 import { MoreTools } from "@/components/kintrip/MoreTools";
+import { PickUpPlanning } from "@/components/kintrip/PickUpPlanning";
 import tokyoHero from "@/assets/kintrip-tokyo.jpg";
 import { formatDate, pretty, toMin } from "@/lib/kintrip/engine";
 import { setState, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
@@ -105,6 +106,7 @@ function ActiveTrip() {
           </div>
         </section>
         <DemoBanner />
+        <PickUpPlanning />
         <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
           <Card className="bg-primary-soft p-5 sm:p-6">
             <Chip tone="primary">Next step</Chip>
@@ -259,6 +261,8 @@ function ActiveTrip() {
         </LinkButton>
       </div>
 
+      {/* During travel, Today stays first; planning cues sit lower down. */}
+      <PickUpPlanning secondary />
       <MoreTools />
       <Notes />
     </AppShell>

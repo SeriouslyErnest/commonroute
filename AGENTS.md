@@ -25,3 +25,4 @@ Preserve these invariants in every change:
 - Secrets remain server-only; operator roles remain in a separate table and are verified server-side.
 - Every new public table includes explicit grants, row-level security, and policies in the same migration.
 - Public documentation never names a production-only console path, real operator identity, credential, or private service URL.
+- Focused enhancements live in `src/lib/kintrip/enhancements.ts` (pure) and `enhancements.actions.ts` (permission-checked changes); planner soft preferences go through `effectivePreferences` — one resolver so trip/day overrides apply consistently.
