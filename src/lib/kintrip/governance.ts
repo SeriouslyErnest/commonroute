@@ -153,6 +153,8 @@ export function normalizeState(input: KintripState): KintripState {
     milestones: state.milestones ?? [],
     stayOptions: state.stayOptions ?? [],
     scenarios: state.scenarios ?? [],
+    prefRecords: state.prefRecords ?? [],
+    arrangements: state.arrangements ?? [],
   };
 }
 
@@ -627,9 +629,10 @@ export function publicDeclineReason(s: Suggestion): string | null {
   return last.note ? `${base} — ${last.note}` : base;
 }
 
-/** Statuses the itinerary generator may use. */
+/** Statuses the itinerary generator may use. Ideas still missing a location never enter a route. */
 export function eligibleAttractions(state: KintripState): Attraction[] {
   return state.attractions.filter((a) => {
+    if (a.locationStatus === "needs_location") return false;
     const s = state.suggestions[a.id];
     return s?.status === "approved" || s?.status === "booked";
   });
