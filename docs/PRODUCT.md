@@ -209,7 +209,7 @@ The unlinked operations console supports:
 - account suspension and restoration;
 - complimentary and trial grants;
 - promotion creation and status changes;
-- Telegram admin alerts (connect, test, disconnect, per-destination event categories); and
+- Telegram admin alerts (connect, test, disconnect, per-destination event categories);
 - append-only operator action records; and
 - super-admin management of operator roles.
 
