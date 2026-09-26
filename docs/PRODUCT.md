@@ -265,3 +265,6 @@ Contextual tools, all free, reached from More tools on the trip home:
 - **Before you check out** — adds a last-look job per room covering the usual hiding places.
 
 Meetup check-ins and activity questions were deliberately left out: they would amount to tracking and messaging, which this product does not do.
+
+## Focused enhancements (CE01–CE07)
+Quick ideas (/ideas), traveller settings with provenance (/context), waiting-for cues on jobs, a "Pick up planning" section on the home screen, and temporary arrangements (/arrangements, disable with `VITE_FEATURE_ARRANGEMENTS=off`). All are free, local-first like the rest of the trip record, work in the demo, and keep private reasons out of group views and exports.
