@@ -83,6 +83,10 @@ function AuthPage() {
                 We sent a sign-in link to <span className="font-semibold">{email}</span>. Open it on
                 this device and you'll be signed in. The link works for a short time only.
               </p>
+              <p className="text-xs text-muted-foreground">
+                The email is sent automatically. If it doesn't arrive within a few minutes, please
+                check your spam or promotions folder.
+              </p>
               <Button type="button" variant="outline" onClick={() => setSent(false)}>
                 Use a different email
               </Button>
@@ -109,6 +113,10 @@ function AuthPage() {
               <p className="text-xs text-muted-foreground">
                 Signing in keeps your trips on your account, so they're there on your phone and your
                 laptop. You can still join a trip with an invite code without signing in.
+              </p>
+              <p className="text-xs text-muted-foreground">
+                The email is sent automatically. If it doesn't arrive within a few minutes, please
+                check your spam or promotions folder.
               </p>
             </form>
           )}

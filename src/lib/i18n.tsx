@@ -261,6 +261,8 @@ const ZH: Record<string, string> = {
   "We'll email you a link that signs you straight in. No password, no code to type.":
     "我们会通过邮件发送一键登录链接，无需密码，也无需输入验证码。",
   "Check your email": "请查看邮件",
+  "The email is sent automatically. If it doesn't arrive within a few minutes, please check your spam or promotions folder.":
+    "邮件由系统自动发送。如果几分钟内没有收到，请查看垃圾邮件或推广邮件文件夹。",
   "Use a different email": "使用其他邮箱",
   "Your email": "你的邮箱",
   "Email me a sign-in link": "发送登录链接",
