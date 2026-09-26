@@ -217,7 +217,7 @@ function GuidePage() {
                   <li key={p}>{p}</li>
                 ))}
               </ol>
-              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {s.shots.map((shot) => (
                   <figure key={shot.src} className="min-w-0">
                     <img
