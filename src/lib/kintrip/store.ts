@@ -436,7 +436,7 @@ export function switchTrip(tripId: string) {
 }
 
 /** Organiser: replace the invite code; the old one stops working for everyone. */
-export async function rotateInviteCode(tripId: string): Promise<string> {
+export async function rotateInviteCode(tripId: string = multi.activeTripId): Promise<string> {
   const state = syncableTrip(tripId);
   if (!state) throw new Error("This trip isn't shared online");
   const { rotateTripCode } = await import("./sync.functions");
@@ -452,7 +452,7 @@ export async function rotateInviteCode(tripId: string): Promise<string> {
 }
 
 /** Organiser: delete the shared trip for everyone, then remove it here. */
-export async function deleteTripForEveryone(tripId: string) {
+export async function deleteTripForEveryone(tripId: string = multi.activeTripId) {
   const state = syncableTrip(tripId);
   if (state) {
     const { deleteSharedTrip } = await import("./sync.functions");

@@ -112,7 +112,6 @@ function OrganiserControls() {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
   if (demoActive || !state.trip.shareCode || !isOrganiser(state)) return null;
-  const tripId = state.trip.id;
 
   async function run(fn: () => Promise<void>) {
     setBusy(true);
@@ -139,7 +138,7 @@ function OrganiserControls() {
           onClick={() => {
             if (!window.confirm("Change the invite code? The old link stops working for everyone, including people already in the trip.")) return;
             void run(async () => {
-              await rotateInviteCode(tripId);
+              await rotateInviteCode();
               setNote("New invite code ready — share the new link above.");
             });
           }}
@@ -157,7 +156,7 @@ function OrganiserControls() {
           onClick={() => {
             if (!window.confirm(`Delete “${state.trip.title}” for everyone? The shared plan is erased and can't be recovered.`)) return;
             void run(async () => {
-              await deleteTripForEveryone(tripId);
+              await deleteTripForEveryone();
               void navigate({ to: "/trips" });
             });
           }}
