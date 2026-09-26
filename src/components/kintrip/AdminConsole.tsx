@@ -18,8 +18,15 @@ import {
   adminSetPromotionStatus,
   type AdminRole,
 } from "@/lib/kintrip/admin.functions";
+import {
+  disconnectAdminTelegram,
+  getAdminTelegramStatus,
+  registerTelegramWebhook,
+  sendAdminTelegramTest,
+  startAdminTelegramLink,
+} from "@/lib/kintrip/telegram.functions";
 
-type Tab = "dashboard" | "accounts" | "promotions" | "usage" | "audit" | "admins";
+type Tab = "dashboard" | "accounts" | "promotions" | "usage" | "audit" | "telegram" | "admins";
 
 export function AdminConsole() {
   const session = useServerFn(adminSession);
@@ -52,6 +59,7 @@ export function AdminConsole() {
     { id: "promotions", label: "Promotions" },
     { id: "usage", label: "Usage" },
     { id: "audit", label: "Audit log" },
+    { id: "telegram", label: "Telegram alerts" },
     ...(role === "super_admin" ? [{ id: "admins" as Tab, label: "Operators" }] : []),
   ];
 
@@ -85,6 +93,7 @@ export function AdminConsole() {
       {tab === "promotions" && <PromotionsTab role={role} />}
       {tab === "usage" && <UsageTab />}
       {tab === "audit" && <AuditTab />}
+      {tab === "telegram" && <TelegramTab role={role} />}
       {tab === "admins" && role === "super_admin" && <AdminsTab />}
     </Shell>
   );
