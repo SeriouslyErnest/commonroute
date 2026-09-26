@@ -68,6 +68,16 @@ Shared trip payloads live in the `kintrip_trips` backend table. Browser clients 
 
 The share code acts as a bearer secret. Anyone holding it can retrieve and update that trip through the current server functions. Account membership improves cross-device discovery but is not the authorization boundary for shared-trip payloads.
 
+`rotateTripCode` issues a new code (the old one stops resolving) and `deleteSharedTrip` writes a tombstone and removes all memberships so other devices cannot resurrect the trip. Both require a signed-in caller holding the current code; organiser-only visibility is a UI rule because roles live inside the trip document.
+
+## 5a. Telegram notifications
+
+- `telegram.server.ts` — server-only Bot API calls, token hashing, preference sanitising.
+- `telegram.functions.ts` — authenticated link/disconnect/prefs/test functions, admin destination functions, and `notifyTripTelegram`, which revalidates trip membership per recipient and uses an idempotency key per event.
+- `/api/public/telegram/webhook` — verifies `X-Telegram-Bot-Api-Secret-Token` timing-safely, deduplicates `update_id`, and handles only `/start <token>` and `/help` in private chats.
+- Link tokens are stored as SHA-256 hashes, single-use, 10-minute expiry. The demo trip never notifies. Telegram never performs votes, edits, or admin actions.
+
+
 ## 6. Accounts and authenticated functions
 
 The browser auth client persists sessions. `src/start.ts` attaches the current bearer token to server-function calls. Protected functions use `requireSupabaseAuth`, then use the request-scoped database client so row-level security applies as that user.

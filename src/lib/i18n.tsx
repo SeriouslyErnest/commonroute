@@ -213,8 +213,15 @@ const ZH: Record<string, string> = {
   "Tell CommonRoute what changed and it rebuilds the rest of the day while keeping what still works.":
     "告诉 CommonRoute 发生了什么变化，它会保留仍然适用的安排并重排当天剩余行程。",
   "Can I plan more than one trip?": "可以规划多趟旅行吗？",
-  "Yes. Every trip lives in My trips, and you can switch between them anytime.":
-    "可以。所有旅行都保存在“我的旅行”中，你可以随时切换。",
+  "Yes. Every trip lives in My trips, and you can switch between them anytime. Each trip has its own invite code, which the organiser can change or retire.":
+    "可以。所有旅行都保存在“我的旅行”中，你可以随时切换。每趟旅行都有自己的邀请码，组织者可以更换或停用。",
+  "Can I get updates on Telegram?": "可以通过 Telegram 接收更新吗？",
+  "Yes, if you want to. Connect the CommonRoute bot from your account to receive reminders and plan changes. Voting and planning always stay in CommonRoute.":
+    "可以，完全自愿。在账户中连接 CommonRoute 机器人，即可接收提醒和行程变更。投票和规划始终在 CommonRoute 内完成。",
+  "Organisers can use \"Change invite code\" if a link was shared too widely — the old link stops working for everyone.":
+    "如果邀请链接传播过广，组织者可以使用“更换邀请码”——旧链接会立即对所有人失效。",
+  "\"Delete trip for everyone\" removes the shared plan from every account. Anyone else can tap \"Leave\" on My trips to remove it just for themselves.":
+    "“为所有人删除旅行”会从每个账户中移除共享计划。其他成员可以在“我的旅行”中点击“离开”，仅为自己移除。",
   "Your next family trip starts with one destination": "下一趟群组旅行，从一个目的地开始",
   "Add where you're going and the dates. CommonRoute takes it from there.":
     "填写目的地和日期，接下来交给 CommonRoute。",

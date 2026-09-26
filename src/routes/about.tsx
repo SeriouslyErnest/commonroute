@@ -110,7 +110,11 @@ const FAQS = [
   },
   {
     q: "Can I plan more than one trip?",
-    a: "Yes. Every trip lives in My trips, and you can switch between them anytime.",
+    a: "Yes. Every trip lives in My trips, and you can switch between them anytime. Each trip has its own invite code, which the organiser can change or retire.",
+  },
+  {
+    q: "Can I get updates on Telegram?",
+    a: "Yes, if you want to. Connect the CommonRoute bot from your account to receive reminders and plan changes. Voting and planning always stay in CommonRoute.",
   },
 ];
 
