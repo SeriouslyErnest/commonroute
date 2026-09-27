@@ -121,6 +121,7 @@ async function resolveRole(
 async function requireAdmin(context: any, allowed: AdminRole[] = WRITE_ROLES) {
   const { role, email } = await resolveRole(context);
   if (!role) throw new Error("Not found");
+  if (context.claims?.["aal"] !== "aal2") throw new Error("Authenticator code required");
   if (!allowed.includes(role)) throw new Error("You do not have permission for this action");
   return { role, email, admin: await adminClient() };
 }
@@ -135,7 +136,9 @@ export const adminSession = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { role, email } = await resolveRole(context);
-    return { role, email, isAdmin: Boolean(role) };
+    // Operators must complete an authenticator-app (TOTP) step for this session.
+    const mfaOk = context.claims?.["aal"] === "aal2";
+    return { role, email, isAdmin: Boolean(role), mfaOk };
   });
 
 export const adminDashboard = createServerFn({ method: "GET" })

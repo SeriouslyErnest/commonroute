@@ -258,7 +258,8 @@ export const notifyTripTelegram = createServerFn({ method: "POST" })
  * sessions (so roles can't be probed), so it runs with the server client
  * against the already-verified caller id from requireSupabaseAuth.
  */
-async function requireAdmin(_supabase: unknown, userId: string) {
+async function requireAdmin(_supabase: unknown, userId: string, claims: Record<string, unknown>) {
+  if (claims["aal"] !== "aal2") throw new Error("Authenticator code required");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: role } = await supabaseAdmin.rpc("admin_role_of", { _user_id: userId });
   if (!role) throw new Error("Forbidden");
@@ -268,7 +269,7 @@ async function requireAdmin(_supabase: unknown, userId: string) {
 export const getAdminTelegramStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdmin(context.supabase, context.userId);
+    await requireAdmin(context.supabase, context.userId, context.claims as Record<string, unknown>);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("telegram_admin_destinations")
@@ -285,7 +286,7 @@ export const getAdminTelegramStatus = createServerFn({ method: "GET" })
 export const startAdminTelegramLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdmin(context.supabase, context.userId);
+    await requireAdmin(context.supabase, context.userId, context.claims as Record<string, unknown>);
     const username = botUsername();
     if (!process.env["TELEGRAM_BOT_TOKEN"] || !username) {
       throw new Error("Telegram is not configured on this server");
@@ -297,7 +298,7 @@ export const startAdminTelegramLink = createServerFn({ method: "POST" })
 export const disconnectAdminTelegram = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdmin(context.supabase, context.userId);
+    await requireAdmin(context.supabase, context.userId, context.claims as Record<string, unknown>);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await supabaseAdmin
       .from("telegram_admin_destinations")
@@ -309,7 +310,7 @@ export const disconnectAdminTelegram = createServerFn({ method: "POST" })
 export const sendAdminTelegramTest = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdmin(context.supabase, context.userId);
+    await requireAdmin(context.supabase, context.userId, context.claims as Record<string, unknown>);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: dest } = await supabaseAdmin
       .from("telegram_admin_destinations")
@@ -352,7 +353,7 @@ export const sendAdminTelegramAlert = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data, context }) => {
-    await requireAdmin(context.supabase, context.userId);
+    await requireAdmin(context.supabase, context.userId, context.claims as Record<string, unknown>);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: dests } = await supabaseAdmin
       .from("telegram_admin_destinations")
@@ -389,7 +390,7 @@ export const registerTelegramWebhook = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data, context }) => {
-    const role = await requireAdmin(context.supabase, context.userId);
+    const role = await requireAdmin(context.supabase, context.userId, context.claims as Record<string, unknown>);
     if (role !== "super_admin") throw new Error("Forbidden");
     const secret = process.env["TELEGRAM_WEBHOOK_SECRET"];
     if (!secret) throw new Error("Webhook secret is not configured");

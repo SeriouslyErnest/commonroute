@@ -1,6 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Card, Chip, Field, inputClass } from "@/components/kintrip/ui";
+import { AdminTotp } from "@/components/kintrip/AdminTotp";
 import {
   adminAccountDetail,
   adminAuditLog,
@@ -34,18 +35,32 @@ type Tab = "dashboard" | "signups" | "accounts" | "promotions" | "usage" | "audi
 
 export function AdminConsole() {
   const session = useServerFn(adminSession);
-  const [state, setState] = useState<{ role: AdminRole | null; email: string | null } | "loading" | "denied">(
-    "loading",
-  );
+  const [state, setState] = useState<
+    { role: AdminRole | null; email: string | null } | "loading" | "denied" | "mfa"
+  >("loading");
+  const [check, setCheck] = useState(0);
   const [tab, setTab] = useState<Tab>("dashboard");
 
   useEffect(() => {
     session()
-      .then((s) => setState(s.isAdmin ? { role: s.role as AdminRole, email: s.email } : "denied"))
+      .then((s) =>
+        setState(!s.isAdmin ? "denied" : !s.mfaOk ? "mfa" : { role: s.role as AdminRole, email: s.email }),
+      )
       .catch(() => setState("denied"));
-  }, [session]);
+  }, [session, check]);
 
   if (state === "loading") return <Shell>Checking…</Shell>;
+  if (state === "mfa")
+    return (
+      <Shell>
+        <AdminTotp
+          onDone={() => {
+            setState("loading");
+            setCheck((n) => n + 1);
+          }}
+        />
+      </Shell>
+    );
   if (state === "denied")
     return (
       <Shell>
