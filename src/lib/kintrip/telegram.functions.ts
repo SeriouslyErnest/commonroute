@@ -186,11 +186,15 @@ export const notifyTripTelegram = createServerFn({ method: "POST" })
     // The caller must be a member of this trip, and the code must match.
     const { data: callerMembership } = await context.supabase
       .from("kintrip_memberships")
-      .select("trip_id")
+      .select("trip_id, title")
       .eq("trip_id", data.tripId)
       .eq("share_code", data.shareCode)
       .maybeSingle();
     if (!callerMembership) throw new Error("You are not a member of this trip");
+    const rawTitle = (callerMembership.title ?? "").trim().slice(0, 80);
+    const tripTitle = rawTitle
+      ? rawTitle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      : "";
 
     const { data: members } = await supabaseAdmin
       .from("kintrip_memberships")
