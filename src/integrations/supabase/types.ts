@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_approvals: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          first_entered_at: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          first_entered_at?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          first_entered_at?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       account_status: {
         Row: {
           changed_at: string
@@ -166,6 +193,27 @@ export type Database = {
           disabled_at?: string | null
           status?: Database["public"]["Enums"]["admin_status"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
         }
         Relationships: []
       }
@@ -730,6 +778,7 @@ export type Database = {
         | "support_admin"
         | "read_only_admin"
       admin_status: "active" | "disabled"
+      approval_status: "pending" | "approved" | "rejected"
       benefit_type:
         | "free_plan_access"
         | "percent_discount"
@@ -894,6 +943,7 @@ export const Constants = {
         "read_only_admin",
       ],
       admin_status: ["active", "disabled"],
+      approval_status: ["pending", "approved", "rejected"],
       benefit_type: [
         "free_plan_access",
         "percent_discount",
