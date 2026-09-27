@@ -7,6 +7,10 @@ import {
   adminCreateGrant,
   adminCreatePromotion,
   adminDashboard,
+  adminDecideApproval,
+  adminGetSignupSettings,
+  adminListApprovals,
+  adminSetSignupSettings,
   adminListAdmins,
   adminListPromotions,
   adminProductMetrics,
@@ -26,7 +30,7 @@ import {
   startAdminTelegramLink,
 } from "@/lib/kintrip/telegram.functions";
 
-type Tab = "dashboard" | "accounts" | "promotions" | "usage" | "audit" | "telegram" | "admins";
+type Tab = "dashboard" | "signups" | "accounts" | "promotions" | "usage" | "audit" | "telegram" | "admins";
 
 export function AdminConsole() {
   const session = useServerFn(adminSession);
@@ -55,6 +59,7 @@ export function AdminConsole() {
   const role = state.role!;
   const tabs: { id: Tab; label: string }[] = [
     { id: "dashboard", label: "Overview" },
+    { id: "signups", label: "Sign-ups" },
     { id: "accounts", label: "Accounts" },
     { id: "promotions", label: "Promotions" },
     { id: "usage", label: "Usage" },
@@ -89,6 +94,7 @@ export function AdminConsole() {
       </nav>
 
       {tab === "dashboard" && <DashboardTab />}
+      {tab === "signups" && <SignupsTab role={role} />}
       {tab === "accounts" && <AccountsTab role={role} />}
       {tab === "promotions" && <PromotionsTab role={role} />}
       {tab === "usage" && <UsageTab />}
@@ -757,5 +763,131 @@ function TelegramTab({ role }: { role: AdminRole }) {
       )}
       <Notice text={notice} />
     </Card>
+  );
+}
+
+function SignupsTab({ role }: { role: AdminRole }) {
+  const getSettings = useServerFn(adminGetSignupSettings);
+  const saveSettings = useServerFn(adminSetSignupSettings);
+  const list = useServerFn(adminListApprovals);
+  const decide = useServerFn(adminDecideApproval);
+  const [settings, setSettings] = useState<{
+    approvalRequired: boolean;
+    alertPending: boolean;
+    alertFirstEntry: boolean;
+  } | null>(null);
+  const [filter, setFilter] = useState<"pending" | "rejected">("pending");
+  const [rows, setRows] = useState<{ userId: string; email: string | null; createdAt: string }[]>([]);
+  const [notice, setNotice] = useState<string | null>(null);
+  const canWrite = role !== "read_only_admin";
+
+  useEffect(() => {
+    getSettings().then(setSettings).catch(() => setSettings(null));
+  }, [getSettings]);
+  useEffect(() => {
+    list({ data: { status: filter } }).then(setRows).catch(() => setRows([]));
+  }, [list, filter]);
+
+  async function toggle(key: "approvalRequired" | "alertPending" | "alertFirstEntry") {
+    if (!settings) return;
+    setNotice(null);
+    try {
+      setSettings(await saveSettings({ data: { ...settings, [key]: !settings[key] } }));
+      setNotice("Saved.");
+    } catch (err) {
+      setNotice(err instanceof Error ? err.message : "Couldn't save");
+    }
+  }
+
+  const items: { key: "approvalRequired" | "alertPending" | "alertFirstEntry"; label: string; help: string }[] = [
+    { key: "approvalRequired", label: "Require approval for new accounts", help: "New sign-ups wait on a holding screen until an operator approves them. The demo trip and invite joining still work." },
+    { key: "alertPending", label: "Telegram alert: new sign-up waiting for approval", help: "Sent once, when a new account joins the approval queue." },
+    { key: "alertFirstEntry", label: "Telegram alert: account entered the app for the first time", help: "Information only. Sent once per account, the first time it gets into the app." },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <Card className="space-y-3">
+        <h2 className="text-lg font-bold text-foreground">Sign-up settings</h2>
+        {!settings ? (
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        ) : (
+          items.map((it) => (
+            <label key={it.key} className="flex min-h-11 items-start gap-3">
+              <input
+                type="checkbox"
+                className="mt-1 size-5"
+                checked={settings[it.key]}
+                disabled={role !== "super_admin"}
+                onChange={() => void toggle(it.key)}
+              />
+              <span>
+                <span className="block text-sm font-semibold text-foreground">{it.label}</span>
+                <span className="block text-xs text-muted-foreground">{it.help}</span>
+              </span>
+            </label>
+          ))
+        )}
+        <p className="text-xs text-muted-foreground">
+          Only super admins can change these. Alerts go to operators with a connected Telegram
+          destination and the accounts category on. Alerts never include a link to this console.
+        </p>
+        <Notice text={notice} />
+      </Card>
+
+      <Card className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-bold text-foreground">Approval queue</h2>
+          <div className="flex gap-2">
+            {(["pending", "rejected"] as const).map((f) => (
+              <Button key={f} variant={filter === f ? "primary" : "outline"} className="px-4 text-sm" onClick={() => setFilter(f)}>
+                {f === "pending" ? "Waiting" : "Rejected"}
+              </Button>
+            ))}
+          </div>
+        </div>
+        {rows.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Nothing here.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {rows.map((r) => (
+              <li key={r.userId} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                <span className="min-w-0 break-all text-sm">
+                  <span className="font-semibold text-foreground">{r.email ?? r.userId}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    Signed up {new Date(r.createdAt).toLocaleString()}
+                  </span>
+                </span>
+                {canWrite && (
+                  <span className="flex gap-2">
+                    <Button
+                      className="px-4 text-sm"
+                      onClick={async () => {
+                        await decide({ data: { userId: r.userId, decision: "approved" } });
+                        setRows((x) => x.filter((y) => y.userId !== r.userId));
+                      }}
+                    >
+                      Approve
+                    </Button>
+                    {filter === "pending" && (
+                      <Button
+                        variant="outline"
+                        className="px-4 text-sm"
+                        onClick={async () => {
+                          await decide({ data: { userId: r.userId, decision: "rejected" } });
+                          setRows((x) => x.filter((y) => y.userId !== r.userId));
+                        }}
+                      >
+                        Reject
+                      </Button>
+                    )}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+    </div>
   );
 }
