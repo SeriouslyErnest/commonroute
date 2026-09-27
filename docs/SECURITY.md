@@ -156,3 +156,7 @@ Repository owners should add a private security contact or GitHub Security Advis
 - `account_approvals` (own-row read only) records each account's approval state and first entry; `app_settings` is server-only. Existing accounts were grandfathered as approved.
 - With approval switched on, new accounts see a holding screen and account-level writes are refused server-side until an operator approves them. Operators are never gated.
 - Two independent Telegram alerts (new sign-up waiting; first entry into the app) go only to active operators' destinations with the accounts category on. Emails are masked. No Telegram message ever contains a link to the operations console.
+
+## Operator authenticator step (TOTP)
+
+Every operator must complete an authenticator-app (TOTP) step before the console opens. The first visit shows a setup QR code; later visits ask for the 6-digit code. Every admin and operator Telegram server function refuses sessions that have not completed this step (`aal2`), so hiding the screen is not the control. Travellers never see it — their sign-in stays email-link only.
