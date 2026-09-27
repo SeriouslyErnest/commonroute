@@ -118,6 +118,7 @@ The SQL migrations are in `drizzle/migrations/`. A fresh fork should apply the p
 7. `0007_revoke_anon_grants_public_tables.sql`
 8. `0008_is_trip_member_security_invoker.sql`
 9. `0009_telegram.sql`
+10. `0009_account_approvals_signup_alerts.sql` (sign-up approval queue and server-only operator settings)
 
 Do **not** apply `0002_seed_test_super_admin.sql` to a new backend. It is a development-only historical seed tied to the original test environment. New installations bootstrap their first operator with `ADMIN_BOOTSTRAP_EMAIL` instead.
 

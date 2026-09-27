@@ -54,6 +54,7 @@ const SECTIONS: Section[] = [
       "Open CommonRoute and tap \"Register or sign in\".",
       "Enter your email and tap \"Email me a sign-in link\".",
       "Open the email on the same device and tap the link. You are signed in — there is no password to remember.",
+      "If this CommonRoute site requires approval for new accounts, you'll see \"Thanks for signing up\" until an operator approves you. Tap \"Check again\" later, or try the demo trip meanwhile.",
       "Just curious? Tap \"Try the demo trip first\" to explore a sample Japan trip. It stays on this device and is never shared.",
     ],
     shots: [

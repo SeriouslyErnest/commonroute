@@ -70,6 +70,12 @@ The share code acts as a bearer secret. Anyone holding it can retrieve and updat
 
 `rotateTripCode` issues a new code (the old one stops resolving) and `deleteSharedTrip` writes a tombstone and removes all memberships so other devices cannot resurrect the trip. Both require a signed-in caller holding the current code; organiser-only visibility is a UI rule because roles live inside the trip document.
 
+## 5b. Sign-up approval
+
+- `approval.server.ts` — reads sign-up settings from the server-only `app_settings` table (key `signups`), `approvalBlocks(userId)` used by account writes, and `alertOperators()` (masked email, no links, never throws).
+- `account.functions.ts#myApprovalStatus` — called by `AccountGate` on sign-in; atomically creates the `account_approvals` row (pending or approved) and claims `first_entered_at` with an `IS NULL` update so each alert fires once.
+- `admin.functions.ts` — `adminGetSignupSettings`, `adminSetSignupSettings` (super admin), `adminListApprovals`, `adminDecideApproval`; all audited.
+
 ## 5a. Telegram notifications
 
 - `telegram.server.ts` — server-only Bot API calls, token hashing, preference sanitising.

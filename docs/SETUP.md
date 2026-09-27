@@ -116,6 +116,7 @@ Migration files are in `drizzle/migrations/`. For a new installation, apply:
 7. `0007_revoke_anon_grants_public_tables.sql`
 8. `0008_is_trip_member_security_invoker.sql`
 9. `0009_telegram.sql` (Telegram linking, webhook inbox, and delivery log)
+10. `0009_account_approvals_signup_alerts.sql` (sign-up approval queue and server-only operator settings)
 
 Do **not** apply `0002_seed_test_super_admin.sql`. It is a historical development seed tied to an account in the original test environment. Use `ADMIN_BOOTSTRAP_EMAIL` for your installation.
 
