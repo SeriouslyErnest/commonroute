@@ -44,7 +44,74 @@ async function assertActive(context: any) {
   if (data?.state === "suspended") {
     throw new Error("This account is paused. Contact support to have it restored.");
   }
+  const { approvalBlocks } = await import("./approval.server");
+  if (await approvalBlocks(context.userId)) {
+    throw new Error("This account is waiting for approval.");
+  }
 }
+
+/**
+ * Called when a signed-in person opens the app. Records the account's
+ * approval state, and sends the (optional) operator alerts exactly once:
+ * "waiting for approval" when a new sign-up lands in the queue, and an
+ * information alert the first time an account actually enters the app.
+ */
+export const myApprovalStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ status: "approved" | "pending" | "rejected" }> => {
+    const { readSignupSettings, alertOperators } = await import("./approval.server");
+    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+    const email = typeof context.claims["email"] === "string" ? (context.claims["email"] as string) : null;
+    const settings = await readSignupSettings();
+    const { data: op } = await db
+      .from("app_admins")
+      .select("user_id")
+      .eq("user_id", context.userId)
+      .eq("status", "active")
+      .maybeSingle();
+
+    const { data: row } = await db
+      .from("account_approvals")
+      .select("status, first_entered_at")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+
+    if (!row) {
+      const pending = settings.approvalRequired && !op;
+      const { data: inserted } = await db
+        .from("account_approvals")
+        .upsert(
+          {
+            user_id: context.userId,
+            status: pending ? "pending" : "approved",
+            first_entered_at: pending ? null : new Date().toISOString(),
+            decided_at: pending ? null : new Date().toISOString(),
+          },
+          { onConflict: "user_id", ignoreDuplicates: true },
+        )
+        .select("user_id");
+      if (inserted && inserted.length) {
+        if (pending && settings.alertPending) await alertOperators("pending", email);
+        if (!pending && settings.alertFirstEntry) await alertOperators("entered", email);
+      }
+      return { status: pending ? "pending" : "approved" };
+    }
+
+    const effective =
+      op || !settings.approvalRequired || row.status === "approved" ? "approved" : row.status;
+    if (effective === "approved" && !row.first_entered_at) {
+      const { data: claimed } = await db
+        .from("account_approvals")
+        .update({ first_entered_at: new Date().toISOString() })
+        .eq("user_id", context.userId)
+        .is("first_entered_at", null)
+        .select("user_id");
+      if (claimed && claimed.length && settings.alertFirstEntry) {
+        await alertOperators("entered", email);
+      }
+    }
+    return { status: effective as "approved" | "pending" | "rejected" };
+  });
 
 export const saveMemberships = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

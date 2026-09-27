@@ -64,6 +64,13 @@
       "when": 1790058049854,
       "tag": "0008_is_trip_member_security_invoker",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790480496510,
+      "tag": "0009_account_approvals_signup_alerts",
+      "breakpoints": true
     }
   ]
 }
