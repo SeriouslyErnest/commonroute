@@ -14,6 +14,7 @@ export type AppLocale = "en" | "zh-CN";
 const STORAGE_KEY = "commonroute.locale";
 
 const ZH: Record<string, string> = {
+  "If this CommonRoute site requires approval for new accounts, you'll see \"Thanks for signing up\" until an operator approves you. Tap \"Check again\" later, or try the demo trip meanwhile.": "如果此 CommonRoute 站点要求新账户审核，在运营人员批准之前您会看到“感谢注册”。稍后点按“再次检查”，或先试试示例行程。",
   "Thanks for signing up": "感谢注册",
   "This account wasn't approved": "此账户未获批准",
   "Your account is waiting for approval. You'll be able to start planning as soon as it's approved.": "您的账户正在等待审核。审核通过后即可开始规划。",

@@ -234,6 +234,10 @@ The following are not part of the current implementation:
 - the optional nearby-eatery recommendation module described in the maps roadmap.
 
 Provider coverage and quality vary by destination. Missing or unverified data is intentionally shown as unknown instead of being guessed.
+## Sign-up approval and operator sign-up alerts
+
+Operators can switch on "Require approval for new accounts" in the operations console (Sign-ups tab, super admin only). New accounts then see a "Thanks for signing up" holding screen (with Check again, the demo trip and Sign out) until an operator approves or rejects them from the approval queue; account-level changes are refused server-side meanwhile. Accounts that existed before the feature are treated as approved, and operators are never gated. Two independent Telegram alerts can be switched on or off: a new sign-up waiting for approval, and an information alert when an account enters the app for the first time. Both go to operators' Telegram destinations with the accounts category on, mask the email, fire once per account, and never contain a link to the console. The gate defaults to off.
+
 ## Telegram notifications (optional)
 
 Signed-in travellers can connect the CommonRoute Telegram bot from Account → Telegram notifications. Connecting uses a short-lived, single-use deep link; disconnecting and a test message are always available. Preferences cover voting and decision reminders, itinerary changes, organiser updates, and optional travel-day prompts. Telegram is notification/deep-link only — voting, editing, and admin actions never happen in Telegram. Trip details are only delivered while the recipient is a member of the trip, and a blocked or revoked chat pauses delivery ("needs attention") without affecting the trip. The demo trip never sends Telegram notifications. Travel-day prompts require a scheduled job, which is not yet enabled.
