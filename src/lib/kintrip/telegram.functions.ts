@@ -362,10 +362,8 @@ export const sendAdminTelegramAlert = createServerFn({ method: "POST" })
         `🔐 <b>ADMIN — CommonRoute</b>\n🟠 ${data.category.charAt(0).toUpperCase() + data.category.slice(1)} alert\n` +
         `${data.summary.replace(/[<>&]/g, "")}` +
         (data.reference ? `\nRef: ${data.reference.replace(/[<>&]/g, "")}` : "");
-      const result = await tgNotify(dest.tg_chat_id, text, {
-        label: "Open Admin Console",
-        path: "/ops/console",
-      });
+      // Admin alerts never include a link to the operations console.
+      const result = await tgNotify(dest.tg_chat_id, text);
       if (result.ok) sent += 1;
       else if (result.permanent) {
         await supabaseAdmin

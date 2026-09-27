@@ -705,3 +705,114 @@ export const adminProductMetrics = createServerFn({ method: "POST" })
         .reduce((sum, u) => sum + (u.amount ?? 0), 0),
     };
   });
+
+/* ---------------- sign-up approval ---------------- */
+
+export const adminGetSignupSettings = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context, ["super_admin", "billing_admin", "support_admin", "read_only_admin"]);
+    const { readSignupSettings } = await import("./approval.server");
+    return readSignupSettings();
+  });
+
+export const adminSetSignupSettings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { approvalRequired: boolean; alertPending: boolean; alertFirstEntry: boolean }) => {
+    if (
+      !input ||
+      typeof input.approvalRequired !== "boolean" ||
+      typeof input.alertPending !== "boolean" ||
+      typeof input.alertFirstEntry !== "boolean"
+    ) throw new Error("Invalid settings");
+    return {
+      approvalRequired: input.approvalRequired,
+      alertPending: input.alertPending,
+      alertFirstEntry: input.alertFirstEntry,
+    };
+  })
+  .handler(async ({ data, context }) => {
+    const { admin, email } = await requireAdmin(context, OWNER_ROLES);
+    const { readSignupSettings } = await import("./approval.server");
+    const before = await readSignupSettings();
+    const { error } = await admin.from("app_settings").upsert(
+      { key: "signups", value: data, updated_by: context.userId, updated_at: new Date().toISOString() },
+      { onConflict: "key" },
+    );
+    if (error) throw new Error(error.message);
+    await audit(admin, {
+      admin_user_id: context.userId,
+      admin_email: await emailFingerprint(email),
+      action_type: "settings.signups",
+      target_type: "settings",
+      target_id: "signups",
+      before_json: before,
+      after_json: data,
+      reason: "Sign-up settings changed",
+    });
+    return data;
+  });
+
+export const adminListApprovals = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { status: "pending" | "rejected" }) => {
+    if (input?.status !== "pending" && input?.status !== "rejected") throw new Error("Invalid filter");
+    return input;
+  })
+  .handler(async ({ data, context }) => {
+    const { admin } = await requireAdmin(context, ["super_admin", "billing_admin", "support_admin", "read_only_admin"]);
+    const { data: rows } = await admin
+      .from("account_approvals")
+      .select("user_id, status, created_at, decided_at")
+      .eq("status", data.status)
+      .order("created_at", { ascending: true })
+      .limit(200);
+    const ids = (rows ?? []).map((r) => r.user_id);
+    const { data: profiles } = ids.length
+      ? await admin.from("profiles").select("id, email").in("id", ids)
+      : { data: [] as { id: string; email: string | null }[] };
+    const emails = new Map((profiles ?? []).map((p) => [p.id, p.email]));
+    return (rows ?? []).map((r) => ({
+      userId: r.user_id,
+      email: emails.get(r.user_id) ?? null,
+      status: r.status,
+      createdAt: r.created_at,
+    }));
+  });
+
+export const adminDecideApproval = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { userId: string; decision: "approved" | "rejected" }) => {
+    if (!UUID.test(String(input?.userId))) throw new Error("Invalid account");
+    if (input.decision !== "approved" && input.decision !== "rejected") throw new Error("Invalid decision");
+    return input;
+  })
+  .handler(async ({ data, context }) => {
+    const { admin, email } = await requireAdmin(context, WRITE_ROLES);
+    const { data: before } = await admin
+      .from("account_approvals")
+      .select("status")
+      .eq("user_id", data.userId)
+      .maybeSingle();
+    const { error } = await admin.from("account_approvals").upsert(
+      {
+        user_id: data.userId,
+        status: data.decision,
+        decided_by: context.userId,
+        decided_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
+    if (error) throw new Error(error.message);
+    await audit(admin, {
+      admin_user_id: context.userId,
+      admin_email: await emailFingerprint(email),
+      action_type: data.decision === "approved" ? "account.approve" : "account.reject",
+      target_type: "account",
+      target_id: data.userId,
+      before_json: before ?? null,
+      after_json: { status: data.decision },
+      reason: data.decision === "approved" ? "Sign-up approved" : "Sign-up rejected",
+    });
+    return { ok: true };
+  });
