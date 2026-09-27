@@ -20,7 +20,6 @@ const ZH: Record<string, string> = {
   "Please contact the people who run CommonRoute if you think this is a mistake.": "如果您认为这是误会，请联系 CommonRoute 的运营人员。",
   "Check again": "再次检查",
   "Try the demo trip meanwhile": "先试试示例行程",
-  "Sign out": "退出登录",
   "Telegram notifications": "Telegram 通知",
   "Connect the CommonRoute Telegram bot to receive trip updates, decision reminders and optional travel-day prompts.": "连接 CommonRoute Telegram 机器人，接收行程更新、决策提醒和可选的旅行日提示。",
   "Connect Telegram": "连接 Telegram",
