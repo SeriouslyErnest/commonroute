@@ -79,7 +79,7 @@ The share code acts as a bearer secret. Anyone holding it can retrieve and updat
 ## 5a. Telegram notifications
 
 - `telegram.server.ts` — server-only Bot API calls, token hashing, preference sanitising.
-- `telegram.functions.ts` — authenticated link/disconnect/prefs/test functions, admin destination functions, and `notifyTripTelegram`, which revalidates trip membership per recipient and uses an idempotency key per event.
+- `telegram.functions.ts` — authenticated link/disconnect/prefs/test functions, admin destination functions, and `notifyTripTelegram`, which revalidates trip membership per recipient and uses an idempotency key per event. Traveller notifications always carry the trip title as context. Admin role checks here use the privileged server client (`supabaseAdmin`) because `admin_role_of` is not executable by authenticated browser sessions; console tabs surface failures with a retry state instead of hanging.
 - `/api/public/telegram/webhook` — verifies `X-Telegram-Bot-Api-Secret-Token` timing-safely, deduplicates `update_id`, and handles only `/start <token>` and `/help` in private chats.
 - Link tokens are stored as SHA-256 hashes, single-use, 10-minute expiry. The demo trip never notifies. Telegram never performs votes, edits, or admin actions.
 

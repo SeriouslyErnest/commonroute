@@ -240,7 +240,7 @@ Operators can switch on "Require approval for new accounts" in the operations co
 
 ## Telegram notifications (optional)
 
-Signed-in travellers can connect the CommonRoute Telegram bot from Account → Telegram notifications. Connecting uses a short-lived, single-use deep link; disconnecting and a test message are always available. Preferences cover voting and decision reminders, itinerary changes, organiser updates, and optional travel-day prompts. Telegram is notification/deep-link only — voting, editing, and admin actions never happen in Telegram. Trip details are only delivered while the recipient is a member of the trip, and a blocked or revoked chat pauses delivery ("needs attention") without affecting the trip. The demo trip never sends Telegram notifications. Travel-day prompts require a scheduled job, which is not yet enabled.
+Signed-in travellers can connect the CommonRoute Telegram bot from Account → Telegram notifications. Connecting uses a short-lived, single-use deep link; disconnecting and a test message are always available. Preferences cover voting and decision reminders, itinerary changes, organiser updates, and optional travel-day prompts. Every traveller notification names the trip it belongs to (e.g. "CommonRoute — Kyoto Family Trip") but never includes email addresses or private details. Telegram is notification/deep-link only — voting, editing, and admin actions never happen in Telegram. Trip details are only delivered while the recipient is a member of the trip, and a blocked or revoked chat pauses delivery ("needs attention") without affecting the trip. The demo trip never sends Telegram notifications. Travel-day prompts require a scheduled job, which is not yet enabled.
 
 ## Paid features (C1)
 
