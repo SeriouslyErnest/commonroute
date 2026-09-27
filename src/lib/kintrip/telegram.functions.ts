@@ -186,11 +186,15 @@ export const notifyTripTelegram = createServerFn({ method: "POST" })
     // The caller must be a member of this trip, and the code must match.
     const { data: callerMembership } = await context.supabase
       .from("kintrip_memberships")
-      .select("trip_id")
+      .select("trip_id, title")
       .eq("trip_id", data.tripId)
       .eq("share_code", data.shareCode)
       .maybeSingle();
     if (!callerMembership) throw new Error("You are not a member of this trip");
+    const rawTitle = (callerMembership.title ?? "").trim().slice(0, 80);
+    const tripTitle = rawTitle
+      ? rawTitle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      : "";
 
     const { data: members } = await supabaseAdmin
       .from("kintrip_memberships")
@@ -249,15 +253,14 @@ export const notifyTripTelegram = createServerFn({ method: "POST" })
 
 /* ---------------- admin destinations ---------------- */
 
-type RpcClient = {
-  rpc: (
-    fn: "admin_role_of",
-    args: { _user_id: string },
-  ) => PromiseLike<{ data: unknown }>;
-};
-
-async function requireAdmin(supabase: RpcClient, userId: string) {
-  const { data: role } = await supabase.rpc("admin_role_of", { _user_id: userId });
+/**
+ * Operator role check. EXECUTE on admin_role_of is revoked from browser
+ * sessions (so roles can't be probed), so it runs with the server client
+ * against the already-verified caller id from requireSupabaseAuth.
+ */
+async function requireAdmin(_supabase: unknown, userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: role } = await supabaseAdmin.rpc("admin_role_of", { _user_id: userId });
   if (!role) throw new Error("Forbidden");
   return role as string;
 }
@@ -266,7 +269,8 @@ export const getAdminTelegramStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await requireAdmin(context.supabase, context.userId);
-    const { data } = await context.supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
       .from("telegram_admin_destinations")
       .select("status, event_prefs")
       .eq("admin_user_id", context.userId)

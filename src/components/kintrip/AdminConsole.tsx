@@ -23,11 +23,11 @@ import {
   type AdminRole,
 } from "@/lib/kintrip/admin.functions";
 import {
-  disconnectAdminTelegram,
+  disconnectAdminTelegram as disconnectAdminTelegramFn,
   getAdminTelegramStatus,
-  registerTelegramWebhook,
-  sendAdminTelegramTest,
-  startAdminTelegramLink,
+  registerTelegramWebhook as registerTelegramWebhookFn,
+  sendAdminTelegramTest as sendAdminTelegramTestFn,
+  startAdminTelegramLink as startAdminTelegramLinkFn,
 } from "@/lib/kintrip/telegram.functions";
 
 type Tab = "dashboard" | "signups" | "accounts" | "promotions" | "usage" | "audit" | "telegram" | "admins";
@@ -640,21 +640,40 @@ function AdminsTab() {
 }
 
 function TelegramTab({ role }: { role: AdminRole }) {
+  const getStatus = useServerFn(getAdminTelegramStatus);
+  const startAdminTelegramLink = useServerFn(startAdminTelegramLinkFn);
+  const sendAdminTelegramTest = useServerFn(sendAdminTelegramTestFn);
+  const disconnectAdminTelegram = useServerFn(disconnectAdminTelegramFn);
+  const registerTelegramWebhook = useServerFn(registerTelegramWebhookFn);
   const [status, setStatus] = useState<{
     configured: boolean;
     status: string;
     eventPrefs: Record<string, boolean>;
   } | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState("");
 
   function refresh() {
-    getAdminTelegramStatus()
+    setLoadError(null);
+    getStatus()
       .then(setStatus)
-      .catch(() => setStatus(null));
+      .catch((err: unknown) => {
+        setStatus(null);
+        setLoadError(err instanceof Error ? err.message : "Couldn't load Telegram status");
+      });
   }
   useEffect(refresh, []);
 
+  if (loadError)
+    return (
+      <Card className="space-y-2">
+        <p className="text-sm text-foreground">Couldn't load Telegram alerts: {loadError}</p>
+        <Button variant="outline" onClick={refresh}>
+          Retry
+        </Button>
+      </Card>
+    );
   if (!status) return <Card>Loading…</Card>;
   if (!status.configured)
     return (
