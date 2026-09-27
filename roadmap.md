@@ -57,3 +57,4 @@
 - [x] Server fns: connect/disconnect/prefs/test, admin alerts, trip event notify with membership revalidation
 - [x] UI: Telegram settings on Account, admin alerts in ops console, adoption prompt, guide section, ZH strings
 - [x] Register webhook with Telegram; travel-day prompts deferred (needs scheduler — product-owner approval per PRD §10)
+- [x] Sign-up approval gate + Telegram alerts for pending sign-ups and first entry (separate toggles, no console links)

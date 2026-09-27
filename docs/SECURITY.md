@@ -151,3 +151,8 @@ Do not disclose a suspected vulnerability in a public issue. Contact the reposit
 - a suggested mitigation, if known.
 
 Repository owners should add a private security contact or GitHub Security Advisory process before public launch.
+## Sign-up approval and operator sign-up alerts
+
+- `account_approvals` (own-row read only) records each account's approval state and first entry; `app_settings` is server-only. Existing accounts were grandfathered as approved.
+- With approval switched on, new accounts see a holding screen and account-level writes are refused server-side until an operator approves them. Operators are never gated.
+- Two independent Telegram alerts (new sign-up waiting; first entry into the app) go only to active operators' destinations with the accounts category on. Emails are masked. No Telegram message ever contains a link to the operations console.
