@@ -849,6 +849,7 @@ const PATTERNS: Array<[RegExp, (...parts: string[]) => string]> = [
     (a, b) => `${a}/${b} 人的心愿已纳入计划`,
   ],
   [/^Step (\d+)$/, (n) => `第 ${n} 步`],
+  [/^Step (\d+) of (\d+)$/, (n, t) => `第 ${n} 步，共 ${t} 步`],
   [/^Saved (.+)$/, (date) => `保存于 ${date}`],
   [/^Search places in (.+)$/, (place) => `搜索 ${place} 的地点`],
   [/^Voting as (.+)$/, (name) => `以 ${name} 身份投票`],
