@@ -32,7 +32,12 @@ function safeState(state: unknown): Record<string, unknown> {
   return JSON.parse(json) as Record<string, unknown>;
 }
 
+/**
+ * Save a trip. A brand-new trip is owned by whoever uploads it first; after
+ * that only approved members can write. The invite code is never changed here.
+ */
 export const pushTrip = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: PushInput) => {
     if (
       !input ||
@@ -44,57 +49,77 @@ export const pushTrip = createServerFn({ method: "POST" })
     }
     return { ...input, state: safeState(input.state) as unknown as KintripState };
   })
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: existing } = await supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { admin, requireApproved } = await import("./trip-access.server");
+    const db = await admin();
+    const { data: existing } = await db
       .from("kintrip_trips")
-      .select("trip_id, share_code")
-      .or(`share_code.eq.${data.shareCode},trip_id.eq.${data.tripId}`);
-    for (const row of existing ?? []) {
-      // A trip may only be written by someone holding its own invite code, and
-      // an invite code may only ever point at the trip it was issued for.
-      if (row.share_code === data.shareCode && row.trip_id !== data.tripId) {
-        throw new Error("Share code already in use");
-      }
-      if (row.trip_id === data.tripId && row.share_code !== data.shareCode) {
-        throw new Error("Invalid invite code for this trip");
-      }
-    }
-    const { data: row, error } = await supabaseAdmin
-      .from("kintrip_trips")
-      .upsert(
+      .select("trip_id, share_code, state")
+      .eq("trip_id", data.tripId)
+      .maybeSingle();
+    const now = new Date().toISOString();
+    if (!existing) {
+      const { data: clash } = await db.from("kintrip_trips").select("trip_id").eq("share_code", data.shareCode).maybeSingle();
+      if (clash) throw new Error("Share code already in use");
+      const { error } = await db.from("kintrip_trips").insert({
+        trip_id: data.tripId,
+        share_code: data.shareCode,
+        state: data.state as unknown as never,
+        updated_at: now,
+        owner_user_id: context.userId,
+      });
+      if (error) throw new Error(error.message);
+      await db.from("trip_access").upsert(
         {
           trip_id: data.tripId,
-          share_code: data.shareCode,
-          state: data.state as unknown as never,
-          updated_at: new Date().toISOString(),
+          user_id: context.userId,
+          status: "approved",
+          role: "organiser",
+          traveller_id: data.state.activeTravellerId ?? null,
+          decided_at: now,
         },
-        { onConflict: "trip_id" },
-      )
-      .select("updated_at")
-      .single();
+        { onConflict: "trip_id,user_id" },
+      );
+      return { updatedAt: now, shareCode: data.shareCode };
+    }
+    if ((existing.state as { deleted?: boolean } | null)?.deleted) throw new Error("Invalid invite code for this trip");
+    await requireApproved(db, data.tripId, context.userId);
+    const serverCode = existing.share_code as string;
+    const next = { ...data.state, trip: { ...data.state.trip, shareCode: serverCode } };
+    const { error } = await db
+      .from("kintrip_trips")
+      .update({ state: next as unknown as never, updated_at: now })
+      .eq("trip_id", data.tripId);
     if (error) throw new Error(error.message);
-    return { updatedAt: row.updated_at as string };
+    return { updatedAt: now, shareCode: serverCode };
   });
 
+/** Read a trip. Only approved members get anything back. */
 export const pullTrip = createServerFn({ method: "POST" })
-  .inputValidator((input: { shareCode: string }) => {
-    if (!input || !isValidCode(input.shareCode)) throw new Error("Invalid invite code");
-    return input;
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { shareCode?: string; tripId?: string }) => {
+    const tripOk = typeof input?.tripId === "string" && /^[A-Za-z0-9_-]{3,64}$/.test(input.tripId);
+    const codeOk = isValidCode(input?.shareCode);
+    if (!tripOk && !codeOk) throw new Error("Invalid invite code");
+    return { tripId: tripOk ? input.tripId : undefined, shareCode: codeOk ? input.shareCode : undefined };
   })
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
-      .from("kintrip_trips")
-      .select("trip_id, state, updated_at")
-      .eq("share_code", data.shareCode)
-      .maybeSingle();
+  .handler(async ({ data, context }) => {
+    const { admin, accessFor } = await import("./trip-access.server");
+    const db = await admin();
+    let q = db.from("kintrip_trips").select("trip_id, state, updated_at");
+    q = data.tripId ? q.eq("trip_id", data.tripId) : q.eq("share_code", data.shareCode!);
+    const { data: row, error } = await q.maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
+    if ((row.state as { deleted?: boolean } | null)?.deleted) return null;
+    const a = await accessFor(db, row.trip_id as string, context.userId);
+    if (a.status !== "approved") return { tripId: row.trip_id as string, access: a.status, state: null, updatedAt: null, travellerId: null };
     return {
       tripId: row.trip_id as string,
+      access: "approved" as const,
       state: row.state as unknown as KintripState,
       updatedAt: row.updated_at as string,
+      travellerId: a.travellerId,
     };
   });
 
