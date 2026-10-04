@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { JoinRequestsBanner } from "@/components/kintrip/JoinRequests";
 import {
   ArrowRight,
   CheckCircle2,
@@ -107,6 +108,7 @@ function ActiveTrip() {
           </div>
         </section>
         <DemoBanner />
+        <JoinRequestsBanner />
         <PickUpPlanning />
         <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
           <Card className="bg-primary-soft p-5 sm:p-6">
