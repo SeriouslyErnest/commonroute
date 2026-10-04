@@ -322,11 +322,12 @@ export async function linkAccountTrips() {
     let added = false;
     for (const row of rows) {
       if (multi.trips[row.tripId]) continue;
-      const remote = await pullTrip({ data: { shareCode: row.shareCode } });
-      if (!remote) continue;
+      const remote = await pullTrip({ data: { tripId: row.tripId } });
+      const adopted = remote ? adoptRemote(remote) : null;
+      if (!remote || !adopted) continue;
       multi = {
         ...multi,
-        trips: { ...multi.trips, [remote.tripId]: backfillPlaceData(normalizeState(remote.state)) },
+        trips: { ...multi.trips, [remote.tripId]: adopted },
       };
       if (!multi.activeTripId) multi = { ...multi, activeTripId: remote.tripId };
       added = true;
