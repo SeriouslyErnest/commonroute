@@ -197,8 +197,19 @@ async function pushNow(tripId: string) {
     setSyncStatus("synced");
   } catch (err) {
     const msg = err instanceof Error ? err.message : "";
-    setSyncStatus(msg.includes("Invalid invite code for this trip") ? "revoked" : "error");
+    setSyncStatus(/Invalid invite code for this trip|access to this trip/.test(msg) ? "revoked" : "error");
   }
+}
+
+type Remote = Awaited<ReturnType<typeof pullTrip>>;
+
+/** Shape a pulled trip for this device, acting as this account's own traveller. */
+function adoptRemote(remote: NonNullable<Remote>): KintripState | null {
+  if (!remote.state) return null;
+  const s = backfillPlaceData(normalizeState(remote.state));
+  const tid = remote.travellerId;
+  if (tid && s.travellers.some((t) => t.id === tid)) return { ...s, activeTravellerId: tid };
+  return s;
 }
 
 /** Pull the latest version of a trip saved by another family member. */
@@ -211,16 +222,25 @@ export async function pullActiveTrip() {
     return;
   }
   try {
-    const remote = await pullTrip({ data: { shareCode: state.trip.shareCode! } });
+    if (!(await signedIn())) {
+      setSyncStatus("error");
+      return;
+    }
+    const remote = await pullTrip({ data: { tripId } });
     if (!remote) {
       await pushNow(tripId);
       return;
     }
+    const adopted = adoptRemote(remote);
+    if (!adopted) {
+      setSyncStatus("revoked");
+      return;
+    }
     const local = multi.trips[tripId];
-    const remoteAt = remote.state?.cachedAt ?? "";
+    const remoteAt = adopted.cachedAt ?? "";
     const localAt = local?.cachedAt ?? "";
     if (local && remoteAt && remoteAt > localAt) {
-      multi = { ...multi, trips: { ...multi.trips, [tripId]: backfillPlaceData(normalizeState(remote.state)) } };
+      multi = { ...multi, trips: { ...multi.trips, [tripId]: adopted } };
       persist();
       emit();
     } else if (local && localAt > remoteAt) {
@@ -232,18 +252,19 @@ export async function pullActiveTrip() {
   }
 }
 
-/** Open a trip shared by an organiser's invite link. */
+/**
+ * Open a trip from an invite code. Only works once the organiser has approved
+ * this account; otherwise nothing about the trip is downloaded.
+ */
 export async function joinTripByCode(code: string): Promise<string | null> {
   hydrate();
   const remote = await pullTrip({ data: { shareCode: code.trim().toUpperCase() } });
-  if (!remote) return null;
-  const guests = new Set(multi.guestTripIds ?? []);
-  guests.add(remote.tripId);
+  const adopted = remote ? adoptRemote(remote) : null;
+  if (!remote || !adopted) return null;
   multi = {
     ...multi,
     activeTripId: remote.tripId,
-    trips: { ...multi.trips, [remote.tripId]: backfillPlaceData(normalizeState(remote.state)) },
-    guestTripIds: [...guests],
+    trips: { ...multi.trips, [remote.tripId]: adopted },
   };
   persist();
   emit();
