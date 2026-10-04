@@ -13,6 +13,7 @@ import {
   Train,
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
+import { WelcomeTour } from "@/components/kintrip/Onboarding";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { StartTripCard } from "@/components/kintrip/StartTripForm";
 import { MoreTools } from "@/components/kintrip/MoreTools";
@@ -53,6 +54,7 @@ function TripTab() {
 function NoTrips() {
   return (
     <main className="min-h-screen bg-background sm:px-6 sm:py-8">
+      <WelcomeTour />
       <StartTripCard />
     </main>
   );
