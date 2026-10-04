@@ -70,6 +70,17 @@ The share code acts as a bearer secret. Anyone holding it can retrieve and updat
 
 `rotateTripCode` issues a new code (the old one stops resolving) and `deleteSharedTrip` writes a tombstone and removes all memberships so other devices cannot resurrect the trip. Both require a signed-in caller holding the current code; organiser-only visibility is a UI rule because roles live inside the trip document.
 
+## 5c. Trip access (join requests)
+
+- `trip-access.server.ts` — `accessFor`, `requireOrganiser`, `requireApproved`, best-effort `alertOrganisers` (no links).
+- `trip-access.functions.ts` — `peekInvite` (public, rate-limited, title only), `myInviteAccess`, `requestToJoin`, `cancelJoinRequest`, `listTripAccess`, `decideTripAccess`.
+- `sync.functions.ts` — `pullTrip`/`pushTrip` require sign-in plus an approved `trip_access` row or `owner_user_id`; code rotation and delete-for-everyone require organiser.
+- UI: `routes/join.tsx` (sign in → ask to join → waiting screen), `components/kintrip/JoinRequests.tsx` (home banner, Invite-screen panel).
+
+## 5d. Onboarding
+
+- `components/kintrip/Onboarding.tsx` — `WelcomeTour` (first-visit dialog) and `GuideCard` (one tip per route, keyed by pathname), both mounted by `AppShell`. State lives only in localStorage; `resetOnboarding()` is exposed on the user guide. Add a tip by adding a pathname entry to `TIPS` plus its Chinese string.
+
 ## 5b. Sign-up approval
 
 - `approval.server.ts` — reads sign-up settings from the server-only `app_settings` table (key `signups`), `approvalBlocks(userId)` used by account writes, and `alertOperators()` (masked email, no links, never throws).

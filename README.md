@@ -11,7 +11,8 @@ Built with [Lovable](https://lovable.dev), TanStack Start, React, TypeScript, Ta
 ## What is included
 
 - Passwordless email-link accounts and cross-device trip lists
-- Invite links and shared-trip synchronization, with organiser invite-code rotation, delete-for-everyone, and leave-trip
+- Invite links with organiser-approved join requests (invitees sign in by email and see only the trip title until approved), shared-trip synchronization, invite-code rotation, delete-for-everyone, and leave-trip
+- First-visit welcome tour and per-screen tip cards (device-only, resettable from the user guide)
 - Optional Telegram notifications through a dedicated bot (reminders, itinerary changes, organiser updates) and Telegram alerts for operators
 - Personal preferences, accessibility and comfort needs, place voting, and group-fit summaries
 - Owner, organiser, sponsor, contributor, and viewer roles
@@ -136,7 +137,7 @@ bun run preview   # preview a production build locally
 
 ## Demo mode
 
-Everything except the welcome page, About, the user guide, pricing, invite joining, and the demo requires signing in with an email link.
+Everything except the welcome page, About, the user guide, pricing, the invite title preview, and the demo requires signing in with an email link. Joining a shared trip also requires organiser approval.
 
 The Japan sample trip is intentionally local-only. It does not require sign-in, does not upload to the shared backend, and must remain excluded from every current or future synchronization feature.
 

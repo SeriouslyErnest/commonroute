@@ -276,7 +276,7 @@ function AboutPage() {
           Read the user guide
         </Link>
         <p className="mt-2 text-xs text-muted-foreground">
-          Last updated: 26 September 2026.
+          Last updated: 4 October 2026.
         </p>
       </footer>
     </main>

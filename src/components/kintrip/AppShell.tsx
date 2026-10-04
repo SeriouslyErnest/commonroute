@@ -28,6 +28,7 @@ import {
 } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
 import { LanguageToggle } from "@/lib/i18n";
+import { GuideCard, WelcomeTour } from "@/components/kintrip/Onboarding";
 
 function UpdatesBell() {
   const state = useKintrip();
@@ -182,6 +183,7 @@ export function AppShell({
         </div>
       </header>
 
+      <WelcomeTour />
       <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
         <div className="space-y-4">
           <OfflineBar />
@@ -197,6 +199,7 @@ export function AppShell({
               {subtitle ? <p className="mt-1 text-muted-foreground">{subtitle}</p> : null}
             </div>
           ) : null}
+          <GuideCard />
           {children}
         </div>
       </main>

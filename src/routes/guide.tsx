@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { LanguageToggle } from "@/lib/i18n";
+import { resetOnboarding } from "@/components/kintrip/Onboarding";
 import welcome from "@/assets/guide/welcome.jpg";
 import signin from "@/assets/guide/signin.jpg";
 import join from "@/assets/guide/join.jpg";
@@ -225,6 +226,24 @@ function GuidePage() {
             ))}
           </ol>
         </nav>
+        <section aria-labelledby="tips-heading" className="kin-card mt-6 p-5">
+          <h2 id="tips-heading" className="text-lg">Welcome tour and screen tips</h2>
+          <p className="mt-1 text-base text-muted-foreground">
+            The first time you open the app, a short four-step tour explains the journey. Each main screen also shows a
+            tip card the first time you visit it — tap "Got it" to close one, or "Hide all tips" to stop them. These
+            choices are saved on this device only.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              resetOnboarding();
+              window.location.assign("/");
+            }}
+            className="mt-3 inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 font-bold text-secondary"
+          >
+            Show the tour and tips again
+          </button>
+        </section>
         <div className="mt-6 space-y-5">
           {SECTIONS.map((s) => (
             <article key={s.id} id={s.id} className="kin-card scroll-mt-4 p-5 sm:p-6">
@@ -253,7 +272,7 @@ function GuidePage() {
           ))}
         </div>
         <p className="mt-6 text-xs text-muted-foreground">
-          Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 26 September 2026.
+          Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 4 October 2026.
         </p>
       </section>
     </main>
