@@ -201,7 +201,7 @@ function SignedInJoin({ code }: { code: string }) {
   if (standing.status === "pending") {
     return (
       <AppShell title="Waiting for the organiser" subtitle={standing.title}>
-        <Card className="space-y-3 text-center" role="status">
+        <Card className="space-y-3 text-center">
           <Clock className="mx-auto size-10 text-secondary" aria-hidden />
           <h2 className="text-xl">Your request has been sent</h2>
           <p className="text-sm text-muted-foreground">
