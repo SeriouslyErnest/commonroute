@@ -14,6 +14,8 @@ export type AppLocale = "en" | "zh-CN";
 const STORAGE_KEY = "commonroute.locale";
 
 const ZH: Record<string, string> = {
+  "No trip yet": "还没有旅行",
+  "Start a trip first, then come back here to invite your group.": "请先创建旅行，再回到这里邀请同行者。",
   "Welcome to CommonRoute": "欢迎使用 CommonRoute",
   "CommonRoute helps a whole group — grandparents to kids — agree on one trip that works for everyone. Here is the journey in four steps.": "CommonRoute 帮助整个群组——从长辈到孩子——商定一趟适合所有人的旅行。以下是四个步骤。",
   "1. Start or join a trip": "1. 创建或加入旅行",
