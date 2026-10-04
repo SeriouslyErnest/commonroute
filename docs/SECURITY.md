@@ -43,12 +43,11 @@ The current invite code is ten characters from a 32-symbol alphabet, generated w
 - identifiers match narrow formats; and
 - serialized state does not exceed 512 KiB.
 
-The code is a bearer credential. A person with the code can currently retrieve and update the trip even without an account. Treat invite URLs like private documents:
+The code is no longer a bearer credential. Holding it reveals only the trip title (rate-limited). Reading or writing a trip requires a signed-in account with an `approved` row in `trip_access` (or being the trip's `owner_user_id`). Invitees file a `pending` request; organisers approve, decline or remove people through permission-checked server functions. On approval the server adds the person's own traveller to the trip, and their device acts as that traveller. Declined or removed people lose access on their next sync. Changing the code stops new requests only; approved people keep access.
 
-- do not post them publicly;
-- regenerate the trip/code if exposure is suspected;
-- avoid putting sensitive personal, passport, card, or medical details into shared trip text; and
-- understand that removing an account membership does not revoke a copied invite code.
+- Only organisers can list requests; requester emails are stored masked.
+- Organiser checks for code rotation, deletion and access decisions run on the server.
+- Avoid putting sensitive passport, card or medical details into shared trip text.
 
 The current implementation does not provide per-member server-side authorization for every field inside the shared JSON trip payload. UI and action-layer rules enforce product roles, while the share code protects the aggregate. A higher-assurance deployment should migrate shared entities to membership-scoped rows with field-level policies.
 

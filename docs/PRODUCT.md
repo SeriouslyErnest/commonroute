@@ -31,7 +31,7 @@ The core product principle is: **everyone can contribute, practical needs outran
 ## 3. Accounts and membership
 
 - Sign-in uses a time-limited link sent by email. There is no password and no code to type.
-- Signing in is required to create and plan trips. The welcome page, About, the user guide (`/guide`), pricing, the Japan demo, and joining with an invite code work without an account.
+- Signing in is required to create and plan trips. The welcome page, About, the user guide (`/guide`), pricing and the Japan demo work without an account. Opening an invite link shows only the trip title; the invitee signs in by email, sends a join request, and sees nothing else until an organiser approves it. Organisers approve, decline or remove people from the Invite screen.
 - Signing in links non-demo trips to the account for use across devices. Password sign-in is not offered.
 - Accounts have a display name and sign-in email.
 - People can change their email, sign out locally or globally, and close their account.
