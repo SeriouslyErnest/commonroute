@@ -217,7 +217,7 @@ export function WelcomeTour() {
           ))}
         </div>
         <p className="text-center text-xs text-muted-foreground">
-          Step {step + 1} of {TOUR.length}
+          {`Step ${step + 1} of ${TOUR.length}`}
         </p>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <button type="button" className="min-h-11 text-sm font-bold text-muted-foreground underline" onClick={close}>

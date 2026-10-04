@@ -28,3 +28,4 @@ Preserve these invariants in every change:
 - Focused enhancements live in `src/lib/kintrip/enhancements.ts` (pure) and `enhancements.actions.ts` (permission-checked changes); planner soft preferences go through `effectivePreferences` — one resolver so trip/day overrides apply consistently.
 
 - Shared-trip read/write requires sign-in plus organiser-approved `trip_access` (enforced in sync/trip-access server functions); invite codes only reveal the title — so leaked links never expose trip data.
+- Onboarding tour/tip state is device-only (localStorage) in `Onboarding.tsx`, mounted once by AppShell — no sync, so it never leaks or needs a table.
