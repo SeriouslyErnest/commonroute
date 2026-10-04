@@ -200,7 +200,7 @@ export function WelcomeTour() {
     setOpen(false);
   };
 
-  const s = TOUR[step];
+  const s = TOUR[step] ?? TOUR[0]!;
   const last = step === TOUR.length - 1;
 
   return (
