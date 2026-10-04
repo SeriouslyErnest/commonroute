@@ -342,18 +342,21 @@ export type Database = {
       }
       kintrip_trips: {
         Row: {
+          owner_user_id: string | null
           share_code: string
           state: Json
           trip_id: string
           updated_at: string
         }
         Insert: {
+          owner_user_id?: string | null
           share_code: string
           state: Json
           trip_id: string
           updated_at?: string
         }
         Update: {
+          owner_user_id?: string | null
           share_code?: string
           state?: Json
           trip_id?: string
@@ -636,6 +639,51 @@ export type Database = {
           status?: string
           tg_chat_id?: number
           tg_user_id?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trip_access: {
+        Row: {
+          age_group: string | null
+          decided_at: string | null
+          decided_by: string | null
+          display_name: string | null
+          email_masked: string | null
+          relationship: string | null
+          requested_at: string
+          role: string
+          status: string
+          traveller_id: string | null
+          trip_id: string
+          user_id: string
+        }
+        Insert: {
+          age_group?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          display_name?: string | null
+          email_masked?: string | null
+          relationship?: string | null
+          requested_at?: string
+          role?: string
+          status?: string
+          traveller_id?: string | null
+          trip_id: string
+          user_id: string
+        }
+        Update: {
+          age_group?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          display_name?: string | null
+          email_masked?: string | null
+          relationship?: string | null
+          requested_at?: string
+          role?: string
+          status?: string
+          traveller_id?: string | null
+          trip_id?: string
           user_id?: string
         }
         Relationships: []

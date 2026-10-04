@@ -40,7 +40,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && session) {
-      void navigate({ to: safeReturnPath(next), replace: true });
+      void navigate({ href: safeReturnPath(next), replace: true });
     }
   }, [loading, session, next, navigate]);
 

@@ -11,8 +11,8 @@ import { startDemoTrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import { LanguageToggle } from "@/lib/i18n";
 
 /**
- * Planning needs an account. Two ways in stay open without one: the local-only
- * demo trip, and joining a trip with an invite code.
+ * Planning needs an account. Only the local-only demo trip stays open without
+ * one. The /join page handles its own sign-in, then organiser approval.
  */
 const PUBLIC_PREFIXES = [
   "/auth",
@@ -32,7 +32,7 @@ function isPublicPath(pathname: string): boolean {
 export function AccountGate({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { session, loading } = useAccount();
-  const { demoActive, guestActive } = useTripSetupStatus();
+  const { demoActive } = useTripSetupStatus();
 
   const check = useServerFn(myApprovalStatus);
   const [approval, setApproval] = useState<"approved" | "pending" | "rejected" | null>(null);
@@ -52,7 +52,7 @@ export function AccountGate({ children }: { children: ReactNode }) {
     };
   }, [userId, tick, check]);
 
-  if (isPublicPath(pathname) || demoActive || guestActive) return <>{children}</>;
+  if (isPublicPath(pathname) || demoActive) return <>{children}</>;
   if (session) {
     if (approval === null) {
       return (

@@ -65,11 +65,13 @@ const SECTIONS: Section[] = [
   {
     id: "join",
     title: "2. Join a trip someone invited you to",
-    intro: "Travellers can join with an invite link or code, even without an account.",
+    intro: "Joining needs your email and the organiser's approval, so only people the organiser knows can see the trip.",
     steps: [
-      "Open the invite link your organiser shared, or tap \"I have an invite code\" on the welcome screen.",
-      "Pick who you are from the traveller list, or add yourself.",
-      "Sign in later if you want the trip on your other devices too.",
+      "Open the invite link your organiser shared. You'll see only the trip's name.",
+      "Type your email and tap the sign-in link we send you.",
+      "Add your name, relationship and age group, then tap \"Ask to join\".",
+      "Wait for the organiser to approve you. Until then nothing about the trip — people, plan, votes or needs — is shown to you.",
+      "Once approved, the trip opens and you vote and share preferences as yourself.",
     ],
     shots: [{ src: join, alt: "Join a group trip screen" }],
   },
@@ -81,8 +83,8 @@ const SECTIONS: Section[] = [
       "From My trips, tap \"Create a new trip\".",
       "Type the destination, choose the start and end dates, then create the trip.",
       "Share the invite by WhatsApp, email or by copying the link.",
-      "Everyone who joins appears under \"Who's on board\" with their progress.",
-      "Organisers can use \"Change invite code\" if a link was shared too widely — the old link stops working for everyone.",
+      "When someone asks to join, the home screen shows a notice. Open Invite → \"Join requests\" to approve or decline them (their email is partly hidden). You can also remove people later under \"People with access\".",
+      "Organisers can use \"Change invite code\" if a link was shared too widely — the old link stops accepting new requests; people already approved keep access.",
       "\"Delete trip for everyone\" removes the shared plan from every account. Anyone else can tap \"Leave\" on My trips to remove it just for themselves.",
     ],
     shots: [

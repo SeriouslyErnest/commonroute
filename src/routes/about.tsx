@@ -98,7 +98,7 @@ const FEATURES = [
 const FAQS = [
   {
     q: "Does everyone need an account?",
-    a: "The organiser signs in with an email link. Family members can join with an invite code, add their name and preferences, and start voting without an account.",
+    a: "The organiser signs in with an email link. Family members open the invite link, sign in with their email, and ask to join. The organiser approves each person before they can see anything beyond the trip name.",
   },
   {
     q: "Can grandparents use it?",

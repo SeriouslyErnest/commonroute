@@ -26,3 +26,5 @@ Preserve these invariants in every change:
 - Every new public table includes explicit grants, row-level security, and policies in the same migration.
 - Public documentation never names a production-only console path, real operator identity, credential, or private service URL.
 - Focused enhancements live in `src/lib/kintrip/enhancements.ts` (pure) and `enhancements.actions.ts` (permission-checked changes); planner soft preferences go through `effectivePreferences` — one resolver so trip/day overrides apply consistently.
+
+- Shared-trip read/write requires sign-in plus organiser-approved `trip_access` (enforced in sync/trip-access server functions); invite codes only reveal the title — so leaked links never expose trip data.

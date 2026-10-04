@@ -7,6 +7,7 @@ import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { formatDate } from "@/lib/kintrip/engine";
 import { deleteTripForEveryone, rotateInviteCode, useKintrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import { isOrganiser } from "@/lib/kintrip/governance";
+import { JoinRequestsPanel } from "@/components/kintrip/JoinRequests";
 
 export const Route = createFileRoute("/invite")({
   head: () => ({
@@ -96,6 +97,8 @@ function InvitePage() {
         </ul>
       </Card>
 
+      <JoinRequestsPanel />
+
       <OrganiserControls />
 
       <div className="flex justify-center pb-4">
@@ -130,13 +133,13 @@ function OrganiserControls() {
       <h2 className="text-lg">Organiser controls</h2>
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          Change the invite code if the link has spread further than intended. The old link stops working straight away, for everyone who used it — send the new link to the people who should stay.
+          Change the invite code if the link has spread further than intended. The old link stops working straight away for new requests. People you already approved keep their access.
         </p>
         <Button
           variant="outline"
           disabled={busy}
           onClick={() => {
-            if (!window.confirm("Change the invite code? The old link stops working for everyone, including people already in the trip.")) return;
+            if (!window.confirm("Change the invite code? The old link stops working for new requests. People you already approved keep their access.")) return;
             void run(async () => {
               await rotateInviteCode();
               setNote("New invite code ready — share the new link above.");
