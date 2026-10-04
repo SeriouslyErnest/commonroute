@@ -39,6 +39,17 @@ function InvitePage() {
     setLink(`${window.location.origin}/join${shareCode ? `?code=${shareCode}` : ""}`);
   }, [shareCode]);
   const message = `Join our trip on CommonRoute — ${state.trip.title}: ${link}`;
+  const { hasTrips } = useTripSetupStatus();
+  if (!hasTrips) {
+    return (
+      <AppShell title="No trip yet" back={{ to: "/", label: "Back" }}>
+        <Card className="space-y-3">
+          <p>Start a trip first, then come back here to invite your group.</p>
+          <LinkButton to="/">Start a trip</LinkButton>
+        </Card>
+      </AppShell>
+    );
+  }
 
 
   return (
