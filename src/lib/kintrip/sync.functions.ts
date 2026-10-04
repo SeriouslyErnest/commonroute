@@ -4,8 +4,9 @@ import type { KintripState } from "./types";
 
 /**
  * Shared-trip sync. The table is locked down (no browser access); every read
- * and write goes through these server functions and needs the trip's share
- * code, which acts as the invite secret.
+ * and write goes through these server functions, needs a signed-in account,
+ * and needs organiser-approved access to the trip (see trip-access.server).
+ * The invite code alone only reveals the trip title.
  */
 
 interface PushInput {
@@ -152,27 +153,21 @@ export const rotateTripCode = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(validControl)
   .handler(async ({ data, context }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row } = await supabaseAdmin
-      .from("kintrip_trips")
-      .select("state")
-      .eq("trip_id", data.tripId)
-      .eq("share_code", data.shareCode)
-      .maybeSingle();
-    if (!row) throw new Error("This invite code is no longer valid for this trip");
+    const { admin, requireOrganiser } = await import("./trip-access.server");
+    const db = await admin();
+    await requireOrganiser(db, data.tripId, context.userId);
+    const { data: row } = await db.from("kintrip_trips").select("state").eq("trip_id", data.tripId).maybeSingle();
+    if (!row) throw new Error("This trip is no longer shared");
     const code = newServerCode();
     const state = row.state as unknown as KintripState;
     const nextState = { ...state, trip: { ...state.trip, shareCode: code } };
-    const { error } = await supabaseAdmin
+    const now = new Date().toISOString();
+    const { error } = await db
       .from("kintrip_trips")
-      .update({ share_code: code, state: nextState as unknown as never, updated_at: new Date().toISOString() })
-      .eq("trip_id", data.tripId)
-      .eq("share_code", data.shareCode);
-    if (error) throw new Error(error.message);
-    await context.supabase
-      .from("kintrip_memberships")
-      .update({ share_code: code, updated_at: new Date().toISOString() })
+      .update({ share_code: code, state: nextState as unknown as never, updated_at: now })
       .eq("trip_id", data.tripId);
+    if (error) throw new Error(error.message);
+    await db.from("kintrip_memberships").update({ share_code: code, updated_at: now }).eq("trip_id", data.tripId);
     return { shareCode: code };
   });
 
@@ -183,21 +178,20 @@ export const rotateTripCode = createServerFn({ method: "POST" })
 export const deleteSharedTrip = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(validControl)
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { admin, requireOrganiser } = await import("./trip-access.server");
+    const db = await admin();
+    await requireOrganiser(db, data.tripId, context.userId);
+    const { error } = await db
       .from("kintrip_trips")
       .update({
         share_code: `deleted_${newServerCode()}${newServerCode()}`,
         state: { deleted: true } as unknown as never,
         updated_at: new Date().toISOString(),
       })
-      .eq("trip_id", data.tripId)
-      .eq("share_code", data.shareCode)
-      .select("trip_id")
-      .maybeSingle();
+      .eq("trip_id", data.tripId);
     if (error) throw new Error(error.message);
-    if (!row) throw new Error("This invite code is no longer valid for this trip");
-    await supabaseAdmin.from("kintrip_memberships").delete().eq("trip_id", data.tripId);
+    await db.from("kintrip_memberships").delete().eq("trip_id", data.tripId);
+    await db.from("trip_access").delete().eq("trip_id", data.tripId);
     return { ok: true };
   });
