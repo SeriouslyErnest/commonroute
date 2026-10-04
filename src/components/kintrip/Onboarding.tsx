@@ -139,7 +139,7 @@ export function GuideCard() {
   return (
     <aside
       aria-label="Tip"
-      className="mb-5 flex gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4"
+      className="flex gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4"
     >
       <Lightbulb className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
       <div className="min-w-0 flex-1">

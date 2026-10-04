@@ -232,8 +232,8 @@ const ZH: Record<string, string> = {
   "Your next family trip starts with one destination": "下一趟群组旅行，从一个目的地开始",
   "Add where you're going and the dates. CommonRoute takes it from there.":
     "填写目的地和日期，接下来交给 CommonRoute。",
-  "Last updated: 26 September 2026.":
-    "最后更新：2026年9月26日。",
+  "Last updated: 4 October 2026.":
+    "最后更新：2026年10月4日。",
   "Read the user guide": "阅读使用指南",
   "User guide": "使用指南",
   "Everything you need to plan a trip together, in the order you will need it.": "一起规划旅行所需的一切，按使用顺序排列。",
@@ -292,7 +292,7 @@ const ZH: Record<string, string> = {
   "Manage your name and sign-in email.": "管理你的名字和登录邮箱。",
   "Change the name your group sees, or your sign-in email.": "更改群组看到的名字或登录邮箱。",
   "Sign out of every device, or delete your account.": "在所有设备上退出，或删除账户。",
-  "Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 26 September 2026.": "截图展示的是日本示例旅行和一个槟城示例旅行。最后更新：2026年9月26日。",
+  "Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 4 October 2026.": "截图展示的是日本示例旅行和一个槟城示例旅行。最后更新：2026年10月4日。",
   "Sign in to CommonRoute": "登录 CommonRoute",
   "We'll email you a link that signs you straight in. No password, no code to type.":
     "我们会通过邮件发送一键登录链接，无需密码，也无需输入验证码。",

@@ -253,7 +253,7 @@ function GuidePage() {
           ))}
         </div>
         <p className="mt-6 text-xs text-muted-foreground">
-          Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 26 September 2026.
+          Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 4 October 2026.
         </p>
       </section>
     </main>
