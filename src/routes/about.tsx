@@ -275,6 +275,7 @@ function AboutPage() {
         <Link to="/guide" className="mt-3 inline-flex min-h-11 items-center font-bold text-secondary underline">
           Read the user guide
         </Link>
+        <FeedbackSupportLink hint className="mt-2" />
         <p className="mt-2 text-xs text-muted-foreground">
           Last updated: 4 October 2026.
         </p>

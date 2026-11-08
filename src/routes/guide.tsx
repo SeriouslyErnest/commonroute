@@ -274,6 +274,7 @@ function GuidePage() {
         <p className="mt-6 text-xs text-muted-foreground">
           Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 4 October 2026.
         </p>
+        <FeedbackSupportLink hint className="mt-2 items-start" />
       </section>
     </main>
   );

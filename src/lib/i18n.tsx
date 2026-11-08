@@ -279,6 +279,9 @@ const ZH: Record<string, string> = {
   "Last updated: 4 October 2026.":
     "最后更新：2026年10月4日。",
   "Read the user guide": "阅读使用指南",
+  "Feedback & Support": "反馈与支持",
+  "Ideas, feature requests and bug reports — plus Ko-fi if you'd like to support the project.":
+    "想法、功能建议和问题反馈——也欢迎通过 Ko-fi 支持本项目。",
   "User guide": "使用指南",
   "Everything you need to plan a trip together, in the order you will need it.": "一起规划旅行所需的一切，按使用顺序排列。",
   "Contents": "目录",

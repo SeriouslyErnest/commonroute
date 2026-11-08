@@ -28,6 +28,7 @@ import {
 } from "@/lib/kintrip/store";
 import { cn } from "@/lib/utils";
 import { LanguageToggle } from "@/lib/i18n";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 import { GuideCard, WelcomeTour } from "@/components/kintrip/Onboarding";
 
 function UpdatesBell() {
@@ -203,6 +204,10 @@ export function AppShell({
           {children}
         </div>
       </main>
+
+      <footer className="mx-auto w-full max-w-6xl px-4 pb-2 sm:px-6">
+        <FeedbackSupportLink />
+      </footer>
 
       {hasTrips ? (
         <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md rounded-2xl border border-border bg-secondary px-2 shadow-lift sm:bottom-5 sm:max-w-xl lg:max-w-2xl">
