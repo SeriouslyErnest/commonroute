@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { LanguageToggle } from "@/lib/i18n";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 import { resetOnboarding } from "@/components/kintrip/Onboarding";
 import welcome from "@/assets/guide/welcome.jpg";
 import signin from "@/assets/guide/signin.jpg";
