@@ -29,6 +29,7 @@ Built with [Lovable](https://lovable.dev), TanStack Start, React, TypeScript, Ta
 - Trip Plus pass, promo codes, and allowance tracking (no payment provider connected by default)
 - Anonymous product-usage counts viewable only in the operations console
 - An in-app user guide at `/guide`
+- A small "Feedback & Support" link in the footer of the app, About, and the user guide, opening the project's public feedback page in a new tab
 - An internal operations console for account review, suspension, operator roles, grants, promotions, usage counts, and audit records
 - A local-only Japan demo that never syncs to the backend
 

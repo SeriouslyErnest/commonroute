@@ -18,6 +18,7 @@ import shotDiscover from "@/assets/app-discover.jpg";
 import shotItinerary from "@/assets/app-itinerary.jpg";
 import shotReplan from "@/assets/app-replan.jpg";
 import { LanguageToggle } from "@/lib/i18n";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
