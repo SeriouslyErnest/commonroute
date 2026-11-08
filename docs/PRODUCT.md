@@ -238,6 +238,10 @@ Provider coverage and quality vary by destination. Missing or unverified data is
 
 New users see a four-step welcome tour on first visit (start or join, share needs and vote, review and plan, travel and re-plan) and a short tip card the first time they open each main screen. Tips can be closed one by one or all hidden; the choice is stored on the device only and can be reset from the user guide.
 
+## Feedback and support
+
+A small "Feedback & Support" link sits in the footer of every app screen and in the footers of the About page and user guide. It opens the project's public feedback page (`https://seriouslyernest.github.io/#feedback`) in a new tab, where people can submit ideas, feature requests or bug reports and support the project through Ko-fi. The link is purely presentational: there is no in-app feedback form, no feedback data stored in the backend, and no tracking.
+
 ## Sign-up approval and operator sign-up alerts
 
 Operators can switch on "Require approval for new accounts" in the operations console (Sign-ups tab, super admin only). New accounts then see a "Thanks for signing up" holding screen (with Check again, the demo trip and Sign out) until an operator approves or rejects them from the approval queue; account-level changes are refused server-side meanwhile. Accounts that existed before the feature are treated as approved, and operators are never gated. Two independent Telegram alerts can be switched on or off: a new sign-up waiting for approval, and an information alert when an account enters the app for the first time. Both go to operators' Telegram destinations with the accounts category on, mask the email, fire once per account, and never contain a link to the console. The gate defaults to off.
