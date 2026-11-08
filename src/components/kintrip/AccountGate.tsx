@@ -9,6 +9,7 @@ import { Button, Card } from "@/components/kintrip/ui";
 import { useAccount } from "@/lib/kintrip/auth";
 import { startDemoTrip, useTripSetupStatus } from "@/lib/kintrip/store";
 import { LanguageToggle } from "@/lib/i18n";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 
 /**
  * Planning needs an account. Only the local-only demo trip stays open without
@@ -146,6 +147,7 @@ function Welcome({ pathname }: { pathname: string }) {
             User guide
           </Link>
         </p>
+        <FeedbackSupportLink className="pt-1" />
       </div>
     </main>
   );

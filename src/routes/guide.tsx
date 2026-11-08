@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import symbol from "@/assets/commonroute-symbol.png.asset.json";
 import { LanguageToggle } from "@/lib/i18n";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 import { resetOnboarding } from "@/components/kintrip/Onboarding";
 import welcome from "@/assets/guide/welcome.jpg";
 import signin from "@/assets/guide/signin.jpg";
@@ -274,6 +275,7 @@ function GuidePage() {
         <p className="mt-6 text-xs text-muted-foreground">
           Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 4 October 2026.
         </p>
+        <FeedbackSupportLink hint className="mt-2 items-start" />
       </section>
     </main>
   );

@@ -18,6 +18,7 @@ import shotDiscover from "@/assets/app-discover.jpg";
 import shotItinerary from "@/assets/app-itinerary.jpg";
 import shotReplan from "@/assets/app-replan.jpg";
 import { LanguageToggle } from "@/lib/i18n";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -275,6 +276,7 @@ function AboutPage() {
         <Link to="/guide" className="mt-3 inline-flex min-h-11 items-center font-bold text-secondary underline">
           Read the user guide
         </Link>
+        <FeedbackSupportLink hint className="mt-2" />
         <p className="mt-2 text-xs text-muted-foreground">
           Last updated: 4 October 2026.
         </p>

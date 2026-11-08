@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/kintrip/AppShell";
 import { WelcomeTour } from "@/components/kintrip/Onboarding";
+import { FeedbackSupportLink } from "@/components/kintrip/FeedbackSupport";
 import { Button, Card, Chip, LinkButton } from "@/components/kintrip/ui";
 import { StartTripCard } from "@/components/kintrip/StartTripForm";
 import { MoreTools } from "@/components/kintrip/MoreTools";
@@ -56,6 +57,7 @@ function NoTrips() {
     <main className="min-h-screen bg-background sm:px-6 sm:py-8">
       <WelcomeTour />
       <StartTripCard />
+      <FeedbackSupportLink className="pb-6 pt-2" />
     </main>
   );
 }
