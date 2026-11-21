@@ -118,6 +118,9 @@ const SECTIONS: Section[] = [
       "On Discover, search for places at your destination and open them on the map.",
       "Vote Must go, Would like, Don't mind or Skip for each place.",
       "Found something while browsing? Save an idea with just a name, note or link. Ideas without a location stay out of the plan until one is picked.",
+      "For a whole list, open Import spots from Discover, Ideas or More tools. Paste up to 25 names or Google Maps links, or choose a Google Takeout Saved Places.json / My Maps CSV (up to 500 rows, 2 MB).",
+      "Review every map match and duplicate before importing. You can filter known locations to within 100 km of the destination or any known trip place, and add selected places to Discover or keep them in Ideas. Up to 100 places can be imported at once.",
+      "Files are read on your device, not uploaded to file storage. Unmatched names and links stay marked Location needed rather than receiving guessed coordinates.",
       "The group summary shows strong favourites and places people disagree on.",
     ],
     shots: [
@@ -273,7 +276,7 @@ function GuidePage() {
           ))}
         </div>
         <p className="mt-6 text-xs text-muted-foreground">
-          Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 4 October 2026.
+          Screenshots show the sample Japan demo trip and a sample Penang trip. Last updated: 21 November 2026.
         </p>
         <FeedbackSupportLink hint className="mt-2 items-start" />
       </section>

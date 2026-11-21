@@ -632,7 +632,7 @@ export function publicDeclineReason(s: Suggestion): string | null {
 /** Statuses the itinerary generator may use. Ideas still missing a location never enter a route. */
 export function eligibleAttractions(state: KintripState): Attraction[] {
   return state.attractions.filter((a) => {
-    if (a.locationStatus === "needs_location") return false;
+    if (a.ideaOnly || a.locationStatus === "needs_location") return false;
     const s = state.suggestions[a.id];
     return s?.status === "approved" || s?.status === "booked";
   });

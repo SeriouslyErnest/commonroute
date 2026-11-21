@@ -104,6 +104,7 @@ The historical `0002_seed_test_super_admin.sql` migration is development-only an
 
 - Provider calls using private credentials run in server functions.
 - User input is length-limited and validated before provider calls.
+- Bulk imports cap pasted rows, file rows, file size, lookups and selected records. CSV/JSON parsing happens locally. Google short-link expansion accepts only HTTPS `maps.app.goo.gl` URLs and follows manual redirects only to validated Google hosts, preventing a general-purpose fetch proxy.
 - Coordinates are range-validated before routing.
 - Routing failures return unavailable rather than a plausible-looking estimate.
 - External links open with `noreferrer` where used in a new tab.

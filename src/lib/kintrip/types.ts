@@ -232,6 +232,8 @@ export interface Attraction {
   ideaNote?: undefined | string;
   /** Idempotency key so retrying a save never creates a second record. */
   captureKey?: undefined | string;
+  /** Imported into Ideas for later review rather than shown on Discover. */
+  ideaOnly?: undefined | boolean;
 }
 
 /** A saved geographic grouping of places. A planning aid, not a day. */

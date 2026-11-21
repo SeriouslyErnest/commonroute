@@ -22,6 +22,7 @@ Built with [Lovable](https://lovable.dev), TanStack Start, React, TypeScript, Ta
 - Today and Simple views, bookings and stay details, shared jobs, and packing lists
 - English and Simplified Chinese interfaces
 - Place search, category maps, nearby grouping, driving-time checks, date-aware opening hours, and onward-access journeys
+- Bulk place imports from pasted names/Google Maps links and device-parsed Google Takeout JSON or My Maps CSV, with review, duplicate and distance checks
 - Installable app behavior and offline access to saved trip information
 - Coordination tools: rooms and vehicles, private rest requests, booking dependencies, offline day packs, contact cards, and post-trip reflections
 - Quick idea capture, traveller settings with provenance, waiting/check-back jobs, pick-up planning cues, and temporary arrangements

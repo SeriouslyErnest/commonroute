@@ -102,6 +102,12 @@ Discover supports two place-search modes:
 
 Search is scoped by the active trip destination and returns up to eight results. Saved places retain a stable internal ID plus their source, provider identifier, coordinates, map link, search query, and capture time where available. Duplicate provider records and close same-name matches are rejected.
 
+### Bulk imports
+
+`/import` is available from Discover, Ideas and More tools. Quick paste accepts up to 25 place names or Google Maps links, with at most 10 automatic lookups per batch; short Google links are expanded only through a host-restricted server helper. File upload accepts Google Takeout Saved Places GeoJSON and Google My Maps CSV up to 500 rows and 2 MB. Files are parsed in the browser and are not put in file storage.
+
+Every item appears in a review list before import. Existing and within-batch duplicates are flagged and unselected, and an optional straight-line filter deselects known locations over 100 km from the destination and every known trip place (so multi-city trips are not averaged into a misleading midpoint) while leaving unknown distances reviewable. Up to 100 selected places can be imported at once, either to Discover for voting or to Ideas for later review. Unresolved names/links remain marked Location needed; coordinates, hours and access facts are never invented.
+
 ### Map and grouping
 
 The map shows shortlisted attractions and eateries with lettered pins so meaning does not depend on colour alone. Users can:

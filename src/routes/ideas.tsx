@@ -8,6 +8,7 @@ import { trackProduct } from "@/lib/kintrip/track";
 import { actorName, isOrganiser } from "@/lib/kintrip/governance";
 import { needsLocation } from "@/lib/kintrip/enhancements";
 import { resolveIdeaLocation, saveIdea } from "@/lib/kintrip/enhancements.actions";
+import { moveImportedIdeaToShortlist } from "@/lib/kintrip/import.actions";
 import { searchPlaces, type PlaceResult } from "@/lib/kintrip/places.functions";
 
 export const Route = createFileRoute("/ideas")({
@@ -37,7 +38,8 @@ function IdeasScreen() {
   const [savedId, setSavedId] = useState<string | null>(null);
   const keyRef = useRef(newKey());
 
-  const incomplete = useMemo(() => state.attractions.filter(needsLocation), [state.attractions]);
+  const incomplete = useMemo(() => state.attractions.filter((a) => needsLocation(a) && !a.ideaOnly), [state.attractions]);
+  const imported = useMemo(() => state.attractions.filter((a) => a.ideaOnly), [state.attractions]);
 
   const save = (allowDuplicate = false) => {
     setError(null);
@@ -64,6 +66,7 @@ function IdeasScreen() {
 
   return (
     <AppShell title="Save an idea" subtitle="A name, a note or a link is enough">
+      <p className="text-sm">Have a whole list? <Link to="/import" className="inline-flex min-h-11 items-center font-semibold text-secondary underline">Import spots from links, JSON or CSV</Link>.</p>
       <Card className="space-y-3">
         <Field label="Place, note or link">
           <input
@@ -118,6 +121,30 @@ function IdeasScreen() {
         </div>
       </Card>
 
+      {imported.length > 0 ? (
+        <Card className="space-y-3">
+          <h2 className="text-lg">Imported ideas</h2>
+          <p className="text-sm text-muted-foreground">Saved for later review. Move one to the voting shortlist when the group is ready.</p>
+          <ul className="space-y-3">
+            {imported.map((a) => (
+              <IdeaRow
+                key={a.id}
+                id={a.id}
+                name={a.name}
+                note={a.ideaNote}
+                url={a.sourceUrl}
+                by={state.suggestions[a.id]?.suggestedBy}
+                canEdit={organiser || state.suggestions[a.id]?.suggestedBy === state.activeTravellerId}
+                destination={state.trip.destination}
+                byName={(id) => actorName(state, id)}
+                resolved={a.locationStatus === "resolved"}
+                onShortlist={() => moveImportedIdeaToShortlist(a.id)}
+              />
+            ))}
+          </ul>
+        </Card>
+      ) : null}
+
       <Card className="space-y-3" >
         <h2 id="needs-location" className="text-lg">Location needed</h2>
         <p className="text-sm text-muted-foreground">
@@ -156,6 +183,8 @@ function IdeaRow(props: {
   canEdit: boolean;
   destination: string;
   byName: (id: string) => string;
+  resolved?: boolean | undefined;
+  onShortlist?: (() => string | null) | undefined;
 }) {
   const [q, setQ] = useState(props.name);
   const [results, setResults] = useState<PlaceResult[] | null>(null);
@@ -177,7 +206,7 @@ function IdeaRow(props: {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-semibold">{props.name}</p>
         <Chip tone="sunny">
-          <MapPin className="size-3" aria-hidden /> Location needed
+          <MapPin className="size-3" aria-hidden /> {props.resolved ? "For later" : "Location needed"}
         </Chip>
       </div>
       {props.note ? <p className="mt-1 text-sm">{props.note}</p> : null}
@@ -192,7 +221,7 @@ function IdeaRow(props: {
           </>
         ) : null}
       </p>
-      {props.canEdit ? (
+      {props.canEdit && !props.resolved ? (
         <div className="mt-2 space-y-2">
           <div className="flex gap-2">
             <input className={inputClass} value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Search the map for ${props.name}`} />
@@ -217,6 +246,19 @@ function IdeaRow(props: {
             </button>
           ))}
         </div>
+      ) : null}
+      {props.canEdit && props.onShortlist ? (
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-3"
+          onClick={() => {
+            const problem = props.onShortlist?.();
+            if (problem) setErr(problem);
+          }}
+        >
+          Move to voting shortlist
+        </Button>
       ) : null}
     </li>
   );

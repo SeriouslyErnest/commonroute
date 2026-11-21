@@ -222,8 +222,9 @@ function DiscoverTab() {
 
   const list = state.attractions.filter(
     (a) =>
-      a.name.toLowerCase().includes(query.toLowerCase()) ||
-      a.category.toLowerCase().includes(query.toLowerCase()),
+      !a.ideaOnly &&
+      (a.name.toLowerCase().includes(query.toLowerCase()) ||
+      a.category.toLowerCase().includes(query.toLowerCase())),
   );
 
   return (
@@ -231,7 +232,8 @@ function DiscoverTab() {
       <p className="text-sm">
         Found something while browsing?{" "}
         <Link to="/ideas" className="inline-flex min-h-11 items-center font-semibold underline">Save idea</Link>
-        {" "}— a name or link is enough.
+        {" "}— a name or link is enough. Have a saved list?{" "}
+        <Link to="/import" className="inline-flex min-h-11 items-center font-semibold underline">Import spots</Link>.
       </p>
       <Card className="space-y-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-3 sm:space-y-0">
         <div className="relative">

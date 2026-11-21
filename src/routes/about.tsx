@@ -278,7 +278,7 @@ function AboutPage() {
         </Link>
         <FeedbackSupportLink hint className="mt-2" />
         <p className="mt-2 text-xs text-muted-foreground">
-          Last updated: 4 October 2026.
+          Last updated: 21 November 2026.
         </p>
       </footer>
     </main>

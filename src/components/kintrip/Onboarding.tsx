@@ -85,6 +85,10 @@ const TIPS: Record<string, { title: string; body: string }> = {
     title: "Quick ideas",
     body: "Jot down ideas before you know exactly where they are. Give an idea a location in Discover so the group can rate it.",
   },
+  "/import": {
+    title: "Bring saved places with you",
+    body: "Paste names or Google Maps links, or choose a Takeout JSON or My Maps CSV. Review every match and duplicate before adding anything.",
+  },
   "/consensus": {
     title: "Group choices",
     body: "See what the group loves, what splits opinion and what needs care. Organisers approve, decline or keep places as backups before planning.",
@@ -146,7 +150,11 @@ export function GuideCard() {
         <p className="font-bold">{tip.title}</p>
         <p className="mt-1 text-sm text-muted-foreground">{tip.body}</p>
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm font-bold">
-          <button type="button" className="min-h-11 text-primary underline" onClick={() => dismiss()}>
+          <button
+            type="button"
+            className="min-h-11 text-primary underline"
+            onClick={() => dismiss()}
+          >
             Got it
           </button>
           <button
@@ -220,7 +228,11 @@ export function WelcomeTour() {
           {`Step ${step + 1} of ${TOUR.length}`}
         </p>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <button type="button" className="min-h-11 text-sm font-bold text-muted-foreground underline" onClick={close}>
+          <button
+            type="button"
+            className="min-h-11 text-sm font-bold text-muted-foreground underline"
+            onClick={close}
+          >
             Skip tour
           </button>
           <div className="flex gap-2">

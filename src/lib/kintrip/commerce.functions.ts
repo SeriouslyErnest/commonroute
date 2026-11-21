@@ -499,6 +499,7 @@ const EVENT_NAMES = new Set([
   "expense_recorded",
   "export_downloaded",
   "idea_saved",
+  "places_imported",
   "preference_recorded",
   "arrangement_proposed",
   "arrangement_applied",

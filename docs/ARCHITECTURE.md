@@ -131,6 +131,8 @@ UI checks improve clarity, but permission-sensitive product actions must also en
 
 Place records keep a stable internal ID independent of provider IDs. The Discover flow applies duplicate detection before adding a result.
 
+`import.ts` contains pure quick-paste, Google Maps URL, My Maps CSV and Takeout GeoJSON parsers, duplicate checks and distance rules. `import.actions.ts` performs one permission-checked, idempotent aggregate update and keeps imported Ideas out of Discover and itinerary eligibility until deliberately moved. `import.functions.ts` only expands bounded `maps.app.goo.gl` links with manual, Google-host-restricted redirects; file contents stay in the browser. The `/import` review screen calls the existing place-search function sequentially for at most 10 unresolved pasted names, with a delay between free-provider calls.
+
 `geo.ts` contains Haversine distance and deterministic complete-linkage clustering. `PlaceMap.tsx` renders only in the browser. Tile failure must not break the surrounding list.
 
 `routing.functions.ts` accepts validated coordinates and calls OSRM. It returns explicit unavailable legs on failures instead of invented values.

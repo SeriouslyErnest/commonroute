@@ -29,6 +29,7 @@ import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as GettingReadyRouteImport } from './routes/getting-ready'
 import { Route as GuideRouteImport } from './routes/guide'
 import { Route as IdeasRouteImport } from './routes/ideas'
+import { Route as ImportRouteImport } from './routes/import'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as JoinRouteImport } from './routes/join'
@@ -153,6 +154,11 @@ const GuideRoute = GuideRouteImport.update({
 const IdeasRoute = IdeasRouteImport.update({
   id: '/ideas',
   path: '/ideas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportRoute = ImportRouteImport.update({
+  id: '/import',
+  path: '/import',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InviteRoute = InviteRouteImport.update({
@@ -303,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/getting-ready': typeof GettingReadyRoute
   '/guide': typeof GuideRoute
   '/ideas': typeof IdeasRoute
+  '/import': typeof ImportRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
@@ -350,6 +357,7 @@ export interface FileRoutesByTo {
   '/getting-ready': typeof GettingReadyRoute
   '/guide': typeof GuideRoute
   '/ideas': typeof IdeasRoute
+  '/import': typeof ImportRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/getting-ready': typeof GettingReadyRoute
   '/guide': typeof GuideRoute
   '/ideas': typeof IdeasRoute
+  '/import': typeof ImportRoute
   '/invite': typeof InviteRoute
   '/itinerary': typeof ItineraryRoute
   '/join': typeof JoinRoute
@@ -447,6 +456,7 @@ export interface FileRouteTypes {
     | '/getting-ready'
     | '/guide'
     | '/ideas'
+    | '/import'
     | '/invite'
     | '/itinerary'
     | '/join'
@@ -494,6 +504,7 @@ export interface FileRouteTypes {
     | '/getting-ready'
     | '/guide'
     | '/ideas'
+    | '/import'
     | '/invite'
     | '/itinerary'
     | '/join'
@@ -541,6 +552,7 @@ export interface FileRouteTypes {
     | '/getting-ready'
     | '/guide'
     | '/ideas'
+    | '/import'
     | '/invite'
     | '/itinerary'
     | '/join'
@@ -589,6 +601,7 @@ export interface RootRouteChildren {
   GettingReadyRoute: typeof GettingReadyRoute
   GuideRoute: typeof GuideRoute
   IdeasRoute: typeof IdeasRoute
+  ImportRoute: typeof ImportRoute
   InviteRoute: typeof InviteRoute
   ItineraryRoute: typeof ItineraryRoute
   JoinRoute: typeof JoinRoute
@@ -756,6 +769,13 @@ declare module '@tanstack/react-router' {
       path: '/ideas'
       fullPath: '/ideas'
       preLoaderRoute: typeof IdeasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/import': {
+      id: '/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof ImportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invite': {
@@ -957,6 +977,7 @@ const rootRouteChildren: RootRouteChildren = {
   GettingReadyRoute: GettingReadyRoute,
   GuideRoute: GuideRoute,
   IdeasRoute: IdeasRoute,
+  ImportRoute: ImportRoute,
   InviteRoute: InviteRoute,
   ItineraryRoute: ItineraryRoute,
   JoinRoute: JoinRoute,

@@ -58,3 +58,9 @@
 - [x] UI: Telegram settings on Account, admin alerts in ops console, adoption prompt, guide section, ZH strings
 - [x] Register webhook with Telegram; travel-day prompts deferred (needs scheduler — product-owner approval per PRD §10)
 - [x] Sign-up approval gate + Telegram alerts for pending sign-ups and first entry (separate toggles, no console links)
+
+## Place imports (built)
+- [x] Quick paste for place names and Google Maps links, with bounded lookups and unresolved ideas preserved
+- [x] Device-only Google Takeout GeoJSON and Google My Maps CSV parsing
+- [x] Review, duplicate detection, optional 100 km multi-city destination filter, selection caps, and voting/ideas destinations
+- [x] English/Chinese interface, onboarding tip, user guide, technical documentation, and responsive verification
